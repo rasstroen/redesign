@@ -12,7 +12,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<!--css-->
-	<link rel="stylesheet" href="/static/css/layout/admin.css"/>
+
 	<!--js-->
-	<script src="http://code.jquery.com/jquery.min.js?0.1.0"></script>
+
 </head>

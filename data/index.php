@@ -10,5 +10,17 @@ $rootPath = $configuration['rootPath'];
 require_once $rootPath . 'core/Classes/Autoload.php';
 $autoloader = new Autoload($rootPath, $configuration['autoload']['directories']);
 
-$application = new \Application\Web($configuration);
-$application->run();
+try
+{
+	$application = new \Application\Web($configuration);
+	$application->run();
+}
+catch (\Classes\Exception\Http $e)
+{
+	if(!$application->getIsDevelopmentMode())
+	{
+		header('Error', null, $e->getHttpCode());
+	}
+	throw $e;
+}
+

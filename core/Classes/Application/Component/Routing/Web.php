@@ -3,6 +3,7 @@
 namespace Application\Component\Routing;
 
 use Application\Component\Base;
+use Classes\Exception\NotFound;
 
 class Web extends Base
 {
@@ -56,7 +57,7 @@ class Web extends Base
 			}
 			else
 			{
-				throw new \Exception(404);
+				throw new NotFound(404);
 			}
 			return;
 		}

@@ -63,4 +63,9 @@ class Web
 
 		return $component;
 	}
+
+	public function getIsDevelopmentMode()
+	{
+		return $this->request->getQueryParam('devMode', false);
+	}
 }
