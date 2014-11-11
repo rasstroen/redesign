@@ -25,4 +25,7 @@ return array(
 	'imageConverter'    => array(
 		'className' => '\Application\Component\Image\Converter',
 	),
+	'httpRequest'       => array(
+		'className' => '\Application\Component\Request\Http',
+	),
 );

@@ -1,6 +1,5 @@
 <?php
-header('X-Accel-Expires: 0');
-header('Content-type: text/html; charset=UTF-8');
+
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 
@@ -12,7 +11,7 @@ $autoloader = new Autoload($rootPath, $configuration['autoload']['directories'])
 
 try
 {
-	$application = new \Application\Web($configuration);
+	$application = new \Application\Console($configuration);
 	$application->run();
 }
 catch (\Classes\Exception\Http $e)

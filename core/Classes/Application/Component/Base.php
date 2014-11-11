@@ -15,7 +15,7 @@ class Base
 	 */
 	private $className;
 
-	public function __construct(Web $application)
+	public function __construct(\Application\Base $application)
 	{
 		$this->application = $application;
 		$this->initialize();
