@@ -7,6 +7,9 @@ namespace Application;
  *
  * @property \Application\Component\Configuration\Base  $configuration
  * @property \Application\Component\Request\Http        $httpRequest
+ * @property \Application\Component\Routing\UrlManager  $urlManager
+ * @property \Application\Component\Image\Converter     $imageConverter
+ * @property \Application\BLL\BLL                       $bll
  */
 abstract class Base
 {

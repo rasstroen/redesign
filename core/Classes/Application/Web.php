@@ -9,10 +9,7 @@ namespace Application;
  * @property \Application\Component\Configuration\Base  $configuration
  * @property \Application\Component\Request\Web         $request
  * @property \Application\Component\Routing\Web         $routing
- * @property \Application\Component\Routing\UrlManager  $urlManager
- * @property \Application\Component\Image\Converter     $imageConverter
  * @property \Application\Component\Controller\Web      $controller
- * @property \Application\BLL\BLL                       $bll
  * @property \Application\Component\Database\Base       $db
  */
 class Web extends Base
