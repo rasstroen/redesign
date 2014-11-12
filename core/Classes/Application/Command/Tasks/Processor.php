@@ -22,20 +22,78 @@ class Processor extends Base
 				/**
 				 * Есть свободные обработчики данного типа тасков
 				 */
-				$this->runWorker($queueId, $queueInfo);
+				for($i =0; $i < $queueInfo['free_workers']; $i++)
+				{
+					$this->createWorker($queueId, $queueInfo);
+				}
 			}
 		}
 	}
 
-	private function runWorker($queueId, array $queueInfo)
+	public function workerProcess($workerId)
 	{
-		$movedTasksCount    = $this->application->bll->queue->moveTasksToWorker(
+		$worker     = $this->application->bll->queue->getById($workerId);
+		$workerInfo = $this->application->bll->queue->getQueue($worker['queue_id']);
+
+		$workerClassName    = '\Application\Command\Tasks\Worker\\' . $workerInfo['command'];
+		$workerMethod       = 'method' . ucfirst($workerInfo['method']);
+
+		$workerObject       = new $workerClassName($this->application);
+		$workerObject->$workerMethod($worker);
+
+		$this->log('deleted worker ' . $workerId);
+		$this->application->bll->queue->deleteWorker($workerId);
+	}
+
+	/**
+	 * Запускаем всех незапущенных воркеров
+	 */
+	public function actionRunWorkers()
+	{
+		$workersNotRunned   = $this->application->bll->queue->getNotRunnedWorkersIds();
+
+		foreach($workersNotRunned as $workerId)
+		{
+			$pid = pcntl_fork();
+			if($pid == -1)
+			{
+				continue;
+			}
+			if($pid > 0)
+			{
+				/**
+				 * created child with pid=$pid, workerId=$workerId
+				 */
+				$this->application->db->reconnectAll();
+			}
+			else
+			{
+				/**
+				 * it is a child process with workerId=$workerId
+				 */
+				$this->application->db->reconnectAll();
+				$this->application->bll->queue->updatePid($workerId, getmypid());
+				$this->log('Runned child: workerId=' . $workerId);
+				$this->workerProcess($workerId);
+				return;
+			}
+		}
+	}
+
+	public function actionRunWorker()
+	{
+
+	}
+
+	private function createWorker($queueId, array $queueInfo)
+	{
+		$workerId    = $this->application->bll->queue->moveTasksToWorker(
 			$queueId,
 			$queueInfo['tasks_per_worker']
 		);
-		if($movedTasksCount)
+		if($workerId)
 		{
-			$this->log('created worker for queue ' . $queueInfo['name'] . ' with ' . $movedTasksCount . ' tasks');
+			$this->log('created worker for queue ' . $queueInfo['name'] . ', worker id:' . $workerId);
 		}
 		else
 		{

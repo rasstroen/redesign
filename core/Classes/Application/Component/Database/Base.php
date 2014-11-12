@@ -21,4 +21,13 @@ class Base extends \Application\Component\Base
 		$dbConfig       = $this->application->configuration->getDbConfiguration($baseName);
 		return $this->connections[$baseName] = new PDODatabase(new \PDO($dbConfig['dsn'], $dbConfig['username'], $dbConfig['password']));
 	}
+
+	public function reconnectAll()
+	{
+		foreach($this->connections as $baseName => $pdoDatabase)
+		{
+			$dbConfig       = $this->application->configuration->getDbConfiguration($baseName);
+			$this->connections[$baseName] = new PDODatabase(new \PDO($dbConfig['dsn'], $dbConfig['username'], $dbConfig['password']));
+		}
+	}
 }

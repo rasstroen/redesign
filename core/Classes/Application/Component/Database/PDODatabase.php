@@ -37,6 +37,17 @@ class PDODatabase{
 		return $out;
 	}
 
+	public function selectColumn($query, array $parameters = array())
+	{
+		$out = array();
+		$result = $this->query($query, $parameters);
+		while ($data = $result->fetch(\PDO::FETCH_NUM))
+		{
+			$out[] = $data[0];
+		}
+		return $out;
+	}
+
 	public function selectSingle($query, array $parameters = array())
 	{
 		$out    = array();
