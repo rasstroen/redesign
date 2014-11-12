@@ -1,7 +1,10 @@
 <?php
 
 return array(
-	'authors'  => array(
-		'className' => '\Application\BLL\Authors',
+	'posts'  => array(
+		'className' => '\Application\BLL\Posts',
+	),
+	'queue'  => array(
+		'className' => '\Application\BLL\Queue',
 	),
 );

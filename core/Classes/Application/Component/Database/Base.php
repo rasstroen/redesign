@@ -5,6 +5,7 @@ namespace Application\Component\Database;
  * @package Core\Database
  *
  * @property  PDODatabase $web
+ * @property  PDODatabase $master
  */
 class Base extends \Application\Component\Base
 {

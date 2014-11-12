@@ -8,13 +8,28 @@ class Post extends Base
 	 */
 	public function actionFetchYandex()
 	{
-		$pageIndex = 1;
+		$pageIndex      = 1;
+		$processedCount = 0;
+
 		do
 		{
 			$items = $this->parseEntriesApiPage($pageIndex);
+			foreach($items as $item)
+			{
+				if($this->processEntriesApiItem($item))
+				{
+					$processedCount++;
+				}
+			}
 			$pageIndex++;
 		}
 		while(count($items));
+		$this->log('total ' . $processedCount . ' items processed');
+	}
+
+	private function processEntriesApiItem(array $item)
+	{
+		return $this->application->bll->posts->processYandexApiData($item);
 	}
 
 	private function parseEntriesApiPage($pageIndex)
@@ -28,7 +43,7 @@ class Post extends Base
 		xml_parse_into_struct($xml, $content, $values, $index);
 		xml_parser_free($xml);
 
-		$fields = array(
+		$fieldsOffset = array(
 			'title'                 => 2,
 			'author'                => 0,
 			'link'                  => 2,
@@ -46,7 +61,7 @@ class Post extends Base
 		{
 			foreach ($index['PUBDATE'] as $indexIndex => $itemIndex)
 			{
-				foreach ($fields as $field => $fieldOffset)
+				foreach ($fieldsOffset as $field => $fieldOffset)
 				{
 					$fieldIndex                 = $index[strtoupper($field)][$indexIndex + $fieldOffset];
 					$items[$indexIndex][$field] = isset($values[$fieldIndex]['value']) ? $values[$fieldIndex]['value'] : '';

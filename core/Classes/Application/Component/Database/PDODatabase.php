@@ -54,8 +54,39 @@ class PDODatabase{
 		return $result->fetch(\PDO::FETCH_ASSOC);
 	}
 
+	private function prepareQuery(&$query, array &$parameters = array())
+	{
+		$queryArray         = explode('?', $query);
+		$resultParameters   = array();
+		$resultQueryArray   = array();
+
+		foreach($queryArray as $key => $queryPart)
+		{
+			if(isset($parameters[$key]) && is_array($parameters[$key]))
+			{
+				$resultQueryArray[]      = $queryPart;
+				for($i=0; $i<count($parameters[$key]); $i++)
+				{
+					$resultParameters[] = $parameters[$key][$i];
+				}
+				$resultQueryArray[] = str_repeat('?,', count($parameters[$key])-1) . '?';
+			}
+			else
+			{
+				$resultQueryArray[] = $queryPart . ($key !== count($queryArray) - 1 ? '?' : '');
+				if(isset($parameters[$key]))
+				{
+					$resultParameters[] = $parameters[$key];
+				}
+			}
+		}
+		$query      = implode('', $resultQueryArray);
+		$parameters = $resultParameters;
+	}
+
 	public function query($query, array $parameters = array())
 	{
+		$this->prepareQuery($query, $parameters);
 		$stmt = $this->pdo->prepare($query);
 		$i  = 1;
 		foreach($parameters as $parameter)

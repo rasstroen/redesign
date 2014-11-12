@@ -3,6 +3,9 @@ namespace Application\BLL;
 /**
  * Class Factory
  * @package Application\BLL
+ *
+ * @property  \Application\BLL\Queue    $queue
+ * @property  \Application\BLL\Posts    $posts
  */
 class Factory extends \Application\Component\Base
 {

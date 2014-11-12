@@ -9,7 +9,6 @@ namespace Application;
  * @property \Application\Component\Configuration\Base  $configuration
  * @property \Application\Component\Routing\UrlManager  $urlManager
  * @property \Application\Component\Image\Converter     $imageConverter
- * @property \Application\BLL\BLL                       $bll
  */
 
 class Console extends Base
@@ -24,7 +23,13 @@ class Console extends Base
 
 	public function run()
 	{
-		$commandName        = '\Application\Command\\' . ucfirst($this->getConsoleArgument(1));
+		$classNameArray     = array();
+		$classNameParts     = explode('-', $this->getConsoleArgument(1));
+		foreach($classNameParts as $classNamePart)
+		{
+			$classNameArray[] = ucfirst($classNamePart);
+		}
+		$commandName        = '\Application\Command\\' . implode('\\', $classNameArray);
 		$command            = new $commandName($this, $this->arguments);
 		$methodName         = 'action';
 		$methodNameParts    = explode('-', $this->getConsoleArgument(2));

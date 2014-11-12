@@ -9,7 +9,8 @@ namespace Application;
  * @property \Application\Component\Request\Http        $httpRequest
  * @property \Application\Component\Routing\UrlManager  $urlManager
  * @property \Application\Component\Image\Converter     $imageConverter
- * @property \Application\BLL\BLL                       $bll
+ * @property \Application\BLL\Factory                   $bll
+ * @property \Application\Component\Database\Base       $db
  */
 abstract class Base
 {
