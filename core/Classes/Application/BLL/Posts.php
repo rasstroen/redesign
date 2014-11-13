@@ -30,6 +30,19 @@ class Posts extends BLL
 					'lastPostTime'  => strtotime($item['pubDate']),
 				)
 			);
+			/**
+			 * Добавляем задачу на обновление ленты пользователя - если есть в выдаче яндекса,
+			 * значит есть пост в топе, нужно его обновить прямо сейчас
+			 */
+			$this->application->bll->queue->addTask(
+				Queue::QUEUE_AUTHOR_FETCH_RSS,
+				$item['yablogs:ppb_username'],
+				array(
+					'username'      => $item['yablogs:ppb_username'],
+					'url'           => $item['author'],
+					'lastPostTime'  => strtotime($item['pubDate']),
+				)
+			);
 			return true;
 		}
 		return false;

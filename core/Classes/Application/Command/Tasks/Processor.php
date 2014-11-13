@@ -24,7 +24,10 @@ class Processor extends Base
 				 */
 				for($i =0; $i < $queueInfo['free_workers']; $i++)
 				{
-					$this->createWorker($queueId, $queueInfo);
+					if(!$workerId = $this->createWorker($queueId, $queueInfo))
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -32,15 +35,17 @@ class Processor extends Base
 
 	public function workerProcess($workerId)
 	{
-		$worker     = $this->application->bll->queue->getById($workerId);
+		$worker     = $this->application->bll->queue->getWorkerById($workerId);
 		$workerInfo = $this->application->bll->queue->getQueue($worker['queue_id']);
 
 		$workerClassName    = '\Application\Command\Tasks\Worker\\' . $workerInfo['command'];
-		$workerMethod       = 'method' . ucfirst($workerInfo['method']);
 
-		$workerObject       = new $workerClassName($this->application);
-		$workerObject->$workerMethod($worker);
-
+		/**
+		 * @var \Application\Command\Tasks\Worker\Base $workerObject
+		 */
+		$workerObject       = new $workerClassName($this->application, $worker);
+		$this->log("$workerClassName::{$workerInfo['method']}();");
+		$workerObject->runCommand($workerInfo['method']);
 		$this->log('deleted worker ' . $workerId);
 		$this->application->bll->queue->deleteWorker($workerId);
 	}
@@ -80,9 +85,22 @@ class Processor extends Base
 		}
 	}
 
-	public function actionRunWorker()
+	/**
+	 * Создаем воркера из тасков, запускаем воркера в 1 поток, по id конретной очереди.
+	 * Пример: php run.php tasks-processor run-worker-debug --queue-id=2
+	 */
+	public function actionRunWorkerDebug()
 	{
-
+		$queueId    = isset($this->arguments['queue-id']) ? $this->arguments['queue-id'] : null;
+		if($queueInfo   =   $this->application->bll->queue->getQueue($queueId))
+		{
+			$this->log('Running queue ' . $queueInfo['name'] . ' without workers limit in debug mode');
+			$workerId   = $this->createWorker($queueId, $queueInfo);
+			if($workerId)
+			{
+				$this->workerProcess($workerId);
+			}
+		}
 	}
 
 	private function createWorker($queueId, array $queueInfo)
@@ -99,5 +117,7 @@ class Processor extends Base
 		{
 			$this->log('queue ' . $queueInfo['name'] . ' has no tasks');
 		}
+
+		return $workerId;
 	}
 }

@@ -10,9 +10,21 @@ class Base
 	 */
 	protected $application;
 
-	function __construct(Console $application)
+	protected $tasks = array();
+
+	function __construct(Console $application, array $worker)
 	{
 		$this->application  = $application;
+		$this->tasks        = unserialize($worker['tasks']);
+	}
+
+	public function runCommand($method)
+	{
+		$functionName   = 'method' . ucfirst($method);
+		foreach($this->tasks as $task)
+		{
+			$this->$functionName(unserialize($task['data']));
+		}
 	}
 
 	protected function log($message)

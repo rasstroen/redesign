@@ -7,4 +7,7 @@ return array(
 	'queue'  => array(
 		'className' => '\Application\BLL\Queue',
 	),
+	'author'  => array(
+		'className' => '\Application\BLL\Author',
+	),
 );

@@ -13,8 +13,8 @@ class Queue extends BLL
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
 			'name'              => 'QUEUE_AUTHOR_UPDATE_INFO',
 			'priority'          => 1,
-			'workers'           => 4,
-			'tasks_per_worker'  => 10,
+			'workers'           => 6,
+			'tasks_per_worker'  => 100,
 			'command'           => 'Author',
 			'method'            => 'updateInfo'
 		),
@@ -34,10 +34,10 @@ class Queue extends BLL
 
 	public function getQueue($queueId)
 	{
-		return $this->queues[$queueId];
+		return isset($this->queues[$queueId]) ? $this->queues[$queueId] : null;
 	}
 
-	public function getById($workerId)
+	public function getWorkerById($workerId)
 	{
 		return $this->application->db->master->selectRow(
 			'SELECT * FROM `queue_workers` WHERE `worker_id` = ?',
