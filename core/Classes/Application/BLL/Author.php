@@ -9,10 +9,11 @@ use Classes\Exception\InvalidArgument;
 class Author extends BLL
 {
 	private $fields = array(
-		'username'              => 1,// ppb_username
-		'userinfo_change_time'  => 1,// last change time
-		'is_community'          => 1,// is it community profile
-		'url'                   => 1,// livejournal url
+		'username'                  => 1,// ppb_username
+		'userinfo_change_time'      => 1,// last change time
+		'is_community'              => 1,// is it community profile
+		'url'                       => 1,// livejournal url
+		'userinfo_full_change_time' => 1,// last full info update
 	);
 
 	public function getByUserName($userName)
@@ -23,26 +24,31 @@ class Author extends BLL
 		);
 	}
 
+	public function getIdsByOldestInfoFullUpdate($limit)
+	{
+		return $this->getDbMaster()->selectColumn(
+			'SELECT `author_id` FROM `author` ORDER BY `userinfo_full_change_time` LIMIT ?',
+			array($limit)
+		);
+	}
+
 	public function insert($userName, array $userData)
 	{
-		foreach($userData as $field => $value)
-		{
-			if(!isset($this->fields[$field]))
-			{
-				throw new InvalidArgument('illegal field' . $field);
-			}
-		}
-
 		$sqlParts   = array();
 		$values     = array();
 		foreach($userData as $field => $value)
 		{
+			if(!isset($this->fields[$field]))
+			{
+				continue;
+			}
 			if($field !== 'username')
 			{
 				$sqlParts[] = '`' . $field . '` = ?';
 				$values[]   = $value;
 			}
 		}
+
 		$valuesCopy = $values;
 		$values[]   = $userName;
 
@@ -55,18 +61,14 @@ class Author extends BLL
 
 	public function updateInfoByUserName($userName, array $userData)
 	{
-		foreach($userData as $field => $value)
-		{
-			if(!isset($this->fields[$field]))
-			{
-				throw new InvalidArgument('illegal field' . $field);
-			}
-		}
-
 		$sqlParts   = array();
 		$values     = array();
 		foreach($userData as $field => $value)
 		{
+			if(!isset($this->fields[$field]))
+			{
+				continue;
+			}
 			if($field !== 'username')
 			{
 				$sqlParts[] = '`' . $field . '` = ?';

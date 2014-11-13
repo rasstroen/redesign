@@ -32,39 +32,49 @@ class Author extends Base
 	}
 
 	/**
+	 *
+	 */
+	public function methodFetchFullInfo(array $authorIds)
+	{
+		foreach($authorIds as $authorId)
+		{
+			$this->log('Fetching userId:' . $authorId);
+		}
+	}
+
+	/**
 	 * Обновляем информацию об авторе
 	 * @param array $authorInfo
 	 */
 	public function methodUpdateInfo(array $authorInfo)
 	{
 		$author     = $this->application->bll->author->getByUserName($authorInfo['username']);
-		$data       = array();
 
 		if($author)
 		{
 			$needSave = false;
-			foreach($data as $field => $value)
+			foreach($authorInfo as $field => $value)
 			{
-				if($author[$field] != $value)
+				if(isset($author[$field]) && ($author[$field] != $value))
 				{
 					$needSave   = true;
 				}
 			}
 			if($needSave)
 			{
-				$data['userinfo_change_time'] = time();
+				$authorInfo['userinfo_change_time'] = time();
 				$this->application->bll->author->updateInfoByUserName(
 					$authorInfo['username'],
-					$data
+					$authorInfo
 				);
 			}
 		}
 		else
 		{
-			$data['userinfo_change_time'] = time();
+			$authorInfo['userinfo_change_time'] = time();
 			$this->application->bll->author->insert(
 				$authorInfo['username'],
-				$data
+				$authorInfo
 			);
 		}
 	}

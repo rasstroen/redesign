@@ -27,7 +27,6 @@ class Posts extends BLL
 				array(
 					'username'      => $item['yablogs:ppb_username'],
 					'url'           => $item['author'],
-					'lastPostTime'  => strtotime($item['pubDate']),
 				)
 			);
 			/**

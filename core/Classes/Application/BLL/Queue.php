@@ -6,8 +6,21 @@ namespace Application\BLL;
  */
 class Queue extends BLL
 {
-	const QUEUE_AUTHOR_UPDATE_INFO  = 1;
-	const QUEUE_AUTHOR_FETCH_RSS    = 2;
+	/**
+	 * Апдейтим информацию по автору
+	 */
+	const QUEUE_AUTHOR_UPDATE_INFO      = 1;
+
+	/**
+	 * Вытаскиваем свежие посты автора
+	 */
+	const QUEUE_AUTHOR_FETCH_RSS        = 2;
+
+	/**
+	 * Вытаскиваем полную информацию по авторам
+	 */
+	const QUEUE_AUTHOR_FETCH_ALL_INFO   = 3;
+
 
 	private $queues = array(
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
@@ -25,6 +38,14 @@ class Queue extends BLL
 			'tasks_per_worker'  => 100,
 			'command'           => 'Author',
 			'method'            => 'fetchRss'
+		),
+		self::QUEUE_AUTHOR_FETCH_ALL_INFO => array(
+			'name'              => 'QUEUE_AUTHOR_FETCH_ALL_INFO',
+			'priority'          => 1,
+			'workers'           => 1,
+			'tasks_per_worker'  => 1,
+			'command'           => 'Author',
+			'method'            => 'fetchFullInfo'
 		),
 );
 	public function getAll()
@@ -126,7 +147,7 @@ class Queue extends BLL
 	 * @param int $waitTime
 	 * @throws \Exception
 	 */
-	public function addTask($queueId, $taskId, array $data, $waitTime = 0)
+	public function addTask($queueId, $taskId = 'unique', array $data = array(), $waitTime = 0)
 	{
 		if(!is_numeric($taskId))
 		{
