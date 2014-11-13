@@ -3,13 +3,6 @@ namespace Application\Command\Tasks\Worker;
 
 class Author extends Base
 {
-	private $fields = array(
-		'username'              => 1,// ppb_username
-		'userinfo_change_time'  => 1,// last change time
-		'is_community'          => 1,// is it community profile
-		'url'                   => 1,// livejournal url
-	);
-
 	/**
 	 * Забираем свежие записи автора
 	 *
@@ -46,13 +39,6 @@ class Author extends Base
 	{
 		$author     = $this->application->bll->author->getByUserName($authorInfo['username']);
 		$data       = array();
-		foreach($authorInfo as $field => $value)
-		{
-			if(isset($this->fields[$field]))
-			{
-				$data[$field] = $value;
-			}
-		}
 
 		if($author)
 		{
@@ -66,6 +52,7 @@ class Author extends Base
 			}
 			if($needSave)
 			{
+				$data['userinfo_change_time'] = time();
 				$this->application->bll->author->updateInfoByUserName(
 					$authorInfo['username'],
 					$data
@@ -74,6 +61,7 @@ class Author extends Base
 		}
 		else
 		{
+			$data['userinfo_change_time'] = time();
 			$this->application->bll->author->insert(
 				$authorInfo['username'],
 				$data

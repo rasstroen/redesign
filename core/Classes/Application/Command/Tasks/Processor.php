@@ -105,13 +105,13 @@ class Processor extends Base
 
 	private function createWorker($queueId, array $queueInfo)
 	{
-		$workerId    = $this->application->bll->queue->moveTasksToWorker(
+		list($workerId, $tasksInWorker)    = $this->application->bll->queue->moveTasksToWorker(
 			$queueId,
 			$queueInfo['tasks_per_worker']
 		);
 		if($workerId)
 		{
-			$this->log('created worker for queue ' . $queueInfo['name'] . ', worker id:' . $workerId);
+			$this->log('created worker for queue ' . $queueInfo['name'] . ', workerId:' . $workerId . ', ' . $tasksInWorker . '/' . $queueInfo['tasks_per_worker'] . ' tasks');
 		}
 		else
 		{

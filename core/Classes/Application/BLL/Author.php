@@ -1,11 +1,20 @@
 <?php
 namespace Application\BLL;
+use Classes\Exception\InvalidArgument;
+
 /**
  * Class Author
  * @package Application\BLL
  */
 class Author extends BLL
 {
+	private $fields = array(
+		'username'              => 1,// ppb_username
+		'userinfo_change_time'  => 1,// last change time
+		'is_community'          => 1,// is it community profile
+		'url'                   => 1,// livejournal url
+	);
+
 	public function getByUserName($userName)
 	{
 		return $this->getDbMaster()->selectRow(
@@ -16,6 +25,14 @@ class Author extends BLL
 
 	public function insert($userName, array $userData)
 	{
+		foreach($userData as $field => $value)
+		{
+			if(!isset($this->fields[$field]))
+			{
+				throw new InvalidArgument('illegal field' . $field);
+			}
+		}
+
 		$sqlParts   = array();
 		$values     = array();
 		foreach($userData as $field => $value)
@@ -38,6 +55,14 @@ class Author extends BLL
 
 	public function updateInfoByUserName($userName, array $userData)
 	{
+		foreach($userData as $field => $value)
+		{
+			if(!isset($this->fields[$field]))
+			{
+				throw new InvalidArgument('illegal field' . $field);
+			}
+		}
+
 		$sqlParts   = array();
 		$values     = array();
 		foreach($userData as $field => $value)

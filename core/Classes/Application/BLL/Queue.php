@@ -14,7 +14,7 @@ class Queue extends BLL
 			'name'              => 'QUEUE_AUTHOR_UPDATE_INFO',
 			'priority'          => 1,
 			'workers'           => 6,
-			'tasks_per_worker'  => 100,
+			'tasks_per_worker'  => 50,
 			'command'           => 'Author',
 			'method'            => 'updateInfo'
 		),
@@ -22,7 +22,7 @@ class Queue extends BLL
 			'name'              => 'QUEUE_AUTHOR_FETCH_RSS',
 			'priority'          => 1,
 			'workers'           => 2,
-			'tasks_per_worker'  => 10,
+			'tasks_per_worker'  => 100,
 			'command'           => 'Author',
 			'method'            => 'fetchRss'
 		),
@@ -93,9 +93,9 @@ class Queue extends BLL
 				)
 			);
 
-			return $this->getDbMaster()->lastInsertId();
+			return array($this->getDbMaster()->lastInsertId(), count($tasks));
 		}
-		return 0;
+		return array(0 , 0);
 	}
 
 	public function getNotRunnedWorkersIds()
