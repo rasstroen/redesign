@@ -74,19 +74,32 @@ class Author extends Base
 		{
 			$data['journal_title'] = $values[$index['LJ:JOURNALTITLE'][0]]['value'];
 		}
+		elseif(isset($index['FOAF:NAME']))
+		{
+			$data['journal_title'] = $values[$index['FOAF:NAME'][0]]['value'];
+		}
 		if(isset($index['LJ:JOURNALSUBTITLE']))
 		{
 			$data['journal_subtitle']           = $values[$index['LJ:JOURNALSUBTITLE'][0]]['value'];
 		}
-		$data['journal_country_code']       = $values[$index['YA:COUNTRY'][0]]['attributes']['DC:TITLE'];
+		if(isset($index['YA:COUNTRY']))
+		{
+			$data['journal_country_code'] = $values[$index['YA:COUNTRY'][0]]['attributes']['DC:TITLE'];
+		}
 		if(isset($index['YA:CITY']))
 		{
 			$data['journal_city_name'] = $values[$index['YA:CITY'][0]]['attributes']['DC:TITLE'];
 		}
 		$data['journal_created']            = $values[$index['FOAF:WEBLOG'][0]]['attributes']['LJ:DATECREATED'];
-		$data['journal_bio']                = $values[$index['YA:BIO'][0]]['value'];
-		$data['journal_pic']                = $values[$index['FOAF:IMG'][0]]['attributes']['RDF:RESOURCE'];
-		$data['is_communty']                = isset($index['FOAF:GROUP']) ? 1: 0;
+		if(isset($index['YA:BIO']))
+		{
+			$data['journal_bio'] = $values[$index['YA:BIO'][0]]['value'];
+		}
+		if(isset($index['FOAF:IMG']))
+		{
+			$data['journal_pic']                = $values[$index['FOAF:IMG'][0]]['attributes']['RDF:RESOURCE'];
+		}
+		$data['is_community']                = isset($index['FOAF:GROUP']) ? 1: 0;
 		return $data;
 	}
 
