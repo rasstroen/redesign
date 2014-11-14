@@ -36,10 +36,45 @@ class Author extends Base
 	 */
 	public function methodFetchFullInfo(array $authorIds)
 	{
+		$authors = $this->application->bll->author->getByIds($authorIds);
 		foreach($authorIds as $authorId)
 		{
-			$this->log('Fetching userId:' . $authorId);
+			if(isset($authors[$authorId]))
+			{
+				$author     = $authors[$authorId];
+				$this->log($author['username'].', url: ' . $author['url']);
+				$authorInfo = $this->getFoaf($author['url']);
+			}
 		}
+		throw new \Exception('debug process');
+	}
+
+	private function getFoaf($url)
+	{
+		$url .='data/foaf';
+
+		$content    = $this->application->httpRequest->get($url);
+		$xml = xml_parser_create();
+		xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE,1);
+		xml_parse_into_struct($xml, $content, $values, $index);
+		xml_parser_free($xml);
+
+		$data = array();
+
+		$data['journal_posted']             = $values[$index['YA:POSTED'][0]]['value'];
+		$data['journal_commented']          = $values[$index['YA:POSTED'][1]]['value'];
+		$data['journal_comments_received']  = $values[$index['YA:RECEIVED'][0]]['value'];
+		$data['journal_title']              = $values[$index['LJ:JOURNALTITLE'][0]]['value'];
+		if(isset($index['LJ:JOURNALSUBTITLE']))
+		{
+			$data['journal_subtitle']           = $values[$index['LJ:JOURNALSUBTITLE'][0]]['value'];
+		}
+		$data['journal_country_code']       = $values[$index['YA:COUNTRY'][0]]['attributes']['DC:TITLE'];
+		$data['journal_city_name']          = $values[$index['YA:CITY'][0]]['attributes']['DC:TITLE'];
+		$data['journal_created']            = $values[$index['FOAF:WEBLOG'][0]]['attributes']['LJ:DATECREATED'];
+		$data['journal_bio']                = $values[$index['YA:BIO'][0]]['value'];
+		$data['journal_pic']                = $values[$index['FOAF:IMG'][0]]['attributes']['RDF:RESOURCE'];
+		die(print_r($data));
 	}
 
 	/**

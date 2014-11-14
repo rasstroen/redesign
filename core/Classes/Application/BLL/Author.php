@@ -16,6 +16,14 @@ class Author extends BLL
 		'userinfo_full_change_time' => 1,// last full info update
 	);
 
+	public function getByIds(array $authorIds)
+	{
+		return $this->getDbMaster()->selectAll(
+			'SELECT * FROM `author` WHERE `author_id` IN(?)',
+			array($authorIds)
+		);
+	}
+
 	public function getByUserName($userName)
 	{
 		return $this->getDbMaster()->selectRow(

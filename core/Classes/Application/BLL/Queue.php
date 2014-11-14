@@ -58,6 +58,14 @@ class Queue extends BLL
 		return isset($this->queues[$queueId]) ? $this->queues[$queueId] : null;
 	}
 
+	public function getRandomWorkerIdByQueueId($queueId)
+	{
+		return $this->application->db->master->selectSingle(
+			'SELECT `worker_id` FROM `queue_workers` WHERE `queue_id` = ? ORDER BY `pid` LIMIT 1',
+			array($queueId)
+		);
+	}
+
 	public function getWorkerById($workerId)
 	{
 		return $this->application->db->master->selectRow(

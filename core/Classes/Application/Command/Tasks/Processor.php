@@ -95,13 +95,18 @@ class Processor extends Base
 		if($queueInfo   =   $this->application->bll->queue->getQueue($queueId))
 		{
 			$this->log('Running queue ' . $queueInfo['name'] . ' without workers limit in debug mode');
-			$workerId   = $this->createWorker($queueId, $queueInfo);
-			if($workerId)
+			$workerId   = $this->application->bll->queue->getRandomWorkerIdByQueueId($queueId);
+			if(!$workerId)
+			{
+				$workerId = $this->createWorker($queueId, $queueInfo);
+			}
+			if ($workerId)
 			{
 				$this->workerProcess($workerId);
 			}
 		}
 	}
+
 
 	private function createWorker($queueId, array $queueInfo)
 	{
