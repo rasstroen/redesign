@@ -14,6 +14,17 @@ class Author extends BLL
 		'is_community'              => 1,// is it community profile
 		'url'                       => 1,// livejournal url
 		'userinfo_full_change_time' => 1,// last full info update
+
+		'journal_posted'            => 1,
+		'journal_commented'         => 1,
+		'journal_comments_received' => 1,
+		'journal_created'           => 1,
+		'journal_title'             => 1,
+		'journal_subtitle'          => 1,
+		'journal_country_code'      => 1,
+		'journal_city_name'         => 1,
+		'journal_pic'               => 1,
+		'journal_bio'               => 1,
 	);
 
 	public function getByIds(array $authorIds)

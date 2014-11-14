@@ -8,7 +8,7 @@ class Author extends Base
 	/**
 	 * сколько авторов пойдут в очередь на обновление
 	 */
-	const AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK = 1000;
+	const AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK = 60;
 
 	/**
 	 * Наполняем очередь для авторов, по которым пора вытащить подробную информацию.

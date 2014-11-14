@@ -85,7 +85,7 @@ class PDODatabase{
 			else
 			{
 				$resultQueryArray[] = $queryPart . ($key !== count($queryArray) - 1 ? '?' : '');
-				if(isset($parameters[$key]))
+				if(array_key_exists($key, $parameters))
 				{
 					$resultParameters[] = $parameters[$key];
 				}
@@ -102,7 +102,7 @@ class PDODatabase{
 		$i  = 1;
 		foreach($parameters as $parameter)
 		{
-			$stmt->bindValue($i++, $parameter, $parameter === (int)$parameter ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+			$stmt->bindValue($i++, $parameter === (int)$parameter ?(int)$parameter : (string)$parameter, $parameter === (int)$parameter ? \PDO::PARAM_INT : \PDO::PARAM_STR);
 		}
 
 		if ($stmt->execute())
