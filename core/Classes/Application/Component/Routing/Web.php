@@ -54,6 +54,7 @@ class Web extends Base
 			if($pageKey && ($pageKey !== 'index'))
 			{
 				$this->application->request->redirect($idealUrl);
+				$this->application->end();
 			}
 			else
 			{

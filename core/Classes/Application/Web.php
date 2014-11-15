@@ -23,10 +23,16 @@ class Web extends Base
 		 * Отрисовываем ответ
 		 */
 		$this->controller->render();
+		$this->end();
 	}
 
 	public function getIsDevelopmentMode()
 	{
 		return $this->request->getQueryParam('devMode', false);
+	}
+
+	public function end()
+	{
+		exit;
 	}
 }

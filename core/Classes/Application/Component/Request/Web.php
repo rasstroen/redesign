@@ -20,7 +20,7 @@ class Web extends Base
 		unset($_POST);
 	}
 
-	public function redirect($url,$httpCode = 301)
+	public function redirect($url, $httpCode = 302)
 	{
 		header('Location: '. $url, true, $httpCode);
 		return;
