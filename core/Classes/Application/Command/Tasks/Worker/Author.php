@@ -51,6 +51,16 @@ class Author extends Base
 						$authorInfo
 					);
 				}
+				else
+				{
+					$authorInfo = array(
+						'userinfo_full_change_time' => time()
+					);
+					$this->application->bll->author->updateInfoByUserName(
+						$author['username'],
+						$authorInfo
+					);
+				}
 			}
 		}
 	}
