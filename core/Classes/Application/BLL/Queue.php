@@ -36,7 +36,7 @@ class Queue extends BLL
 			'name'              => 'QUEUE_AUTHOR_FETCH_RSS',
 			'priority'          => 1,
 			'workers'           => 2,
-			'tasks_per_worker'  => 100,
+			'tasks_per_worker'  => 10,
 			'command'           => 'Author',
 			'method'            => 'fetchRss',
 			'enabled'           => 0,
@@ -45,7 +45,7 @@ class Queue extends BLL
 			'name'              => 'QUEUE_AUTHOR_FETCH_ALL_INFO',
 			'priority'          => 1,
 			'workers'           => 1,
-			'tasks_per_worker'  => 6,
+			'tasks_per_worker'  => 1,
 			'command'           => 'Author',
 			'method'            => 'fetchFullInfo',
 			'enabled'           => 1,
@@ -133,7 +133,7 @@ class Queue extends BLL
 	public function getNotRunnedWorkersIds()
 	{
 		return $this->application->db->master->selectColumn(
-			'SELECT `worker_id` FROM `queue_workers` WHERE 1 OR `pid` = 0'
+			'SELECT `worker_id` FROM `queue_workers` WHERE `pid` = 0'
 		);
 	}
 
