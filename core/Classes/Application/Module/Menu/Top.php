@@ -15,7 +15,7 @@ class Top extends Base
 		$selectedFirstLevelItemName   = isset($selectedFirstLevelItemName[2]) ? $selectedFirstLevelItemName[2] : '';
 		$data = array(
 			'items' => array(
-				'top' => array(
+				'rubric' => array(
 					'title' => 'Рубрикатор',
 					'url'   => $this->application->routing->getUrl('admin/rubric'),
 				),
