@@ -84,7 +84,13 @@ class Processor extends Base
 				$this->application->db->reconnectAll();
 				$this->application->bll->queue->updatePid($workerId, getmypid());
 				$this->log('Runned child: workerId=' . $workerId);
-				$this->workerProcess($workerId);
+				try {
+					$this->workerProcess($workerId);
+				}catch(\Exception $e)
+				{
+					$this->application->bll->queue->deleteWorker($workerId);
+					throw $e;
+				}
 				return;
 			}
 		}
