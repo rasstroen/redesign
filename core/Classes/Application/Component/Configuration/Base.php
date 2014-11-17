@@ -2,6 +2,8 @@
 
 namespace Application\Component\Configuration;
 
+use Util\UtilArray;
+
 class Base extends \Application\Component\Base
 {
 	private $configuration;
@@ -35,7 +37,18 @@ class Base extends \Application\Component\Base
 		{
 			throw new \Exception('Cant find configuration for page: ' . $pageKey);
 		}
-		return $this->configuration['routing']['pages'][$pageKey];
+		$configuration  = $this->configuration['routing']['pages'][$pageKey];
+		if(isset($this->configuration['routing']['layouts'][$configuration['layout']]))
+		{
+			$configuration = UtilArray::mergeArray(
+				array(
+					$configuration,
+					$this->configuration['routing']['layouts'][$configuration['layout']]
+				),
+				true
+			);
+		}
+		return $configuration;
 	}
 
 	/**

@@ -28,6 +28,15 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'adminRubrics'
 	),
+	/**
+	 * Редактирование рубрики
+	 */
+	'admin_rubric_edit'=> array(
+		'className' => '\Application\Module\Rubric',
+		'template'  => 'admin',
+		'action'    => 'edit',
+		'mode'      => 'item'
+	),
 );
 
 return array(
@@ -40,8 +49,11 @@ return array(
 			''  => 'admin',
 			'rubric'	=> array(
 				'' 		=> 'admin_rubrics',
-				'%d'	=> 'admin_rubric'
-			)
+				'%d'	=> array(
+					''  => 'admin_rubric',
+					'edit'  => 'admin_rubric_edit'
+					)
+				)
 			),
 
 	),
@@ -52,17 +64,6 @@ return array(
 		'admin' => array(
 			'layout'    => 'admin',
 			'title'     => 'Администрирование',
-			'blocks'    => array(
-				'header'   => array(
-					$modules['admin_menu_index'],
-				),
-				'content'   => array(
-					//$modules['posts/lists/main'],
-				),
-				'sidebar'   => array(
-					//$modules['ads/google/sidebar'],
-				)
-			)
 		),
 		/**
 		 * Раздел управлнеия рубриками
@@ -70,16 +71,25 @@ return array(
 		'admin_rubrics' => array(
 			'layout'    => 'admin',
 			'title'     => 'Управление рубрикатором',
+			'css' => array(
+				'/static/css/admin1.css'
+			),
 			'blocks'    => array(
-				'header'   => array(
-					$modules['admin_menu_index'],
-				),
 				'content'   => array(
-					$modules['admin_rubrics_list'],
+					'admin_rubrics_list'=>$modules['admin_rubrics_list'],
 				),
-				'sidebar'   => array(
-					//$modules['ads/google/sidebar'],
-				)
+			)
+		),
+		/**
+		 * Редактирование рубрики
+		 */
+		'admin_rubric_edit' => array(
+			'layout'    => 'admin',
+			'title'     => 'Управление рубрикой',
+			'blocks'    => array(
+				'content'   => array(
+					'admin_rubric_edit'=>$modules['admin_rubric_edit'],
+				),
 			)
 		),
 		/**
@@ -90,15 +100,30 @@ return array(
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
 				'header'   => array(
-					$modules['top_menu_index'],
+					'top_menu_index'=>$modules['top_menu_index'],
 				),
-				'content'   => array(
-					//$modules['posts/lists/main'],
-				),
-				'sidebar'   => array(
-					//$modules['ads/google/sidebar'],
-				)
 			)
 		),
+	),
+	/**
+	 * Умолчания для лайаутов
+	 */
+	'layouts' => array(
+		/**
+		 * Умолчания для админки
+		 */
+		'admin' => array(
+			'css' => array(
+				'admin' => '/static/css/layout/admin.css',
+			),
+			'blocks'    => array(
+				'header'   => array(
+					'admin_menu_index'=>$modules['admin_menu_index'],
+				),
+				'content'   => array(
+					'admin_rubrics_list'=> $modules['admin_rubrics_list'],
+				),
+			)
+		)
 	)
 );

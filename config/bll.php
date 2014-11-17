@@ -10,4 +10,7 @@ return array(
 	'author'  => array(
 		'className' => '\Application\BLL\Author',
 	),
+	'rubric'  => array(
+		'className' => '\Application\BLL\Rubric',
+	),
 );

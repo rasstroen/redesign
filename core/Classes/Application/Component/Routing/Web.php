@@ -28,14 +28,13 @@ class Web extends Base
 		$preparedRequestUriArray    = array();
 		foreach($requestUriArray as $uriPart)
 		{
-			if(trim($uriPart))
+			if(trim($uriPart) !== '')
 			{
 				$preparedRequestUriArray[] = $uriPart;
 			}
 		}
 
 		list($idealRequestUriParts, $pageKey, $uriVariables) = $this->findPageKey($map, $preparedRequestUriArray);
-
 
 		if($pageKey)
 		{
@@ -67,6 +66,7 @@ class Web extends Base
 			$pageKey = 'index';
 		}
 
+
 		return array($pageKey, $uriVariables);
 	}
 
@@ -81,7 +81,7 @@ class Web extends Base
 		}
 		foreach($map as $key => $value)
 		{
-			if($key == $currentUriPart)
+			if((string)$key === (string)$currentUriPart)
 			{
 				/**
 				 * точное совпадение
@@ -100,7 +100,7 @@ class Web extends Base
 					return array($idealRequestUriParts, $value, $variables);
 				}
 			}
-			elseif(($key == '%d') && (intval($currentUriPart) > 0) && is_numeric($currentUriPart))
+			elseif(($key == '%d') && is_numeric($currentUriPart))
 			{
 				/**
 				 * цифра

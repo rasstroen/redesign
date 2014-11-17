@@ -7,6 +7,7 @@ namespace Application\BLL;
  * @property  \Application\BLL\Queue    $queue
  * @property  \Application\BLL\Posts    $posts
  * @property  \Application\BLL\Author   $author
+ * @property  \Application\BLL\Rubric   $rubric
  */
 class Factory extends \Application\Component\Base
 {

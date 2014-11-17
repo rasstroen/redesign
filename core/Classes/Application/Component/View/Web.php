@@ -5,6 +5,19 @@ use Application\Component\Base;
 class Web extends Base
 {
 	private $layout;
+
+	private $pageConfiguration;
+
+	public function setConfiguration(array $pageConfiguration)
+	{
+		$this->pageConfiguration = $pageConfiguration;
+	}
+
+	public function getCss()
+	{
+		return $this->pageConfiguration['css'];
+	}
+
 	public function setLayout($layoutName)
 	{
 		$this->layout = $layoutName;

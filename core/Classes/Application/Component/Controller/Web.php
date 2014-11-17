@@ -49,6 +49,7 @@ class Web extends Base
 			}
 		}
 
+		$this->application->view->setConfiguration($pageConfiguration);
 		$this->application->view->setLayout($pageConfiguration['layout']);
 		$this->data = $data;
 	}
