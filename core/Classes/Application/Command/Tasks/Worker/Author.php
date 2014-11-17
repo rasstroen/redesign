@@ -31,12 +31,10 @@ class Author extends Base
 		 */
 	}
 
-	/**
-	 *
-	 */
 	public function methodFetchFullInfo(array $authorIds)
 	{
 		$authors = $this->application->bll->author->getByIds($authorIds);
+
 		foreach($authorIds as $authorId)
 		{
 			if(isset($authors[$authorId]))
@@ -45,19 +43,21 @@ class Author extends Base
 				$this->log($author['username'].', url: ' . $author['url']);
 				$authorInfo = $this->getFoaf($author['url']);
 
-				$authorInfo['userinfo_full_change_time'] = time();
-				$this->application->bll->author->updateInfoByUserName(
-					$author['username'],
-					$authorInfo
-				);
+				if(intval($authorInfo['journal_posted']) > 0)
+				{
+					$authorInfo['userinfo_full_change_time'] = time();
+					$this->application->bll->author->updateInfoByUserName(
+						$author['username'],
+						$authorInfo
+					);
+				}
 			}
 		}
-		throw new \Exception('debug process');
 	}
 
 	private function getFoaf($url)
 	{
-		$url .='data/foaf';
+		$url ='http://ru_travel.livejournal.com/data/foaf';
 
 		$content    = $this->application->httpRequest->get($url);
 		$xml = xml_parser_create();
@@ -99,7 +99,7 @@ class Author extends Base
 		{
 			$data['journal_pic']                = $values[$index['FOAF:IMG'][0]]['attributes']['RDF:RESOURCE'];
 		}
-		$data['is_community']                = isset($index['FOAF:GROUP']) ? 1: 0;
+		$data['is_community']                   = isset($index['FOAF:GROUP']) ? 1: 0;
 		return $data;
 	}
 

@@ -17,7 +17,7 @@ class Top extends Base
 			'items' => array(
 				'top' => array(
 					'title' => 'Рубрикатор',
-					'url'   => $this->application->routing->getUrl('admin/rubricator'),
+					'url'   => $this->application->routing->getUrl('admin/rubric'),
 				),
 				'theme' => array(
 					'title' => 'Популярные темы',

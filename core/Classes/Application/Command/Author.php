@@ -18,6 +18,7 @@ class Author extends Base
 	public function actionFillFullUpdateQueue()
 	{
 		$authorIds  = $this->application->bll->author->getIdsByOldestInfoFullUpdate(self::AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK);
+		$this->log(count($authorIds) . ' authors added for full update');
 		/**
 		 * Только 1 таск
 		 */

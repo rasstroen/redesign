@@ -29,9 +29,16 @@ class Author extends BLL
 
 	public function getByIds(array $authorIds)
 	{
+		if(!count($authorIds))
+		{
+			return array();
+		}
 		return $this->getDbMaster()->selectAll(
 			'SELECT * FROM `author` WHERE `author_id` IN(?)',
-			array($authorIds)
+			array(
+				$authorIds
+			),
+			'author_id'
 		);
 	}
 
@@ -43,11 +50,18 @@ class Author extends BLL
 		);
 	}
 
-	public function getIdsByOldestInfoFullUpdate($limit)
+	public function getIdsByOldestInfoFullUpdate($limit, $oldTime = null)
 	{
+		if(null === $oldTime)
+		{
+			$oldTime = time() - 24*60*60;
+		}
 		return $this->getDbMaster()->selectColumn(
-			'SELECT `author_id` FROM `author` ORDER BY `userinfo_full_change_time` LIMIT ?',
-			array($limit)
+			'SELECT `author_id` FROM `author` WHERE `userinfo_change_time` > 0 AND `userinfo_full_change_time` < ? ORDER BY `userinfo_full_change_time` LIMIT ?',
+			array(
+				$oldTime,
+				$limit
+			)
 		);
 	}
 

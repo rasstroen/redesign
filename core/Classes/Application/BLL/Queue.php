@@ -29,7 +29,8 @@ class Queue extends BLL
 			'workers'           => 6,
 			'tasks_per_worker'  => 50,
 			'command'           => 'Author',
-			'method'            => 'updateInfo'
+			'method'            => 'updateInfo',
+			'enabled'           => 1,
 		),
 		self::QUEUE_AUTHOR_FETCH_RSS => array(
 			'name'              => 'QUEUE_AUTHOR_FETCH_RSS',
@@ -37,15 +38,17 @@ class Queue extends BLL
 			'workers'           => 2,
 			'tasks_per_worker'  => 100,
 			'command'           => 'Author',
-			'method'            => 'fetchRss'
+			'method'            => 'fetchRss',
+			'enabled'           => 0,
 		),
 		self::QUEUE_AUTHOR_FETCH_ALL_INFO => array(
 			'name'              => 'QUEUE_AUTHOR_FETCH_ALL_INFO',
 			'priority'          => 1,
 			'workers'           => 1,
-			'tasks_per_worker'  => 1,
+			'tasks_per_worker'  => 6,
 			'command'           => 'Author',
-			'method'            => 'fetchFullInfo'
+			'method'            => 'fetchFullInfo',
+			'enabled'           => 1,
 		),
 );
 	public function getAll()

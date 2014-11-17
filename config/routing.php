@@ -26,7 +26,7 @@ $modules = array(
 		'className' => '\Application\Module\Rubric',
 		'template'  => 'admin',
 		'action'    => 'list',
-		'mode'      => 'rubrics'
+		'mode'      => 'adminRubrics'
 	),
 );
 
@@ -38,7 +38,7 @@ return array(
 		 */
 		'admin'  => array(
 			''  => 'admin',
-			'rubricator'	=> array(
+			'rubric'	=> array(
 				'' 		=> 'admin_rubrics',
 				'%d'	=> 'admin_rubric'
 			)

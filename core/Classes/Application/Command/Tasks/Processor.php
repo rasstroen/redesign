@@ -16,6 +16,11 @@ class Processor extends Base
 		foreach($queues as $queueId => $queue)
 		{
 			$queueInfo  = $this->application->bll->queue->getQueueStatus($queueId);
+			if(!$queueInfo['enabled'])
+			{
+				$this->log('queue ' . $queueInfo['name'] . ' disabled');
+				continue;
+			}
 			$this->log('queue ' . $queueInfo['name'] . ' has ' . $queueInfo['current_workers_count'] . '/' . $queueInfo['workers'] . ' workers');
 			if($queueInfo['free_workers'] > 0)
 			{
