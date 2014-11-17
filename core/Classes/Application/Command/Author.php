@@ -8,7 +8,7 @@ class Author extends Base
 	/**
 	 * сколько авторов пойдут в очередь на обновление
 	 */
-	const AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK = 60;
+	const AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK = 30;
 
 	/**
 	 * Наполняем очередь для авторов, по которым пора вытащить подробную информацию.
@@ -17,6 +17,16 @@ class Author extends Base
 	 */
 	public function actionFillFullUpdateQueue()
 	{
+		/**
+		 * Если запущен воркер обновления авторов - засыпаем обратно
+		 */
+		$worker = $this->application->bll->queue->getRandomWorkerIdByQueueId(Queue::QUEUE_AUTHOR_FETCH_ALL_INFO);
+		if(count($worker))
+		{
+			$this->log('waiting for existing worker');
+			return;
+		}
+
 		$authorIds  = $this->application->bll->author->getIdsByOldestInfoFullUpdate(self::AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK);
 		$this->log(count($authorIds) . ' authors added for full update');
 		/**
