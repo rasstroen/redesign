@@ -31,6 +31,17 @@ class Rubric extends Base
 			/**
 			 * Редактирование
 			 */
+			$this->application->bll->rubric->edit(
+				$rubricId,
+				array(
+					'title' => $title,
+					'name'  => $name,
+				)
+			);
 		}
+
+		$this->application->request->redirect(
+			$this->application->routing->getUrl('admin/rubric')
+		)->end();
 	}
 }

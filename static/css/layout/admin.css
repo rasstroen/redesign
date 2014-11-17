@@ -122,3 +122,31 @@ ul.adminMenu li.selected a{
 	color: #333;
 	text-decoration: none;
 }
+
+/*Рубрики */
+ul.admin_rubrics
+{
+	list-style: none;
+	padding-left: 10px;
+}
+
+ul.admin_rubrics .add
+{
+	font-size: 10px;
+	padding-left: 20px;
+}
+
+ul.admin_rubrics li a.item{
+	font-size: 20px;
+	color:#44f;
+}
+
+ul.admin_rubrics li a.subitem{
+	padding-left: 20px;
+	font-size: 18px;
+}
+
+ul.admin_rubrics li .add
+{
+	padding-left: 30px;
+}

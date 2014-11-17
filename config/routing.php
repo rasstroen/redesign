@@ -50,6 +50,7 @@ return array(
 			'rubric'	=> array(
 				'' 		=> 'admin_rubrics',
 				'%d'	=> array(
+					'_var'  => 'rubricId',
 					''  => 'admin_rubric',
 					'edit'  => 'admin_rubric_edit'
 					)
@@ -119,9 +120,6 @@ return array(
 			'blocks'    => array(
 				'header'   => array(
 					'admin_menu_index'=>$modules['admin_menu_index'],
-				),
-				'content'   => array(
-					'admin_rubrics_list'=> $modules['admin_rubrics_list'],
 				),
 			)
 		)

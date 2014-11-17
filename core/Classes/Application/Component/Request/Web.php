@@ -23,7 +23,7 @@ class Web extends Base
 	public function redirect($url, $httpCode = 302)
 	{
 		header('Location: '. $url, true, $httpCode);
-		return;
+		return $this;
 	}
 
 	public function getQueryParam($paramName, $defaultValue = null)

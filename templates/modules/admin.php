@@ -2,17 +2,28 @@
 
 function templateAdminListAdminRubrics(array $data)
 {
-	?><ul><?php
+	?><h1>Управление рубриками</h1><ul class="admin_rubrics"><?php
 	$rubricsByParents = $data['rubricsByParents'];
 	if(isset($rubricsByParents[0])) {
 		foreach ($rubricsByParents[0] as $parentRubric) {
 			?>
-			<li><a href="<?=$parentRubric['adminUrl']?>"><?=htmlspecialchars($parentRubric['title'])?></a></li>
+			<li><a class="item" href="<?=$parentRubric['adminUrl']?>"><?=htmlspecialchars($parentRubric['title'])?></a>
+			<?php if(isset($rubricsByParents[$parentRubric['rubric_id']])){
+				foreach ($rubricsByParents[$parentRubric['rubric_id']] as $childRubric) {
+					?><li>
+						<a class="subitem item" href="<?=$childRubric['adminUrl']?>"><?=htmlspecialchars($childRubric['title'])?></a>
+						<a href="<?=$childRubric['editUrl']?>">редактировать</a>
+					</li><?php
+				}
+
+			}?>
+			<div class="add"><a href="<?=$parentRubric['addUrl']?>">Добавить подрубрику</a></div>
+		</li>
 		<?php
 		}
 	}
 	?>
-		<a href="<?=$data['addUrl']?>">добавить корневую рубрику</a>
+		<div class="add"><a href="<?=$data['addUrl']?>">Добавить корневую рубрику</a></div>
 	<?php
 	?></ul><?php
 }
@@ -23,7 +34,7 @@ function templateAdminEditItem(array $data)
 		?><h2>Редактирование рубрики "<?= $data['rubric']['title']?>"</h2><?php
 	}
 	else{
-		?><h2>Добавление рубрики</h2><?php
+		?><h2>Добавление подрубрики <?php if(isset($data['parentRubric'])) echo ' рубрики "' . htmlspecialchars($data['parentRubric']['title']) . '"';?></h2><?php
 	}
 	?>
 	<form enctype="multipart/form-data" method="post">

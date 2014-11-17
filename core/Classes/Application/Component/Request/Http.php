@@ -21,7 +21,7 @@ class Http extends Base
 		$end    = microtime(true);
 		curl_close($ch);
 		$f      = fopen($this->logFile, "a");
-		fwrite($f, $url . ' ' . ($end-$start) . ', ' . strlen($result) . "\n");
+		fwrite($f, date('Y-m-d H:i:s') . ' ' . $url . ' ' . ($end - $start) . ', ' . strlen($result) . "\n");
 		fclose($f);
 		return $result;
 	}

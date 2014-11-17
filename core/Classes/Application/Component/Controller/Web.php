@@ -64,6 +64,6 @@ class Web extends Base
 		$moduleClassName    = $moduleConfiguration['className'];
 		$module             = new $moduleClassName($this->application);
 		$moduleActionName   = 'action' . ucfirst($moduleConfiguration['action']) . ucfirst($moduleConfiguration['mode']);
-		return $module->$moduleActionName();
+		return $module->$moduleActionName($variables);
 	}
 }
