@@ -14,10 +14,15 @@ class Web extends Base
 
 	public function processWrite($writeModule)
 	{
+		$method = $this->application->request->getPostParam('method');
+		if(!$method)
+		{
+			$method = $this->application->request->getQueryParam('method');
+		}
 		$moduleName         = explode('/', $writeModule);
 		$moduleClassName    = 'Application\Module\\' .ucfirst($moduleName[0]) . '\\' . ucfirst($moduleName[1]);
 		$module             =  new $moduleClassName($this->application);
-		$writeAction        = 'do' . ucfirst($this->application->request->getPostParam('method'));
+		$writeAction        = 'do' . ucfirst($method);
 		$module->$writeAction();
 	}
 
@@ -26,7 +31,10 @@ class Web extends Base
 		/**
 		 * Модули записи
 		 */
-		if($writeModule = $this->application->request->getPostParam('writemodule'))
+		if(
+		($writeModule = $this->application->request->getPostParam('writemodule'))||
+			$writeModule = $this->application->request->getQueryParam('writemodule')
+		)
 		{
 			$this->processWrite($writeModule);
 		}

@@ -1,29 +1,46 @@
 <?php
-
+function templateAdminShowItem(array $data)
+{
+	if($data['parentRubric']) {
+		?><h1>Привязки записей к рубрике <a href="<?= $data['parentRubric']['adminUrl'] ?>">"<?= $data['parentRubric']['title'] ?>"</a> / "<?= $data['rubric']['title'] ?>"</h1><?php
+	}else{
+		?><h1>Привязки записей к рубрике "<?= $data['rubric']['title'] ?>"</h1><?php
+	}
+}
 function templateAdminListAdminRubrics(array $data)
 {
-	?><h1>Управление рубриками</h1><ul class="admin_rubrics"><?php
+	?><h1>Управление рубриками</h1>
+	<ul class="admin_rubrics">
+	<div class="add"><a href="<?=$data['addUrl']?>">+добавить корневую рубрику</a></div>
+	<?php
 	$rubricsByParents = $data['rubricsByParents'];
 	if(isset($rubricsByParents[0])) {
 		foreach ($rubricsByParents[0] as $parentRubric) {
 			?>
 			<li><a class="item" href="<?=$parentRubric['adminUrl']?>"><?=htmlspecialchars($parentRubric['title'])?></a>
-			<?php if(isset($rubricsByParents[$parentRubric['rubric_id']])){
+			<a href="<?=$parentRubric['addUrl']?>">+добавить подрубрику</a>
+			<a href="<?=$parentRubric['editUrl']?>">редактировать</a>
+
+
+			<?php if(!isset($rubricsByParents[$parentRubric['rubric_id']])){
+				?><a href="<?=$parentRubric['deleteUrl']?>">-удалить</a><?php } else {
 				foreach ($rubricsByParents[$parentRubric['rubric_id']] as $childRubric) {
-					?><li>
-						<a class="subitem item" href="<?=$childRubric['adminUrl']?>"><?=htmlspecialchars($childRubric['title'])?></a>
-						<a href="<?=$childRubric['editUrl']?>">редактировать</a>
+					?>
+					<li>
+					<a class="subitem item"
+					   href="<?= $childRubric['adminUrl'] ?>"><?= htmlspecialchars($childRubric['title']) ?></a>
+					<a href="<?= $childRubric['editUrl'] ?>">редактировать</a>
+					<a href="<?= $childRubric['deleteUrl'] ?>">-удалить</a>
 					</li><?php
 				}
-
-			}?>
-			<div class="add"><a href="<?=$parentRubric['addUrl']?>">Добавить подрубрику</a></div>
+			}
+			?>
 		</li>
 		<?php
 		}
 	}
 	?>
-		<div class="add"><a href="<?=$data['addUrl']?>">Добавить корневую рубрику</a></div>
+
 	<?php
 	?></ul><?php
 }

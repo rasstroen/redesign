@@ -6,6 +6,18 @@ use Application\Module\Base;
 
 class Rubric extends Base
 {
+	public function doDelete()
+	{
+		$rubricId   = $this->application->request->getQueryParam('rubricId' , 0);
+		if($rubricId)
+		{
+			$this->application->bll->rubric->deleteWithChilds($rubricId);
+			$this->application->request->redirect(
+				$this->application->routing->getUrl('admin/rubric')
+			)->end();
+		}
+	}
+
 	public function doEdit()
 	{
 		$rubricId   = $this->application->request->getPostParam('rubricId' , 0);

@@ -12,6 +12,7 @@ class Rubric extends Base
 			$rubric['adminUrl']     = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id']);
 			$rubric['addUrl']       = $this->application->routing->getUrl('admin/rubric/0/edit?parentId=' . $rubric['rubric_id']);
 			$rubric['editUrl']      = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id'] .'/edit');
+			$rubric['deleteUrl']    = $this->application->routing->getUrl('admin/rubric/?writemodule=admin/rubric&method=delete&rubricId=' . $rubric['rubric_id']);
 		}
 		unset($rubric);
 		$parents    = array();
@@ -23,6 +24,37 @@ class Rubric extends Base
 		return array(
 			'rubricsByParents'  => $parents,
 			'addUrl'            => $this->application->routing->getUrl('admin/rubric/0/edit?parentId=0'),
+		);
+	}
+
+	public function actionShowItem(array $variables = array())
+	{
+
+		$rubricId   =  $variables['rubricId'];
+		if($rubricId)
+		{
+			$rubric = $this->application->bll->rubric->getById($rubricId);
+		}
+		else
+		{
+			$rubric = null;
+		}
+
+		if($rubric)
+		{
+			$parentRubric = $this->application->bll->rubric->getById($rubric['parent_id']);
+			if($parentRubric)
+			{
+				$parentRubric['adminUrl'] = $this->application->routing->getUrl('admin/rubric/' . $parentRubric['rubric_id']);
+			}
+		}
+		else
+		{
+			$parentRubric = null;
+		}
+		return array(
+			'rubric'        => $rubric,
+			'parentRubric'  => $parentRubric
 		);
 	}
 

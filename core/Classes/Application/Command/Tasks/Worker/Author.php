@@ -58,7 +58,7 @@ class Author extends Base
 	private function getFoaf($url)
 	{
 		$url .='data/foaf';
-		
+
 		$content    = $this->application->httpRequest->get($url);
 		$xml = xml_parser_create();
 		xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE,1);

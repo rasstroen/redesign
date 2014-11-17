@@ -15,7 +15,7 @@ class Web extends Base
 
 	public function getCss()
 	{
-		return $this->pageConfiguration['css'];
+		return isset($this->pageConfiguration['css']) ? $this->pageConfiguration['css'] : array();
 	}
 
 	public function setLayout($layoutName)

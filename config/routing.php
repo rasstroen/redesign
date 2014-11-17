@@ -37,6 +37,16 @@ $modules = array(
 		'action'    => 'edit',
 		'mode'      => 'item'
 	),
+
+	/**
+	 * Просмотр рубрики
+	 */
+	'admin_rubric'=> array(
+		'className' => '\Application\Module\Rubric',
+		'template'  => 'admin',
+		'action'    => 'show',
+		'mode'      => 'item'
+	),
 );
 
 return array(
@@ -93,6 +103,20 @@ return array(
 				),
 			)
 		),
+
+		/**
+		 * Просмотр рубрики в админке
+		 */
+		'admin_rubric' => array(
+			'layout'    => 'admin',
+			'title'     => 'Рубрика',
+			'blocks'    => array(
+				'content'   => array(
+					'admin_rubric'=>$modules['admin_rubric'],
+				),
+			)
+		),
+
 		/**
 		 * Главная страница
 		 */

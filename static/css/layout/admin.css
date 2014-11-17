@@ -132,13 +132,17 @@ ul.admin_rubrics
 
 ul.admin_rubrics .add
 {
-	font-size: 10px;
+	font-size: 12px;
 	padding-left: 20px;
 }
 
 ul.admin_rubrics li a.item{
 	font-size: 20px;
 	color:#44f;
+}
+
+ul.admin_rubrics li a{
+	color:#333;
 }
 
 ul.admin_rubrics li a.subitem{
@@ -149,4 +153,8 @@ ul.admin_rubrics li a.subitem{
 ul.admin_rubrics li .add
 {
 	padding-left: 30px;
+}
+
+ul.admin_rubrics .add a{
+	color:#333;
 }
