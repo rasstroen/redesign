@@ -38,7 +38,7 @@ class Author extends Base
 			$taskId,
 			$authorIds,
 			0,
-			false
+			true
 		);
 	}
 }

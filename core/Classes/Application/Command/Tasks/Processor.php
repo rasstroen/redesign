@@ -5,37 +5,49 @@ use Application\Command\Base;
 
 class Processor extends Base
 {
+	private $lockRunFileName            = '/tmp/lockProcessorRun';
+	private $lockRunWorkersFileName     = '/tmp/lockWorkersProcessorRun';
+	private $iterationsRun              = 100;
+	private $iterationsRunWorkers       = 100;
 	/**
 	 * Выбираем текущие задачи из очередей,
 	 * удаляем задачи и запускаем обработчики
 	 */
 	public function actionRun()
 	{
-		$queues = $this->application->bll->queue->getAll();
-
-		foreach($queues as $queueId => $queue)
+		if(file_get_contents($this->lockRunFileName))
 		{
-			$queueInfo  = $this->application->bll->queue->getQueueStatus($queueId);
-			if(!$queueInfo['enabled'])
-			{
-				$this->log('queue ' . $queueInfo['name'] . ' disabled');
-				continue;
-			}
-			$this->log('queue ' . $queueInfo['name'] . ' has ' . $queueInfo['current_workers_count'] . '/' . $queueInfo['workers'] . ' workers');
-			if($queueInfo['free_workers'] > 0)
-			{
-				/**
-				 * Есть свободные обработчики данного типа тасков
-				 */
-				for($i =0; $i < $queueInfo['free_workers']; $i++)
-				{
-					if(!$workerId = $this->createWorker($queueId, $queueInfo))
-					{
-						break;
+			$this->log('Processor already running');
+			return;
+		}
+		file_put_contents($this->lockRunFileName, rand(1,100));
+		$iterations = 0;
+		while($iterations < $this->iterationsRun) {
+			$iterations++;
+			$this->log('Run iteration ' . $iterations);
+			$queues = $this->application->bll->queue->getAll();
+
+			foreach ($queues as $queueId => $queue) {
+				$queueInfo = $this->application->bll->queue->getQueueStatus($queueId);
+				if (!$queueInfo['enabled']) {
+					$this->log('queue ' . $queueInfo['name'] . ' disabled');
+					continue;
+				}
+				$this->log('queue ' . $queueInfo['name'] . ' has ' . $queueInfo['current_workers_count'] . '/' . $queueInfo['workers'] . ' workers');
+				if ($queueInfo['free_workers'] > 0) {
+					/**
+					 * Есть свободные обработчики данного типа тасков
+					 */
+					for ($i = 0; $i < $queueInfo['free_workers']; $i++) {
+						if (!$workerId = $this->createWorker($queueId, $queueInfo)) {
+							break;
+						}
 					}
 				}
 			}
+			sleep(10);
 		}
+		file_put_contents($this->lockRunFileName, 0);
 	}
 
 	public function workerProcess($workerId)
@@ -60,40 +72,50 @@ class Processor extends Base
 	 */
 	public function actionRunWorkers()
 	{
-		$workersNotRunned   = $this->application->bll->queue->getNotRunnedWorkersIds();
-
-		foreach($workersNotRunned as $workerId)
+		if(file_get_contents($this->lockRunWorkersFileName))
 		{
-			$pid = pcntl_fork();
-			if($pid == -1)
-			{
-				continue;
-			}
-			if($pid > 0)
-			{
-				/**
-				 * created child with pid=$pid, workerId=$workerId
-				 */
-				$this->application->db->reconnectAll();
-			}
-			else
-			{
-				/**
-				 * it is a child process with workerId=$workerId
-				 */
-				$this->application->db->reconnectAll();
-				$this->application->bll->queue->updatePid($workerId, getmypid());
-				$this->log('Runned child: workerId=' . $workerId);
-				try {
-					$this->workerProcess($workerId);
-				}catch(\Exception $e)
-				{
-					$this->application->bll->queue->deleteWorker($workerId);
-					throw $e;
-				}
-				return;
-			}
+			$this->log('RunWorkers already running');
+			return;
 		}
+		file_put_contents($this->lockRunWorkersFileName, rand(1,100));
+		$iterations = 0;
+
+		while($iterations < $this->iterationsRun) {
+			$iterations++;
+			$this->log('run-workers iteration ' . $iterations);
+
+
+			$workersNotRunned = $this->application->bll->queue->getNotRunnedWorkersIds();
+
+			foreach ($workersNotRunned as $workerId) {
+				$pid = pcntl_fork();
+				if ($pid == -1) {
+					continue;
+				}
+				if ($pid > 0) {
+					/**
+					 * created child with pid=$pid, workerId=$workerId
+					 */
+					$this->application->db->reconnectAll();
+				} else {
+					/**
+					 * it is a child process with workerId=$workerId
+					 */
+					$this->application->db->reconnectAll();
+					$this->application->bll->queue->updatePid($workerId, getmypid());
+					$this->log('Runned child: workerId=' . $workerId);
+					try {
+						$this->workerProcess($workerId);
+					} catch (\Exception $e) {
+						$this->application->bll->queue->deleteWorker($workerId);
+						throw $e;
+					}
+					return;
+				}
+			}
+			sleep(10);
+		}
+		file_put_contents($this->lockRunWorkersFileName, 0);
 	}
 
 	/**
