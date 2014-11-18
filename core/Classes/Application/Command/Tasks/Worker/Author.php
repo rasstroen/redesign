@@ -35,6 +35,7 @@ class Author extends Base
 	{
 		$authors = $this->application->bll->author->getByIds($authorIds);
 
+		$this->log('full update for: ' . print_r($authorIds, 1));
 		foreach($authorIds as $authorId)
 		{
 			if(isset($authors[$authorId]))
