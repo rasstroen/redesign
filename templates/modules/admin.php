@@ -7,6 +7,85 @@ function templateAdminShowItem(array $data)
 		?><h1>Привязки записей к рубрике "<?= $data['rubric']['title'] ?>"</h1><?php
 	}
 }
+
+function templateAdminShowDemons(array $data)
+{
+	if(isset($data['worker']))
+	{
+		echo '<pre style="width: 100%; overflow: auto">';
+		print_r($data['worker']);
+		$tasks = unserialize($data['worker']['tasks']);
+		if($tasks)
+		foreach($tasks as $task)
+		{
+			echo date('Y-m-d H:i:s',$task['run_time']) . "\n";
+			print_r(unserialize($task['data']));
+		}
+		echo '</pre>';
+		return;
+	}
+	?><table colspan="1" border="1" width="100%">
+	<tr>
+		<td>Очередь</td>
+		<td>Приоритет</td>
+		<td>Задач в воркере</td>
+		<td>Команда</td>
+		<td>Включен</td>
+		<td>Воркеров создано</td>
+		<td>Воркеров свободно для создания</td>
+		<td>Воркеров в работе</td>
+	</tr>
+	<?php
+	foreach($data['queues'] as $queue)
+	{
+		$activeWorkersCnt = 0;
+		foreach($queue['workers'] as $worker)
+		{
+			if($worker['pid'])
+			{
+				$activeWorkersCnt++;
+			}
+		}
+		?>
+		<tr>
+			<td><?=htmlspecialchars($queue['name']);?></td>
+			<td><?=htmlspecialchars($queue['priority']);?></td>
+			<td><?=htmlspecialchars($queue['tasks_per_worker']);?></td>
+			<td><?=htmlspecialchars($queue['command'] . '::' . $queue['method']);?></td>
+			<td><?=htmlspecialchars($queue['enabled']);?></td>
+			<td><?=htmlspecialchars($queue['status']['current_workers_count']);?></td>
+			<td><?=htmlspecialchars($queue['status']['free_workers']);?></td>
+			<td><?=htmlspecialchars($activeWorkersCnt);?></td>
+		</tr>
+		<?php if(count($queue['workers'])){?>
+		<tr>
+			<td colspan="8">
+				<table width="100%">
+					<tr>
+						<td colspan="5">Id</td>
+						<td>Задач</td>
+						<td>Дата создания</td>
+						<td>Pid</td>
+					</tr>
+					<?php foreach($queue['workers'] as $worker){
+						$tasks = unserialize($worker['tasks']);
+						?>
+						<tr <?php if($worker['pid']) echo 'class="worker_with_pid"'?>>
+							<td colspan="5"><a href="?workerId=<?=(int)$worker['worker_id'];?>"><?=htmlspecialchars($worker['worker_id']);?></a></td>
+							<td><?=htmlspecialchars(count($tasks));?></td>
+							<td><?=htmlspecialchars($worker['create_time']);?></td>
+							<td><?=htmlspecialchars($worker['pid']);?></td>
+						</tr>
+					<?php }?>
+				</table>
+			</td>
+		</tr>
+		<?php }?>
+	<?php
+	}
+	?></table><?php
+}
+
 function templateAdminListAdminRubrics(array $data)
 {
 	?><h1>Управление рубриками</h1>

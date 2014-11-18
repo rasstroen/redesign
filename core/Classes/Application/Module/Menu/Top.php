@@ -23,6 +23,10 @@ class Top extends Base
 					'title' => 'Популярные темы',
 					'url'   => $this->application->routing->getUrl('admin/theme'),
 				),
+				'demons' => array(
+					'title' => 'Демоны',
+					'url'   => $this->application->routing->getUrl('admin/demons'),
+				),
 			)
 		);
 
@@ -30,7 +34,6 @@ class Top extends Base
 		{
 			$data['items'][$selectedFirstLevelItemName]['selected'] = true;
 		}
-
 		return $data;
 	}
 

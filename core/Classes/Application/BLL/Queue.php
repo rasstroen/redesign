@@ -137,6 +137,18 @@ class Queue extends BLL
 		);
 	}
 
+	public function getQueueWorkers($queueId)
+	{
+		$workers = $this->application->db->master->selectAll(
+			'SELECT * FROM `queue_workers` WHERE `queue_id` = ?',
+			array(
+				$queueId
+			)
+		);
+
+		return $workers;
+	}
+
 	public function getQueueStatus($queueId)
 	{
 		$queueInfo                          = $this->queues[$queueId];

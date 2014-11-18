@@ -136,7 +136,7 @@ class Web extends Base
 		{
 			return array($idealRequestUriParts, $map[''], $variables);
 		}
-
+		die();
 		return array($idealRequestUriParts, false, $variables);
 	}
 }

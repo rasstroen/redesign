@@ -47,6 +47,15 @@ $modules = array(
 		'action'    => 'show',
 		'mode'      => 'item'
 	),
+	/**
+	 * Состояние демонов
+	 */
+	'admin_demons'=> array(
+		'className' => '\Application\Module\Admin\Demons',
+		'template'  => 'admin',
+		'action'    => 'show',
+		'mode'      => 'demons'
+	),
 );
 
 return array(
@@ -64,9 +73,11 @@ return array(
 					''  => 'admin_rubric',
 					'edit'  => 'admin_rubric_edit'
 					)
-				)
 			),
-
+			'demons' => array(
+				''  => 'admin_demons'
+			)
+		),
 	),
 	'pages' => array(
 		/**
@@ -88,6 +99,19 @@ return array(
 				),
 			)
 		),
+		/**
+		 * Демоны
+		*/
+		'admin_demons' => array(
+			'layout' => 'admin',
+			'title' => 'Демоны',
+			'blocks' => array(
+				'content' => array(
+					'admin_demons' => $modules['admin_demons'],
+				),
+			)
+		),
+
 		/**
 		 * Редактирование рубрики
 		 */
