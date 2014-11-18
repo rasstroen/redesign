@@ -8,7 +8,7 @@ class Rubric extends BLL
 {
 	public function getAll()
 	{
-		return $this->getDbMaster()->selectAll('SELECT * FROM `rubric` WHERE `deleted`=0 ORDER BY `parent_id`, `position`', array(), 'rubric_id');
+		return $this->getDbMaster()->selectAll('SELECT * FROM `rubric` ORDER BY `parent_id`, `position`', array(), 'rubric_id');
 	}
 
 	public function getById($rubricId)
@@ -16,10 +16,32 @@ class Rubric extends BLL
 		return $this->getDbMaster()->selectRow('SELECT * FROM `rubric` WHERE `rubric_id` = ?', array($rubricId));
 	}
 
-	public function deleteWithChilds($rubricId)
+	public function restore($rubricId)
+	{
+		return $this->getDbMaster()->query(
+			'UPDATE `rubric` SET `deleted` = 0 WHERE `rubric_id` =? OR `parent_id` = ?',
+			array(
+				$rubricId,
+				$rubricId
+			)
+		);
+	}
+
+	public function setHiddenWithChilds($rubricId)
 	{
 		return $this->getDbMaster()->query(
 			'UPDATE `rubric` SET `deleted` = 1 WHERE `rubric_id` =? OR `parent_id` = ?',
+			array(
+				$rubricId,
+				$rubricId
+			)
+		);
+	}
+
+	public function deleteWithChilds($rubricId)
+	{
+		return $this->getDbMaster()->query(
+			'DELETE FROM `rubric` WHERE `rubric_id` =? OR `parent_id` = ?',
 			array(
 				$rubricId,
 				$rubricId

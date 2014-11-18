@@ -82,9 +82,6 @@ return array(
 		'admin_rubrics' => array(
 			'layout'    => 'admin',
 			'title'     => 'Управление рубрикатором',
-			'css' => array(
-				'/static/css/admin1.css'
-			),
 			'blocks'    => array(
 				'content'   => array(
 					'admin_rubrics_list'=>$modules['admin_rubrics_list'],
@@ -139,6 +136,7 @@ return array(
 		 */
 		'admin' => array(
 			'css' => array(
+				'reset' => '/static/css/reset.css',
 				'admin' => '/static/css/layout/admin.css',
 			),
 			'blocks'    => array(

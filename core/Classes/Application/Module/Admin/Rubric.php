@@ -9,9 +9,26 @@ class Rubric extends Base
 	public function doDelete()
 	{
 		$rubricId   = $this->application->request->getQueryParam('rubricId' , 0);
-		if($rubricId)
+		$rubric     = $this->application->bll->rubric->getById($rubricId);
+		if($rubric && $rubric['deleted'])
 		{
 			$this->application->bll->rubric->deleteWithChilds($rubricId);
+		}
+		elseif($rubricId)
+		{
+			$this->application->bll->rubric->setHiddenWithChilds($rubricId);
+		}
+		$this->application->request->redirect(
+			$this->application->routing->getUrl('admin/rubric')
+		)->end();
+	}
+
+	public function doRestore()
+	{
+		$rubricId   = $this->application->request->getQueryParam('rubricId' , 0);
+		if($rubricId)
+		{
+			$this->application->bll->rubric->restore($rubricId);
 			$this->application->request->redirect(
 				$this->application->routing->getUrl('admin/rubric')
 			)->end();

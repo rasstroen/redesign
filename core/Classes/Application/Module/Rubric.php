@@ -13,6 +13,7 @@ class Rubric extends Base
 			$rubric['addUrl']       = $this->application->routing->getUrl('admin/rubric/0/edit?parentId=' . $rubric['rubric_id']);
 			$rubric['editUrl']      = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id'] .'/edit');
 			$rubric['deleteUrl']    = $this->application->routing->getUrl('admin/rubric/?writemodule=admin/rubric&method=delete&rubricId=' . $rubric['rubric_id']);
+			$rubric['restoreUrl']    = $this->application->routing->getUrl('admin/rubric/?writemodule=admin/rubric&method=restore&rubricId=' . $rubric['rubric_id']);
 		}
 		unset($rubric);
 		$parents    = array();

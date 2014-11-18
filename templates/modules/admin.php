@@ -17,20 +17,28 @@ function templateAdminListAdminRubrics(array $data)
 	if(isset($rubricsByParents[0])) {
 		foreach ($rubricsByParents[0] as $parentRubric) {
 			?>
-			<li><a class="item" href="<?=$parentRubric['adminUrl']?>"><?=htmlspecialchars($parentRubric['title'])?></a>
+			<li><a class="item<?php if($parentRubric['deleted']) echo ' deleted';?>" href="<?=$parentRubric['adminUrl']?>"><?=htmlspecialchars($parentRubric['title'])?></a>
 			<a href="<?=$parentRubric['addUrl']?>">+добавить подрубрику</a>
 			<a href="<?=$parentRubric['editUrl']?>">редактировать</a>
 
 
 			<?php if(!isset($rubricsByParents[$parentRubric['rubric_id']])){
-				?><a href="<?=$parentRubric['deleteUrl']?>">-удалить</a><?php } else {
+				?>
+				<a href="<?=$parentRubric['deleteUrl']?>">-<?=$parentRubric['deleted'] ? 'удалить' : 'скрыть'?></a>
+				<?php if($parentRubric['deleted']) {?>
+					<a href="<?=$parentRubric['restoreUrl']?>">показать</a>
+					<?php }?>
+			<?php } else {
 				foreach ($rubricsByParents[$parentRubric['rubric_id']] as $childRubric) {
 					?>
 					<li>
-					<a class="subitem item"
+					<a class="subitem item<?php if($childRubric['deleted']) echo ' deleted';?>"
 					   href="<?= $childRubric['adminUrl'] ?>"><?= htmlspecialchars($childRubric['title']) ?></a>
 					<a href="<?= $childRubric['editUrl'] ?>">редактировать</a>
-					<a href="<?= $childRubric['deleteUrl'] ?>">-удалить</a>
+					<a href="<?= $childRubric['deleteUrl'] ?>">-<?=$childRubric['deleted'] ? 'удалить' : 'скрыть'?></a>
+					<?php if($childRubric['deleted']) {?>
+						<a href="<?=$childRubric['restoreUrl']?>">показать</a>
+					<?php }?>
 					</li><?php
 				}
 			}

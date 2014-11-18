@@ -15,8 +15,9 @@
 	<meta name="keywords" content="">
 	<!--css-->
 	<?php
-	foreach($view->getCss() as $css)
-	?><link rel="stylesheet" href="<?=$css?>"><?php
+	foreach($view->getCss() as $css) {?>
+		<link rel="stylesheet" href="<?= $css ?>"><?php
+	}
 	?>
 	<!--js-->
 

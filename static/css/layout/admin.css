@@ -158,3 +158,8 @@ ul.admin_rubrics li .add
 ul.admin_rubrics .add a{
 	color:#333;
 }
+
+.item.deleted
+{
+	color: #555!important;
+}
