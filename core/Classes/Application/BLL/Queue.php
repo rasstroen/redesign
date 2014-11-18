@@ -111,17 +111,17 @@ class Queue extends BLL
 		if(count($tasks))
 		{
 			$this->getDbMaster()->query(
-				'DELETE FROM `queue_tasks_' . $queueId . '` WHERE `task_id` IN(?)',
-				array(
-					array_keys($tasks)
-				)
-			);
-
-			$this->getDbMaster()->query(
 				'INSERT INTO `queue_workers`(`queue_id`, `tasks`, `create_time`) VALUES(?, ?, NOW())',
 				array(
 					$queueId,
 					serialize($tasks)
+				)
+			);
+
+			$this->getDbMaster()->query(
+				'DELETE FROM `queue_tasks_' . $queueId . '` WHERE `task_id` IN(?)',
+				array(
+					array_keys($tasks)
 				)
 			);
 
