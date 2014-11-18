@@ -28,7 +28,7 @@ class Author extends Base
 		}
 
 		$authorIds  = $this->application->bll->author->getIdsByOldestInfoFullUpdate(self::AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK);
-		$this->log(count($authorIds) . ' authors added for full update');
+		$this->log(count($authorIds) . ' authors added for full update: ' . print_r($authorIds, 1));
 		/**
 		 * Только 1 таск
 		 */
@@ -36,7 +36,9 @@ class Author extends Base
 		$this->application->bll->queue->addTask(
 			Queue::QUEUE_AUTHOR_FETCH_ALL_INFO,
 			$taskId,
-			$authorIds
+			$authorIds,
+			0,
+			false
 		);
 	}
 }

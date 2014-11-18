@@ -170,7 +170,7 @@ class Queue extends BLL
 	 * @param int $waitTime
 	 * @throws \Exception
 	 */
-	public function addTask($queueId, $taskId = 'unique', array $data = array(), $waitTime = 0)
+	public function addTask($queueId, $taskId = 'unique', array $data = array(), $waitTime = 0, $replace = true)
 	{
 		if(!is_numeric($taskId))
 		{
@@ -179,21 +179,40 @@ class Queue extends BLL
 
 		$serializedData = serialize($data);
 		$runTime        = $waitTime + time();
-		$this->getDbMaster()->query(
-			'INSERT INTO `queue_tasks_' . $queueId . '` SET
+		if($replace) {
+			$this->getDbMaster()->query(
+				'INSERT INTO `queue_tasks_' . $queueId . '` SET
 				`task_id`   = ?,
 				`data`      = ?,
 				`run_time`  = ?
 			ON DUPLICATE KEY UPDATE
 				`data`      = ?,
 				`run_time`  = ?',
-			array(
-				$taskId,
-				$serializedData,
-				$runTime,
-				$serializedData,
-				$runTime,
-			)
-		);
+				array(
+					$taskId,
+					$serializedData,
+					$runTime,
+					$serializedData,
+					$runTime,
+				)
+			);
+		}
+		else
+		{
+			$this->getDbMaster()->query(
+				'INSERT INTO `queue_tasks_' . $queueId . '` SET
+				`task_id`   = ?,
+				`data`      = ?,
+				`run_time`  = ?
+				ON DUPLICATE KEY UPDATE
+				`run_time`  = ?',
+				array(
+					$taskId,
+					$serializedData,
+					$runTime,
+					$runTime
+				)
+			);
+		}
 	}
 }
