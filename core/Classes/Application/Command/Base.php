@@ -20,7 +20,7 @@ class Base
 	protected function log($message)
 	{
 		$handle = fopen('/tmp/workers_log', 'a');
-		$s = date('Y-m-d H:i:s') .
+		$s = getmypid() . ' ' . date('Y-m-d H:i:s') .
 			"\t" .
 			memory_get_usage(true) / 1024 . 'Kb' .
 			"\t" .
