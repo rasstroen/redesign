@@ -15,6 +15,7 @@ class Processor extends Base
 	 */
 	public function actionRun()
 	{
+		$this->checkLocks();
 		if(file_get_contents($this->lockRunFileName))
 		{
 			$this->log('Processor already running');
@@ -50,6 +51,43 @@ class Processor extends Base
 		file_put_contents($this->lockRunFileName, 0);
 	}
 
+	public function checkLocks()
+	{
+		$lockTime           = fileatime($this->lockRunFileName);
+		$lockTimeWorkers    = fileatime($this->lockRunWorkersFileName);
+		$this->log(date('Y-m-d H:i:s', $lockTime). ' ' . $this->lockRunFileName);
+		$this->log(date('Y-m-d H:i:s', $lockTimeWorkers) . ' ' . $this->lockRunWorkersFileName);
+
+		if(time() - $lockTime > $this->iterationsRun * 10)
+		{
+			$this->log($this->lockRunFileName. ' unlinked');
+			@unlink($this->lockRunFileName);
+		}
+
+		if(time() - $lockTimeWorkers > $this->iterationsRunWorkers * 10)
+		{
+			$this->log($this->lockRunWorkersFileName. ' unlinked');
+			@unlink($this->lockRunWorkersFileName);
+		}
+
+		$pids = $this->application->bll->queue->getWorkersPids();
+		foreach($pids as $workerId => $pid)
+		{
+			$command = "ps -ef | grep -v grep | awk '{print $2}'";
+			$this->log($command);
+			exec($command, $result);
+			if(!array_search($pid, $result))
+			{
+				/**
+				 * нет пида
+				 */
+				$this->log('worker with pid ' . $pid . 'not exists');
+				$this->application->bll->queue->deleteWorker($workerId);
+			}
+		}
+
+	}
+
 	public function workerProcess($workerId)
 	{
 		$worker     = $this->application->bll->queue->getWorkerById($workerId);
@@ -80,7 +118,7 @@ class Processor extends Base
 		file_put_contents($this->lockRunWorkersFileName, rand(1,100));
 		$iterations = 0;
 
-		while($iterations < $this->iterationsRun) {
+		while($iterations < $this->iterationsRunWorkers) {
 			$iterations++;
 			$this->log('run-workers iteration ' . $iterations);
 

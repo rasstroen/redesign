@@ -77,6 +77,20 @@ class Queue extends BLL
 		);
 	}
 
+	public function getWorkersPids()
+	{
+		$out = array();
+		$workers = $this->application->db->master->selectAll(
+			'SELECT worker_id, pid FROM `queue_workers` WHERE `pid`'
+		);
+		foreach ($workers as $worker)
+		{
+			$out[$worker['worker_id']] = $worker['pid'];
+		}
+
+		return $out;
+	}
+
 	public function deleteWorker($workerId)
 	{
 		return $this->application->db->master->selectRow(
