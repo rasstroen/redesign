@@ -47,6 +47,7 @@ class Processor extends Base
 				}
 			}
 			sleep(10);
+			file_put_contents($this->lockRunFileName, rand(1,100));
 		}
 		file_put_contents($this->lockRunFileName, 0);
 	}
