@@ -9,7 +9,7 @@ class Post extends Base
 	public function methodProcess($data)
 	{
 		$username = $data['username'];
-		$this->log('saving ' . count($data['posts']) . ' posts, autho: ' , $username);
+		$this->log('saving ' . count($data['posts']) . ' posts, author: ' . $username);
 		foreach($data['posts'] as $post)
 		{
 			/**
