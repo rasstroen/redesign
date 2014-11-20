@@ -8,6 +8,8 @@ use Classes\Exception\InvalidArgument;
  */
 class Author extends BLL
 {
+	const AUTHOR_TYPE_USER      = 0;
+	const AUTHOR_TYPE_COMMUNITY = 1;
 	private $fields = array(
 		'username'                  => 1,// ppb_username
 		'userinfo_change_time'      => 1,// last change time
@@ -25,7 +27,34 @@ class Author extends BLL
 		'journal_city_name'         => 1,
 		'journal_pic'               => 1,
 		'journal_bio'               => 1,
+
+		'rating_last_position'      => 1,
+		'position'                  => 1,
+		'rating'                    => 1,
 	);
+
+	public function getTop($type, $page, $perPage = 20)
+	{
+		return $this->getDbWeb()->selectAll(
+			'SELECT * FROM `author` WHERE `is_community`=? AND `position` > 0 ORDER BY `position` LIMIT ?, ? ',
+			array(
+				$type,
+				($page - 1) * $perPage,
+				$perPage
+			)
+		);
+	}
+
+
+	public function getTopQueryUse($type)
+	{
+		return $this->getDbWeb()->selectQueryUse(
+			'SELECT `author_id`, `rating` FROM `author` WHERE `is_community`=?',
+			array(
+				$type,
+			)
+		);
+	}
 
 	public function getByIds(array $authorIds)
 	{
@@ -90,6 +119,31 @@ class Author extends BLL
 			array_merge($values, $valuesCopy)
 		);
 		return $this->getDbMaster()->lastInsertId();
+	}
+
+	public function updateById($authorId, $userData)
+	{
+		$sqlParts   = array();
+		$values     = array();
+		foreach($userData as $field => $value)
+		{
+			if(!isset($this->fields[$field]))
+			{
+				continue;
+			}
+			if($field !== 'username')
+			{
+				$sqlParts[] = '`' . $field . '` = ?';
+				$values[]   = $value;
+			}
+		}
+
+		$values[] = $authorId;
+
+		$this->getDbMaster()->query(
+			'UPDATE `author` SET ' . implode(',', $sqlParts) . ' WHERE `author_id` = ?',
+			$values
+		);
 	}
 
 	public function updateInfoByUserName($userName, array $userData)

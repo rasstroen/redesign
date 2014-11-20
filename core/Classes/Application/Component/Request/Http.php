@@ -7,6 +7,23 @@ class Http extends Base
 {
 	private $logFile    = '/tmp/lj-top.ru.curl_requests';
 	private $userAgent  = 'http://lj-top.ru, amuhc@ya.ru lj-top.ru grabber';
+
+	public function getWithCache($url, $cacheTime, $timeout = 10)
+	{
+		$fileName = '/tmp/getWCache_'.md5($url);
+		if(file_exists($fileName))
+		{
+			if(time() - fileatime($fileName) < $cacheTime)
+			{
+				return file_get_contents($fileName);
+			}
+		}
+
+		$content = $this->get($url, $timeout);
+		file_put_contents($fileName, $content);
+		return $content;
+	}
+
 	public function get($url, $timeout = 10)
 	{
 		$start  = microtime(true);

@@ -16,6 +16,12 @@ class PDODatabase{
 		return $this->pdo->lastInsertId();
 	}
 
+
+	public function selectQueryUse($query, array $parameters = array())
+	{
+		return $this->query($query, $parameters);
+	}
+
 	/**
 	 * Возвращает массив ассоциативных массивов с результатом выборки
 	 * или пустой массив
@@ -95,6 +101,12 @@ class PDODatabase{
 		$parameters = $resultParameters;
 	}
 
+	/**
+	 * @param $query
+	 * @param array $parameters
+	 * @return \PDOStatement
+	 * @throws \Exception
+	 */
 	public function query($query, array $parameters = array())
 	{
 		$this->prepareQuery($query, $parameters);

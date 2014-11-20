@@ -56,10 +56,29 @@ $modules = array(
 		'action'    => 'show',
 		'mode'      => 'demons'
 	),
+	/**
+	 * Топ авторов
+	 */
+	'authors_top'=> array(
+		'className' => '\Application\Module\Author',
+		'template'  => 'author',
+		'action'    => 'list',
+		'mode'      => 'top'
+	),
 );
 
 return array(
 	'map'  => array(
+		/**
+		 * Главная страница
+		 */
+		'top' => array(
+			'month' => array(
+				'authors' => array(
+					'' => 'authors_top',
+				)
+			)
+		),
 		''      => 'index',
 		/**
 		 * управление сайтом
@@ -148,6 +167,24 @@ return array(
 				'header'   => array(
 					'top_menu_index'=>$modules['top_menu_index'],
 				),
+				'content' => array(
+
+				)
+			)
+		),
+		/**
+		 * Топ авторов
+		 */
+		'authors_top'=> array(
+			'layout'    => 'index',
+			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
+			'blocks'    => array(
+				'header'   => array(
+					'top_menu_index'=>$modules['top_menu_index'],
+				),
+				'content' => array(
+					'authors_top'=>$modules['authors_top'],
+				)
 			)
 		),
 	),

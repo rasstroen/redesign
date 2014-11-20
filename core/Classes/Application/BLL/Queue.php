@@ -21,6 +21,11 @@ class Queue extends BLL
 	 */
 	const QUEUE_AUTHOR_FETCH_ALL_INFO   = 3;
 
+	/**
+	 * Обрабатываем спаршенные посты
+	 */
+	const QUEUE_POSTS_PROCESS_POSTS = 4;
+
 
 	private $queues = array(
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
@@ -39,7 +44,7 @@ class Queue extends BLL
 			'tasks_per_worker'  => 10,
 			'command'           => 'Author',
 			'method'            => 'fetchRss',
-			'enabled'           => 0,
+			'enabled'           => 1,
 		),
 		self::QUEUE_AUTHOR_FETCH_ALL_INFO => array(
 			'name'              => 'QUEUE_AUTHOR_FETCH_ALL_INFO',
@@ -48,6 +53,15 @@ class Queue extends BLL
 			'tasks_per_worker'  => 1,
 			'command'           => 'Author',
 			'method'            => 'fetchFullInfo',
+			'enabled'           => 1,
+		),
+		self::QUEUE_POSTS_PROCESS_POSTS => array(
+			'name'              => 'QUEUE_POSTS_PROCESS_POSTS',
+			'priority'          => 1,
+			'workers'           => 1,
+			'tasks_per_worker'  => 1,
+			'command'           => 'Post',
+			'method'            => 'process',
 			'enabled'           => 1,
 		),
 );

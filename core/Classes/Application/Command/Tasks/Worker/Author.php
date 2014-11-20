@@ -1,6 +1,8 @@
 <?php
 namespace Application\Command\Tasks\Worker;
 
+use Application\BLL\Queue;
+
 class Author extends Base
 {
 	/**
@@ -15,20 +17,79 @@ class Author extends Base
 		 */
 		$this->log($authorInfo['username'] . ' has url:' . $authorInfo['url']);
 		/**
-		 * Тащим его ленту
+		 * Тащим его записи
 		 */
+		$posts  = $this->fetchPosts($authorInfo['url']);
 
-		/**
-		 * Собираем посты в массив
-		 */
+		if(count($posts))
+		{
+			$this->log('adding task to process ' . count($posts) . ' posts');
 
-		/**
-		 * Для каждого поста - ставим задание на обработку поста
-		 */
+			$this->application->bll->queue->addTask(
+				Queue::QUEUE_POSTS_PROCESS_POSTS,
+				$authorInfo['username'],
+				array(
+					'posts'     => $posts,
+					'username'  => $authorInfo['username']
+				)
+			);
 
-		/**
-		 * Если нет автора - ставим таску на создание автора
-		 */
+			$this->log('adding task to process ' . $authorInfo['username'] . ' after week');
+
+			$this->application->bll->queue->addTask(
+				Queue::QUEUE_AUTHOR_FETCH_RSS,
+				$authorInfo['username'],
+				$authorInfo
+			);
+
+		}
+	}
+
+	public function fetchPosts($url)
+	{
+		$url .= 'data/rss';
+
+		$content    = $this->application->httpRequest->getWithCache($url, 3600);
+		$xml = xml_parser_create();
+		xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE,1);
+		xml_parse_into_struct($xml, $content, $values, $index);
+		xml_parser_free($xml);
+
+		$posts = array();
+
+		foreach($index['ITEM'] as $key => $itemIndex)
+		{
+			$currentPost = array();
+			for($valuesKey = $itemIndex; $valuesKey<$index['ITEM'][$key+1]; $valuesKey++)
+			{
+				$postValues = $values[$valuesKey];
+				switch($postValues['tag'])
+				{
+					case 'GUID':
+					{
+						$currentPost['url'] = $postValues['value'];
+					}
+					case 'PUBDATE':case 'TITLE': case 'LINK': case 'DESCRIPTION': case 'COMMENTS':
+					{
+						$currentPost[strtolower($postValues['tag'])] = $postValues['value'];
+						break;
+					}
+					case 'LJ:REPLY-COUNT': {
+						$currentPost['comments'] = $postValues['value'];
+						break;
+					}
+					case 'CATEGORY': {
+						$currentPost['tags'][$postValues['value']] = $postValues['value'];
+						break;
+					}
+				}
+			}
+			if($currentPost['comments']) {
+				$posts[] = $currentPost;
+			}
+		}
+
+		return $posts;
 	}
 
 	public function methodFetchFullInfo(array $authorIds)

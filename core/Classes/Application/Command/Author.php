@@ -11,6 +11,39 @@ class Author extends Base
 	const AUTHORS_FOR_INFO_FULL_UPDATE_IN_TASK = 200;
 
 	/**
+	 * Пересчитываем позиции авторов в соответствии с рейтингом активных постов в топе
+	 */
+	public function actionCalculateRating()
+	{
+		$authors    = $this->application->bll->author->getTopQueryUse(\Application\BLL\Author::AUTHOR_TYPE_USER);
+		$allAuthors = array();
+		while($author = $authors->fetch(\PDO::FETCH_ASSOC))
+		{
+			if($author['rating'] > 0)
+			{
+				$allAuthors[$author['author_id']] = $author['rating'];
+			}
+		}
+		arsort($allAuthors);
+
+		$chunks = array_chunk($allAuthors, 100 , true);
+
+		$position = 0;
+		foreach($chunks as $chunk)
+		{
+			foreach($chunk as $authorId => $rating)
+			{
+				$this->application->bll->author->updateById($authorId,
+					array(
+						'rating_last_position'  => $rating,
+						'position'              => $position
+					)
+				);
+				$position++;
+			}
+		}
+	}
+	/**
 	 * Наполняем очередь для авторов, по которым пора вытащить подробную информацию.
 	 * Мы постоянно получаем короткую информацию об авторах у Яндекса.
 	 * Дополнительно нужно вытащить полную информацию - аватар, тайтл журнала и т.п.

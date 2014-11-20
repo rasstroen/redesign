@@ -48,8 +48,8 @@ class Top extends Base
 		$data = array(
 			'items' => array(
 				'top' => array(
-					'title' => 'Рейтинги',
-					'url'   => $this->application->routing->getUrl('top'),
+					'title' => 'Рейтинг авторов',
+					'url'   => $this->application->routing->getUrl('top/month/authors'),
 				),
 				'theme' => array(
 					'title' => 'Популярные темы',
