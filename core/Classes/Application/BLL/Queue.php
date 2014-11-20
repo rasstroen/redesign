@@ -40,8 +40,8 @@ class Queue extends BLL
 		self::QUEUE_AUTHOR_FETCH_RSS => array(
 			'name'              => 'QUEUE_AUTHOR_FETCH_RSS',
 			'priority'          => 1,
-			'workers'           => 2,
-			'tasks_per_worker'  => 10,
+			'workers'           => 1,
+			'tasks_per_worker'  => 40,
 			'command'           => 'Author',
 			'method'            => 'fetchRss',
 			'enabled'           => 1,
@@ -58,8 +58,8 @@ class Queue extends BLL
 		self::QUEUE_POSTS_PROCESS_POSTS => array(
 			'name'              => 'QUEUE_POSTS_PROCESS_POSTS',
 			'priority'          => 1,
-			'workers'           => 1,
-			'tasks_per_worker'  => 1,
+			'workers'           => 3,
+			'tasks_per_worker'  => 10,
 			'command'           => 'Post',
 			'method'            => 'process',
 			'enabled'           => 1,
