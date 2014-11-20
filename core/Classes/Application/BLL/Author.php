@@ -83,7 +83,7 @@ class Author extends BLL
 	{
 		if(null === $oldTime)
 		{
-			$oldTime = time() - 24*60*60;
+			$oldTime = time() - 24*60*60 * 7;
 		}
 		return $this->getDbMaster()->selectColumn(
 			'SELECT `author_id` FROM `author` WHERE `userinfo_change_time` > 0 AND `userinfo_full_change_time` < ? ORDER BY `userinfo_full_change_time` LIMIT ?',
