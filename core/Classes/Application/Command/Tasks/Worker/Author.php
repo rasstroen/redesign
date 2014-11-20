@@ -39,7 +39,8 @@ class Author extends Base
 			$this->application->bll->queue->addTask(
 				Queue::QUEUE_AUTHOR_FETCH_RSS,
 				$authorInfo['username'],
-				$authorInfo
+				$authorInfo,
+				time() + 24*60*60*7
 			);
 
 		}
