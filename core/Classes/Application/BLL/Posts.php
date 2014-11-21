@@ -313,7 +313,8 @@ class Posts extends BLL
 					'username'      => $item['yablogs:ppb_username'],
 					'url'           => $item['author'],
 					'lastPostTime'  => strtotime($item['pubDate']),
-				)
+				),
+				60 // через минуту
 			);
 			return true;
 		}
