@@ -6,6 +6,9 @@ namespace Application\BLL;
  */
 class Posts extends BLL
 {
+	private $existsTables = null;
+
+	const SHARDS_COUNT_AUTHOR       = 128;
 
 	const PIC_STATUS_UNKNOWN        = 0;
 	const PIC_STATUS_HAS_PIC        = 1;
@@ -23,8 +26,62 @@ class Posts extends BLL
 
 
 		$this->savePostToArchive($authorId, $postId, $postData);
-		$this->savePostAuthorLink();
-		$this->savePostTags();
+		$this->savePostAuthorLink($authorId, $postId, $pubTime);
+		$this->savePostTags($authorId, $postId, $postData);
+	}
+
+	private function savePostTags($authorId, $postId, $postData)
+	{
+
+
+		$tags  = isset($postData['tags']) ? $postData['tags'] : array();
+		if(count($tags))
+		{
+			$tableName = '_posts_author_tags___' . ($authorId % self::SHARDS_COUNT_AUTHOR);
+			$this->createAuthorTagsTable($tableName);
+		}
+		
+		foreach($tags as $tag)
+		{
+			$this->application->db->master->query('INSERT INTO `' . $tableName . '`
+			SET
+				`post_id`               = ?,
+				`author_id`             = ?,
+				`tag`                   = ?
+				ON DUPLICATE KEY UPDATE
+				`tag`            = ?',
+				array(
+					$postId,
+					$authorId,
+					$tag,
+					$tag
+				)
+			);
+		}
+	}
+
+	private function savePostAuthorLink($authorId, $postId, $pubTime)
+	{
+		$tableName = '_posts_author__' . ($authorId % self::SHARDS_COUNT_AUTHOR);
+		$this->createAuthorPostLinkTable($tableName);
+
+		$yearMonth = date('Y_m', $pubTime);
+
+		$this->application->db->master->query('INSERT INTO `' . $tableName . '`
+		SET
+			`post_id`               = ?,
+			`author_id`             = ?,
+			`year_month`            = ?
+			ON DUPLICATE KEY UPDATE
+			`year_month`            = ?',
+			array(
+				$postId,
+				$authorId,
+				$yearMonth,
+				$yearMonth
+			)
+		);
+
 	}
 
 	private function savePostToArchive($authorId, $postId, $postData)
@@ -87,24 +144,69 @@ class Posts extends BLL
 		return implode(' ', $exploded);
 	}
 
+	public function createAuthorTagsTable($tableName)
+	{
+		if(!$this->existsTable($tableName))
+		{
+			$query = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
+		        `post_id` int(10) unsigned NOT NULL,
+		        `author_id` int(10) unsigned NOT NULL,
+		        `tag` varchar(128) NOT NULL,
+		        PRIMARY KEY (`post_id`,`author_id`),
+		        KEY `tag` (`author_id`, `tag`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+			$this->application->db->master->query($query);
+			$this->existsTables[$tableName] = true;
+		}
+	}
+
+	public function createAuthorPostLinkTable($tableName)
+	{
+		if(!$this->existsTable($tableName))
+		{
+			$query = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
+		        `post_id` int(10) unsigned NOT NULL,
+		        `author_id` int(10) unsigned NOT NULL,
+		        `year_month` varchar(7) NOT NULL,
+		        PRIMARY KEY (`post_id`,`author_id`),
+		        KEY `year_month` (`author_id`, `year_month`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+			$this->application->db->master->query($query);
+			$this->existsTables[$tableName] = true;
+		}
+	}
+
 	public function createArchiveTable($tableName)
 	{
-		$query = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
-        `post_id` int(10) unsigned NOT NULL,
-        `author_id` int(10) unsigned NOT NULL,
-        `pub_time` int(10) unsigned NOT NULL,
-        `update_time` int(10) unsigned NOT NULL,
-        `title` varchar(255) NOT NULL,
-        `comments` int(10) unsigned NOT NULL,
-        `has_pic` tinyint(3) unsigned NOT NULL,
-        `has_video` tinyint(3) unsigned NOT NULL,
-        `short` text NOT NULL,
-        `text` longtext NOT NULL,
-        PRIMARY KEY (`post_id`,`author_id`),
-        KEY `has_pic` (`has_pic`),
-        KEY `has_video` (`has_video`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8';
-		return $this->application->db->master->query($query);
+		if(!$this->existsTable($tableName))
+		{
+			$query = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
+		        `post_id` int(10) unsigned NOT NULL,
+		        `author_id` int(10) unsigned NOT NULL,
+		        `pub_time` int(10) unsigned NOT NULL,
+		        `update_time` int(10) unsigned NOT NULL,
+		        `title` varchar(255) NOT NULL,
+		        `comments` int(10) unsigned NOT NULL,
+		        `has_pic` tinyint(3) unsigned NOT NULL,
+		        `has_video` tinyint(3) unsigned NOT NULL,
+		        `short` text NOT NULL,
+		        `text` longtext NOT NULL,
+		        PRIMARY KEY (`post_id`,`author_id`),
+		        KEY `has_pic` (`has_pic`),
+		        KEY `has_video` (`has_video`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+			$this->application->db->master->query($query);
+			$this->existsTables[$tableName] = true;
+		}
+	}
+
+	public function existsTable($tableName)
+	{
+		if(null == $this->existsTables)
+		{
+			$this->existsTables = array_flip($this->application->db->master->selectColumn('SHOW TABLES'));
+		}
+		return isset($this->existsTables[$tableName]);
 	}
 
 
