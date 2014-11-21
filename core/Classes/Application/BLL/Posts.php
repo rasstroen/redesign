@@ -10,7 +10,7 @@ class Posts extends BLL
 
 	const SHARDS_COUNT_AUTHOR       = 128;
 
-	const POST_ACTIVE_LIfETIME      = 604800;
+	const POST_ACTIVE_LIFE_DAYS     = 7;
 
 	const PIC_STATUS_UNKNOWN        = 0;
 	const PIC_STATUS_HAS_PIC        = 1;
@@ -19,6 +19,18 @@ class Posts extends BLL
 	const VIDEO_STATUS_UNKNOWN      = 0;
 	const VIDEO_STATUS_HAS_PIC      = 1;
 	const VIDEO_STATUS_HASNOT_PIC   = 2;
+
+	public function getByPeriodFromDateTable($start, $end, $table)
+	{
+		return $this->application->db->master->selectAll('SELECT `post_id`, `author_id`, `pub_time`, `has_pic`, `has_video`, `comments` FROM `_posts_archive__' . $table. '`
+			WHERE
+			`pub_time` > ? AND
+			`pub_time` < ?
+		', array(
+				$start,
+				$end
+			));
+	}
 
 	public function saveAuthorPost($authorId, $postData)
 	{
@@ -84,9 +96,39 @@ class Posts extends BLL
 
 	}
 
-	private function savePostToActive($authorId, $postId, $postData)
+	public function savePostToActive($postId, $authorId , $postData)
 	{
+		$this->createActivePostsTable('active_posts');
+		$this->application->db->master->query('INSERT INTO `active_posts`
+			SET
+				`post_id`           = ?,
+				`author_id`         = ?,
+				`pub_time`          = ?,
+				`comments`          = ?,
+				`has_pic`           = ?,
+				`has_video`         = ?,
+				`rating`            = ?
+				ON DUPLICATE KEY UPDATE
+				`pub_time`          = ?,
+				`comments`          = ?,
+				`has_pic`           = ?,
+				`has_video`         = ?,
+				`rating`            = ?
+			', array(
+			$postId,
+			$authorId,
+			$postData['pub_time'],
+			$postData['comments'],
+			$postData['has_pic'],
+			$postData['has_video'],
+			$postData['rating'],
 
+			$postData['pub_time'],
+			$postData['comments'],
+			$postData['has_pic'],
+			$postData['has_video'],
+			$postData['rating'],
+		));
 	}
 
 	private function savePostToArchive($authorId, $postId, $postData)
