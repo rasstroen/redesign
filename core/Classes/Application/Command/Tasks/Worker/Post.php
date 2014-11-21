@@ -12,6 +12,12 @@ class Post extends Base
 	{
 		$username = $data['username'];
 		$this->log('saving ' . count($data['posts']) . ' posts, author: ' . $username);
+		$author = $this->application->bll->author->getByUserName($username);
+		if(!$author)
+		{
+			$this->log('no author: ' . $username);
+			return;
+		}
 		foreach($data['posts'] as $post)
 		{
 			if($post['comments'] > $this->minPostsComments)
@@ -25,22 +31,10 @@ class Post extends Base
 					/**
 					 * Считаем рейтинг поста
 					 */
-
-					/**
-					 * Сохраняем данные поста в его таблицу, зашарденную по месяцу
-					 */
-
-					/**
-					 * Сохраняем теги поста в таблицу тегов месяца
-					 */
-
-					/**
-					 * Сохраняем теги поста в таблицу тегов активных постов
-					 */
-
-					/**
-					 * Сохраняем пост в активные посты
-					 */
+					$this->application->bll->posts->saveAuthorPost(
+						$author['author_id'],
+						$post
+					);
 
 					/**
 					 * Ставим таск на вытащить картинку из поста
