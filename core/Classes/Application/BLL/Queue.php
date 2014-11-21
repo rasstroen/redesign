@@ -58,8 +58,8 @@ class Queue extends BLL
 		self::QUEUE_POSTS_PROCESS_POSTS => array(
 			'name'              => 'QUEUE_POSTS_PROCESS_POSTS',
 			'priority'          => 1,
-			'workers'           => 3,
-			'tasks_per_worker'  => 10,
+			'workers'           => 5,
+			'tasks_per_worker'  => 2,
 			'command'           => 'Post',
 			'method'            => 'process',
 			'enabled'           => 1,

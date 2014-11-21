@@ -3,6 +3,8 @@ namespace Application\Command\Tasks\Worker;
 
 class Post extends Base
 {
+	private $minPostsComments   = 30;
+	private $maxPostAge         = 604800; // week
 	/**
 	 * @param $posts
 	 */
@@ -12,6 +14,47 @@ class Post extends Base
 		$this->log('saving ' . count($data['posts']) . ' posts, author: ' . $username);
 		foreach($data['posts'] as $post)
 		{
+			if($post['comments'] > $this->minPostsComments)
+			{
+				if(strtotime($post['pubdate']) > time() - $this->maxPostAge)
+				{
+					/**
+					 * Считаем скорость добавления комментариев поста (штук в час) по предыдущему сохранению
+					 */
+
+					/**
+					 * Считаем рейтинг поста
+					 */
+
+					/**
+					 * Сохраняем данные поста в его таблицу, зашарденную по месяцу
+					 */
+
+					/**
+					 * Сохраняем теги поста в таблицу тегов месяца
+					 */
+
+					/**
+					 * Сохраняем теги поста в таблицу тегов активных постов
+					 */
+
+					/**
+					 * Сохраняем пост в активные посты
+					 */
+
+					/**
+					 * Ставим таск на вытащить картинку из поста
+					 */
+
+					/**
+					 * Ставим таск на вытащить видео из поста
+					 */
+
+					/**
+					 * Сохраняем связь поста с автором
+					 */
+				}
+			}
 			/**
 			 * [24] => Array
 			(
