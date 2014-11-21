@@ -10,6 +10,8 @@ class Posts extends BLL
 
 	const SHARDS_COUNT_AUTHOR       = 128;
 
+	const POST_ACTIVE_LIfETIME      = 604800;
+
 	const PIC_STATUS_UNKNOWN        = 0;
 	const PIC_STATUS_HAS_PIC        = 1;
 	const PIC_STATUS_HASNOT_PIC     = 2;
@@ -23,8 +25,6 @@ class Posts extends BLL
 		$pubTime                = strtotime($postData['pubdate']);
 		$postData['pub_time']   = $pubTime;
 		$postId                 = intval(array_pop(explode('/',$postData['url'])));
-
-
 		$this->savePostToArchive($authorId, $postId, $postData);
 		$this->savePostAuthorLink($authorId, $postId, $pubTime);
 		$this->savePostTags($authorId, $postId, $postData);
@@ -40,7 +40,7 @@ class Posts extends BLL
 			$tableName = '_posts_author_tags___' . ($authorId % self::SHARDS_COUNT_AUTHOR);
 			$this->createAuthorTagsTable($tableName);
 		}
-		
+
 		foreach($tags as $tag)
 		{
 			$this->application->db->master->query('INSERT INTO `' . $tableName . '`
@@ -81,6 +81,11 @@ class Posts extends BLL
 				$yearMonth
 			)
 		);
+
+	}
+
+	private function savePostToActive($authorId, $postId, $postData)
+	{
 
 	}
 
@@ -170,6 +175,28 @@ class Posts extends BLL
 		        `year_month` varchar(7) NOT NULL,
 		        PRIMARY KEY (`post_id`,`author_id`),
 		        KEY `year_month` (`author_id`, `year_month`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+			$this->application->db->master->query($query);
+			$this->existsTables[$tableName] = true;
+		}
+	}
+
+	public function createActivePostsTable($tableName)
+	{
+		if(!$this->existsTable($tableName))
+		{
+			$query = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
+		        `post_id` int(10) unsigned NOT NULL,
+		        `author_id` int(10) unsigned NOT NULL,
+		        `pub_time` int(10) unsigned NOT NULL,
+		        `comments` int(10) unsigned NOT NULL,
+		        `has_pic` tinyint(3) unsigned NOT NULL,
+		        `has_video` tinyint(3) unsigned NOT NULL,
+		        `rating` int unsigned not null default 0,
+		        PRIMARY KEY (`post_id`,`author_id`),
+		        KEY `has_pic` (`has_pic`),
+		        KEY `has_video` (`has_video`),
+		        KEY `pub_time` (`pub_time`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8';
 			$this->application->db->master->query($query);
 			$this->existsTables[$tableName] = true;

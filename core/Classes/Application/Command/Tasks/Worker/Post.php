@@ -22,32 +22,10 @@ class Post extends Base
 		{
 			if($post['comments'] > $this->minPostsComments)
 			{
-				if(strtotime($post['pubdate']) > time() - $this->maxPostAge)
-				{
-					/**
-					 * Считаем скорость добавления комментариев поста (штук в час) по предыдущему сохранению
-					 */
-
-					/**
-					 * Считаем рейтинг поста
-					 */
-					$this->application->bll->posts->saveAuthorPost(
-						$author['author_id'],
-						$post
-					);
-
-					/**
-					 * Ставим таск на вытащить картинку из поста
-					 */
-
-					/**
-					 * Ставим таск на вытащить видео из поста
-					 */
-
-					/**
-					 * Сохраняем связь поста с автором
-					 */
-				}
+				$this->application->bll->posts->saveAuthorPost(
+					$author['author_id'],
+					$post
+				);
 			}
 			/**
 			 * [24] => Array
