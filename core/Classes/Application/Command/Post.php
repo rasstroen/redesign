@@ -35,22 +35,27 @@ class Post extends Base
 					}
 					elseif($hoursLeft > (24 * 3))
 					{
-						$dateCoefficient *= 0.3;
+						$dateCoefficient *= 0.4;
 					}
 					elseif($hoursLeft > 24*2)
 					{
-						$dateCoefficient *= 0.5;
+						$dateCoefficient *= 1.0;
 					}
 					elseif ($hoursLeft >= 24)
 					{
-						$dateCoefficient *= 0.9;
+						$dateCoefficient *= 1.6;
 					}
 					elseif ($hoursLeft > 12)
 					{
-						$dateCoefficient *= 1;
+						$dateCoefficient *= 2;
 					}
-
-				$post['rating'] = $dateCoefficient * (ceil($post['comments'] / 35) * 80);
+					elseif ($hoursLeft > 6)
+					{
+						$dateCoefficient *= 3;
+					}
+				$dateCoefficient = (Posts::POST_ACTIVE_LIFE_DAYS * 24 - $hoursLeft) / Posts::POST_ACTIVE_LIFE_DAYS *  (3 / $hoursLeft);
+				$post['rating'] = sqrt($dateCoefficient * (ceil($post['comments'] / 2) * 14));
+				echo $post['comments'].' '.$hoursLeft.'=lrfth '.$dateCoefficient.'=coef rat='.$post['rating'] ."\n";
 				$post['coef']   = $dateCoefficient;
 				$post['date']   = date('Y-m-d H:i:s', $post['pub_time']);
 			}
@@ -73,6 +78,7 @@ class Post extends Base
 		});
 
 		$postsToInsertNewest = array_slice($posts, 0 , self::MAX_POSTS_IN_NEW , true);
+		$this->application->db->master->query('TRUNCATE active_posts');
 		$this->application->db->master->query('ALTER TABLE active_posts DISABLE KEYS');
 		foreach($postsToInsert as $post)
 		{

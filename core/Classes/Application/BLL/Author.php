@@ -45,6 +45,17 @@ class Author extends BLL
 		);
 	}
 
+	public function getCurrentAuthorRatings($authorIds)
+	{
+		return $this->application->db->master->selectAll(
+			'SELECT author_id, SUM(`rating`) as rating FROM `active_posts` WHERE `author_id` IN(?) GROUP BY `author_id`',
+			array(
+				$authorIds
+			),
+			'author_id'
+		);
+	}
+
 
 	public function getTopQueryUse($type)
 	{

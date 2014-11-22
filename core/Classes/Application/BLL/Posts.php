@@ -71,11 +71,16 @@ class Posts extends BLL
 				);
 			foreach($postsMonths as $post)
 			{
-				$allPosts[] = $post;
+				$allPosts[$post['author_id'].'_'.$post['post_id']] = $post;
 			}
 		}
 
-		return $allPosts;
+		foreach($ids as $data)
+		{
+			$out[] = $allPosts[$data['author_id'].'_'.$data['post_id']];
+		}
+
+		return $out;
 	}
 
 	public function getByPeriodFromDateTable($start, $end, $table)

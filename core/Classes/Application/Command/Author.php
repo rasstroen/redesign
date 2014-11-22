@@ -19,14 +19,34 @@ class Author extends Base
 		$allAuthors = array();
 		while($author = $authors->fetch(\PDO::FETCH_ASSOC))
 		{
-			if($author['rating'] > 0)
-			{
-				$allAuthors[$author['author_id']] = $author['rating'];
-			}
+			$allAuthors[$author['author_id']] = $author['rating'];
 		}
+
+
 		arsort($allAuthors);
 
+
 		$chunks = array_chunk($allAuthors, 100 , true);
+
+		$ratingAuthors = array();
+		foreach($chunks as $chunk)
+		{
+			$ratings	= $this->application->bll->author->getCurrentAuthorRatings(array_keys($chunk));
+
+			foreach($chunk as $authorId => $rating)
+			{
+				if(isset($ratings[$authorId])) {
+					$ratingAuthors[$authorId] = $ratings[$authorId]['rating'];
+				}
+			}
+		}
+
+		arsort($ratingAuthors);
+
+		$this->application->db->master->query('UPDATE `author` SET position=0'); // @todo
+
+
+		$chunks = array_chunk($ratingAuthors, 100 , true);
 
 		$position = 0;
 		foreach($chunks as $chunk)
