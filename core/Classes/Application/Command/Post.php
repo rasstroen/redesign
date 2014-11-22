@@ -27,8 +27,30 @@ class Post extends Base
 			$posts = $this->application->bll->posts->getByPeriodFromDateTable($minPubTime, time(), $month);
 			foreach($posts as &$post)
 			{
-				$dateCoefficient = sqrt(Posts::POST_ACTIVE_LIFE_DAYS - (time() - $post['pub_time']) / 60 / 60 / 24);
-				$post['rating'] = $post['comments'] * $dateCoefficient;
+				$dateCoefficient = 1;
+					$hoursLeft = ceil((time() - $post['pub_time']) / 60 / 60);
+					if ($hoursLeft > (24 * 5))
+					{
+						$dateCoefficient *= 0.2;
+					}
+					elseif($hoursLeft > (24 * 3))
+					{
+						$dateCoefficient *= 0.3;
+					}
+					elseif($hoursLeft > 24*2)
+					{
+						$dateCoefficient *= 0.5;
+					}
+					elseif ($hoursLeft >= 24)
+					{
+						$dateCoefficient *= 0.9;
+					}
+					elseif ($hoursLeft > 12)
+					{
+						$dateCoefficient *= 1;
+					}
+
+				$post['rating'] = $dateCoefficient * (ceil($post['comments'] / 35) * 80);
 				$post['coef']   = $dateCoefficient;
 				$post['date']   = date('Y-m-d H:i:s', $post['pub_time']);
 			}

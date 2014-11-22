@@ -10,7 +10,7 @@ class Posts extends BLL
 
 	const SHARDS_COUNT_AUTHOR       = 128;
 
-	const POST_ACTIVE_LIFE_DAYS     = 7;
+	const POST_ACTIVE_LIFE_DAYS     = 10;
 
 	const PIC_STATUS_UNKNOWN        = 0;
 	const PIC_STATUS_HAS_PIC        = 1;
@@ -19,6 +19,64 @@ class Posts extends BLL
 	const VIDEO_STATUS_UNKNOWN      = 0;
 	const VIDEO_STATUS_HAS_PIC      = 1;
 	const VIDEO_STATUS_HASNOT_PIC   = 2;
+
+	public function preparePosts(array &$posts)
+	{
+		foreach ($posts as $post)
+		{
+			$authorIds[] = 	$post['author_id'];
+		}
+
+		$authors = $this->application->bll->author->getByIds($authorIds);
+
+		foreach ($posts as &$post)
+		{
+			$post['author'] = $authors[$post['author_id']];
+			$post['short'] 	= $this->shortText($post['short'], 70);
+			$post['pub_date']	= date('d.m.y H:i', $post['pub_time']);
+		}
+		unset($post);
+	}
+
+	public function getPopularPosts($limit = 3)
+	{
+		$postsIds = $this->application->db->master->selectAll(
+			'SELECT * FROM `active_posts` ORDER BY `rating` DESC LIMIT ?',
+			array($limit)
+		);
+
+		return $this->getPostsByIds($postsIds);
+	}
+
+	private function getPostsByIds(array $ids = array())
+	{
+		$i=0;
+		foreach($ids as $data)
+		{
+			$month = date('Y_m', $data['pub_time']);
+			$i++;
+			$postsByMonthsPairs[$month][] = '(?, ?)';
+			$postsByMonthsPostIds[$month][] = '?';
+			$values[$month]['post_ids'][$data['post_id']] 	= $data['post_id'];
+			$values[$month]['ids'][] 						= $data['post_id'];
+			$values[$month]['ids'][] 						= $data['author_id'];
+		}
+		$allPosts = array();
+		foreach ($postsByMonthsPostIds as $month => $data)
+		{
+
+			$postsMonths = $this->application->db->master->selectAll('SELECT * FROM `_posts_archive__'.$month.'` WHERE
+			`post_id` IN ('. implode(',', $postsByMonthsPostIds[$month]).') AND (`post_id`, `author_id`) IN (' . implode(',', $postsByMonthsPairs[$month]) .')',
+					$values[$month]['post_ids'] + $values[$month]['ids']
+				);
+			foreach($postsMonths as $post)
+			{
+				$allPosts[] = $post;
+			}
+		}
+
+		return $allPosts;
+	}
 
 	public function getByPeriodFromDateTable($start, $end, $table)
 	{

@@ -65,13 +65,21 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'top'
 	),
+	/**
+	 * топ популярных постов на главной
+	 */
+	'index_top_popular'=> array(
+		'className' => '\Application\Module\Post',
+		'template'  => 'post',
+		'action'    => 'list',
+		'mode'      => 'indexTopPopular'
+	),
+
 );
 
 return array(
 	'map'  => array(
-		/**
-		 * Главная страница
-		 */
+
 		'top' => array(
 			'month' => array(
 				'authors' => array(
@@ -79,6 +87,9 @@ return array(
 				)
 			)
 		),
+		/**
+		 * Главная страница
+		 */
 		''      => 'index',
 		/**
 		 * управление сайтом
@@ -168,7 +179,7 @@ return array(
 					'top_menu_index'=>$modules['top_menu_index'],
 				),
 				'content' => array(
-
+					'index_top_popular'=>$modules['index_top_popular'],
 				)
 			)
 		),

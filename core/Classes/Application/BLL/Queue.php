@@ -58,8 +58,8 @@ class Queue extends BLL
 		self::QUEUE_POSTS_PROCESS_POSTS => array(
 			'name'              => 'QUEUE_POSTS_PROCESS_POSTS',
 			'priority'          => 1,
-			'workers'           => 5,
-			'tasks_per_worker'  => 2,
+			'workers'           => 12,
+			'tasks_per_worker'  => 3,
 			'command'           => 'Post',
 			'method'            => 'process',
 			'enabled'           => 1,
@@ -146,6 +146,8 @@ class Queue extends BLL
 				)
 			);
 
+			$workerId = $this->getDbMaster()->lastInsertId();
+
 			$this->getDbMaster()->query(
 				'DELETE FROM `queue_tasks_' . $queueId . '` WHERE `task_id` IN(?)',
 				array(
@@ -153,7 +155,7 @@ class Queue extends BLL
 				)
 			);
 
-			return array($this->getDbMaster()->lastInsertId(), count($tasks));
+			return array($workerId, count($tasks));
 		}
 		return array(0 , 0);
 	}

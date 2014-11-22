@@ -74,6 +74,7 @@ class PDODatabase{
 	private function prepareQuery(&$query, array &$parameters = array())
 	{
 		$queryArray         = explode('?', $query);
+		$parameters = array_values($parameters);
 		$resultParameters   = array();
 		$resultQueryArray   = array();
 
@@ -124,7 +125,7 @@ class PDODatabase{
 		else
 		{
 			$errorInfo = $stmt->errorInfo();
-			throw new \Exception('Database error:' . print_r($errorInfo, true));
+			throw new \Exception('Database error:' . print_r($errorInfo, 1) . print_r($parameters, 1) . print_r($query, true));
 		}
 	}
 }
