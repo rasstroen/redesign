@@ -72,7 +72,7 @@ class Post extends Base
 		}
 
 		mt_rand(1,21312323);
-		$temp = '/tmp/' . md5(rand(12,101122332)) . '.jpg';
+		$temp = '/tmp/' . md5(rand(12,101122332)).time() . '.jpg';
 		$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
 
 		foreach($urls as $picUrl)
@@ -99,8 +99,10 @@ class Post extends Base
 				$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
 				$this->log('Exc:'. $e->getMessage());
 			}
+			@unlink($temp);
 		}
 		$this->log(print_r($res,1));
+
 		$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic);
 	}
 
