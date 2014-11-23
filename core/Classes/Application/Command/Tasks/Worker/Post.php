@@ -35,7 +35,7 @@ class Post extends Base
 					$post
 				);
 
-				$this>log('Adding task to process post image: ' . $post['url']);
+				$this->log('Adding task to process post image: ' . $post['url']);
 				$this->application->bll->queue->addTask(
 					Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
 					$post['url'],
