@@ -26,6 +26,8 @@ class Queue extends BLL
 	 */
 	const QUEUE_POSTS_PROCESS_POSTS = 4;
 
+	const QUEUE_POSTS_PROCESS_POSTS_IMAGES = 5;
+
 
 	private $queues = array(
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
@@ -62,6 +64,15 @@ class Queue extends BLL
 			'tasks_per_worker'  => 3,
 			'command'           => 'Post',
 			'method'            => 'process',
+			'enabled'           => 1,
+		),
+		self::QUEUE_POSTS_PROCESS_POSTS_IMAGES => array(
+			'name'              => 'QUEUE_POSTS_PROCESS_POSTS_IMAGES',
+			'priority'          => 1,
+			'workers'           => 4,
+			'tasks_per_worker'  => 4,
+			'command'           => 'Post',
+			'method'            => 'processImages',
 			'enabled'           => 1,
 		),
 );

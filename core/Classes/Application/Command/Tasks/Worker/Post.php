@@ -1,10 +1,18 @@
 <?php
 namespace Application\Command\Tasks\Worker;
 
+use Application\BLL\Queue;
+
 class Post extends Base
 {
 	private $minPostsComments   = 30;
-	private $maxPostAge         = 604800; // week
+
+	public function processImages($data)
+	{
+		$this->log('PROCESS IMAGES');
+		$this->log(print_r($data,1));
+		die();
+	}
 	/**
 	 * @param $posts
 	 */
@@ -27,6 +35,13 @@ class Post extends Base
 					$post
 				);
 			}
+
+			$this>log('Addinf task to process post image: ' . $post['url']);
+			$this->application->bll->queue->addTask(
+				Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
+				$post['url'],
+				$post
+			);
 			/**
 			 * [24] => Array
 			(
