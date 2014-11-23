@@ -27,34 +27,9 @@ class Post extends Base
 			$posts = $this->application->bll->posts->getByPeriodFromDateTable($minPubTime, time(), $month);
 			foreach($posts as &$post)
 			{
-				$dateCoefficient = 1;
-					$hoursLeft = ceil((time() - $post['pub_time']) / 60 / 60);
-					if ($hoursLeft > (24 * 5))
-					{
-						$dateCoefficient *= 0.2;
-					}
-					elseif($hoursLeft > (24 * 3))
-					{
-						$dateCoefficient *= 0.4;
-					}
-					elseif($hoursLeft > 24*2)
-					{
-						$dateCoefficient *= 1.0;
-					}
-					elseif ($hoursLeft >= 24)
-					{
-						$dateCoefficient *= 1.6;
-					}
-					elseif ($hoursLeft > 12)
-					{
-						$dateCoefficient *= 2;
-					}
-					elseif ($hoursLeft > 6)
-					{
-						$dateCoefficient *= 3;
-					}
-				$dateCoefficient = (Posts::POST_ACTIVE_LIFE_DAYS * 24 - $hoursLeft) / Posts::POST_ACTIVE_LIFE_DAYS *  (3 / $hoursLeft);
-				$post['rating'] = sqrt($dateCoefficient * (ceil($post['comments'] / 2) * 14));
+				$hoursLeft = ceil((time() - $post['pub_time']) / 60 / 60);
+				$dateCoefficient = (Posts::POST_ACTIVE_LIFE_DAYS * 24 - $hoursLeft) / Posts::POST_ACTIVE_LIFE_DAYS *  (2 / $hoursLeft);
+				$post['rating'] = sqrt($dateCoefficient * (ceil($post['comments'] / 2) * 24));
 				echo $post['comments'].' '.$hoursLeft.'=lrfth '.$dateCoefficient.'=coef rat='.$post['rating'] ."\n";
 				$post['coef']   = $dateCoefficient;
 				$post['date']   = date('Y-m-d H:i:s', $post['pub_time']);

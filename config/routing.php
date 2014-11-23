@@ -74,6 +74,15 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'indexTopPopular'
 	),
+	/**
+	 * топ новых на главной
+	 */
+	'index_top_new'=> array(
+		'className' => '\Application\Module\Post',
+		'template'  => 'post',
+		'action'    => 'list',
+		'mode'      => 'indexTopNew'
+	),
 
 );
 
@@ -180,6 +189,7 @@ return array(
 				),
 				'content' => array(
 					'index_top_popular'=>$modules['index_top_popular'],
+					'index_top_new'=>$modules['index_top_new'],
 				)
 			)
 		),

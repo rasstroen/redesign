@@ -4,10 +4,20 @@ namespace Application\Module;
 
 class Post extends Base
 {
-	const POSTS_POPULA_ON_MAIN = 33;
+	const POSTS_POPULAR_ON_MAIN 	= 6;
+	const POSTS_NEW_ON_MAIN 		= 6;
 	public function actionListIndexTopPopular()
 	{
-		$posts = $this->application->bll->posts->getPopularPosts(self::POSTS_POPULA_ON_MAIN);
+		$posts = $this->application->bll->posts->getPopularPosts(self::POSTS_POPULAR_ON_MAIN);
+		$this->application->bll->posts->preparePosts($posts);
+		return array(
+			'posts' => $posts
+		);
+	}
+
+	public function actionListIndexTopNew()
+	{
+		$posts = $this->application->bll->posts->getNewPosts(self::POSTS_NEW_ON_MAIN);
 		$this->application->bll->posts->preparePosts($posts);
 		return array(
 			'posts' => $posts
