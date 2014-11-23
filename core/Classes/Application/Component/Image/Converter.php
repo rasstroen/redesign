@@ -6,6 +6,7 @@ class Converter extends Base
 {
 	public function resize($orig_file_path, $settings, $target_file_path, $size)
 	{
+		putenv("MAGICK_THREAD_LIMIT=1");
 		$quality = 95;
 
 		$crop = $settings['crop_method'];
@@ -28,7 +29,6 @@ class Converter extends Base
 			$new_width = $target_width;
 			$new_height = $target_height;
 		}
-
 		$im = new \Imagick($orig_file_path);
 
 		$im->cropThumbnailImage($new_width, $new_height);
@@ -37,6 +37,7 @@ class Converter extends Base
 		$im->stripImage();
 		$im->writeImage($target_file_path);
 		$im->destroy();
+		unset($im);
 		return array($new_width, $new_height, $target_width, $target_height, $target_file_path);
 	}
 }
