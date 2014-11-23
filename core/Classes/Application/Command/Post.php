@@ -73,6 +73,15 @@ class Post extends Base
 
 		foreach($postsToInsertNewest as $post)
 		{
+			if($post['has_pic'] == Posts::PIC_STATUS_UNKNOWN)
+			{
+				$this->log('adding task to process post images: '. $post['post_id']);
+				$this->application->bll->queue->addTask(
+					Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
+					$post['post_id'] . $post['author_id'],
+					$post
+				);
+			}
 			$this->application->bll->posts->savePostToActive($post['post_id'], $post['author_id'], $post);
 		}
 		$this->application->db->master->query('ALTER TABLE active_posts ENABLE KEYS');

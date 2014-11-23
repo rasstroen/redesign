@@ -71,8 +71,8 @@ class Post extends Base
 			return;
 		}
 
-
-		$temp = '/tmp/' . md5(rand(12,10112)) . '.jpg';
+		mt_rand(1,21312323);
+		$temp = '/tmp/' . md5(rand(12,101122332)) . '.jpg';
 		$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
 
 		foreach($urls as $picUrl)
@@ -148,13 +148,6 @@ class Post extends Base
 			{
 				$this->application->bll->posts->saveAuthorPost(
 					$author['author_id'],
-					$post
-				);
-
-				$this->log('Adding task to process post image: ' . $post['url']);
-				$this->application->bll->queue->addTask(
-					Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
-					$post['url'],
 					$post
 				);
 			}
