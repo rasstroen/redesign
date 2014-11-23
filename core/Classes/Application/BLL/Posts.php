@@ -34,6 +34,7 @@ class Posts extends BLL
 			$post['author'] = $authors[$post['author_id']];
 			$post['short'] 	= $this->shortText($post['short'], 70);
 			$post['pub_date']	= date('d.m.y H:i', $post['pub_time']);
+			$post['title']	= $this->shortText($post['title'], 70);
 		}
 		unset($post);
 	}
@@ -113,6 +114,7 @@ class Posts extends BLL
 		$this->savePostToArchive($authorId, $postId, $postData);
 		$this->savePostAuthorLink($authorId, $postId, $pubTime);
 		$this->savePostTags($authorId, $postId, $postData);
+		return $postId;
 	}
 
 	private function savePostTags($authorId, $postId, $postData)
@@ -251,10 +253,13 @@ class Posts extends BLL
 	}
 
 	public function shortText($text, $words = 200) {
+
+		$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 		$text       = str_replace(
 			array('<br>', '<br />', '<br/>'), ' ' , $text
 		);
 		$noHtml    = trim(strip_tags($text));
+
 		$exploded   = explode(' ', $noHtml, ($words + 1));
 		if (count($exploded) > $words)
 		{

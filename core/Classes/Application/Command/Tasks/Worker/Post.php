@@ -7,7 +7,7 @@ class Post extends Base
 {
 	private $minPostsComments   = 30;
 
-	public function processImages($data)
+	public function methodProcessImages($data)
 	{
 		$this->log('PROCESS IMAGES');
 		$this->log(print_r($data,1));
@@ -34,14 +34,14 @@ class Post extends Base
 					$author['author_id'],
 					$post
 				);
-			}
 
-			$this>log('Addinf task to process post image: ' . $post['url']);
-			$this->application->bll->queue->addTask(
-				Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
-				$post['url'],
-				$post
-			);
+				$this>log('Adding task to process post image: ' . $post['url']);
+				$this->application->bll->queue->addTask(
+					Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
+					$post['url'],
+					$post
+				);
+			}
 			/**
 			 * [24] => Array
 			(
