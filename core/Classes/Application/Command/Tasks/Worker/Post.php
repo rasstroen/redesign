@@ -77,27 +77,31 @@ class Post extends Base
 
 		foreach($urls as $picUrl)
 		{
-			$res = array();
-			file_put_contents($temp, file_get_contents($picUrl));
-			$size = getimagesize($temp);
-			if ($size) {
-				if(($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY))
-				{
-					$hasPic = Posts::PIC_STATUS_HAS_PIC;
-					if($size[0] >= $this->wideSize)
-					{
-						$hasPic = Posts::PIC_STATUS_HAS_WIDE_PIC;
-						$res[] = $this->application->imageConverter->resize($temp, $this->settings['wide'], $this->getLocalImagePathWide($postId, $authorId), $size);
+			try {
+				$res = array();
+				file_put_contents($temp, file_get_contents($picUrl));
+				$size = getimagesize($temp);
+				if ($size) {
+					if (($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY)) {
+						$hasPic = Posts::PIC_STATUS_HAS_PIC;
+						if ($size[0] >= $this->wideSize) {
+							$hasPic = Posts::PIC_STATUS_HAS_WIDE_PIC;
+							$res[]  = $this->application->imageConverter->resize($temp, $this->settings['wide'], $this->getLocalImagePathWide($postId, $authorId), $size);
+						}
+						$res[] = $this->application->imageConverter->resize($temp, $this->settings['normal'], $this->getLocalImagePath($postId, $authorId), $size);
+						$res[] = $this->application->imageConverter->resize($temp, $this->settings['small'], $this->getLocalImagePathSmall($postId, $authorId), $size);
+						$res[] = $this->application->imageConverter->resize($temp, $this->settings['big'], $this->getLocalImagePathBig($postId, $authorId), $size);
+						break;
 					}
-					$res[] = $this->application->imageConverter->resize($temp, $this->settings['normal'], $this->getLocalImagePath($postId, $authorId), $size);
-					$res[] = $this->application->imageConverter->resize($temp, $this->settings['small'], $this->getLocalImagePathSmall($postId, $authorId), $size);
-					$res[] = $this->application->imageConverter->resize($temp, $this->settings['big'], $this->getLocalImagePathBig($postId, $authorId), $size);
-					break;
 				}
+			}catch(\Exception $e)
+			{
+				$this->log('Exc:'. $e->getMessage());
 			}
 		}
 		$this->log(print_r($res,1));
 		$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic);
+		exit(0);
 	}
 
 	function getLocalImagePath($postId, $authorId)

@@ -70,7 +70,7 @@ class Queue extends BLL
 			'name'              => 'QUEUE_POSTS_PROCESS_POSTS_IMAGES',
 			'priority'          => 1,
 			'workers'           => 20,
-			'tasks_per_worker'  => 1,
+			'tasks_per_worker'  => 10,
 			'command'           => 'Post',
 			'method'            => 'processImages',
 			'enabled'           => 1,

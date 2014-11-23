@@ -8,7 +8,7 @@ class Processor extends Base
 	private $lockRunFileName            = '/tmp/lockProcessorRun';
 	private $lockRunWorkersFileName     = '/tmp/lockWorkersProcessorRun';
 	private $iterationsRun              = 48;
-	private $iterationsRunWorkers       = 128;
+	private $iterationsRunWorkers       = 1280;
 	/**
 	 * Выбираем текущие задачи из очередей,
 	 * удаляем задачи и запускаем обработчики
