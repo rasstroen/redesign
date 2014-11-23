@@ -96,6 +96,7 @@ class Post extends Base
 				}
 			}catch(\Exception $e)
 			{
+				$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
 				$this->log('Exc:'. $e->getMessage());
 			}
 		}
