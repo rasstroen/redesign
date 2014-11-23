@@ -23,9 +23,7 @@ function _drawTopPostInList($post)
 	<div class="post_list_item main_popular">
 		<span><a href="#"><?=htmlspecialchars($post['author']['username'])?></a></span>
 		<span><a href="#"><?=htmlspecialchars($post['title'])?></a></span>
-		<div class="text">
-			<?=htmlspecialchars($post['short'])?>
-			<br>
+		<div class="text"><?=trim($post['short'])?><br>
 			<?=$post['comments']?>
 			<br>
 			<?=$post['pub_date']?>

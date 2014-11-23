@@ -252,13 +252,17 @@ class Posts extends BLL
 		);
 	}
 
-	public function shortText($text, $words = 200) {
+	public function shortText($text, $words = 200)
+	{
+		global $t;
 
-		$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+		$text = html_entity_decode(str_replace('&nbsp;',' ',$text), ENT_QUOTES, 'UTF-8');
+
 		$text       = str_replace(
 			array('<br>', '<br />', '<br/>'), ' ' , $text
 		);
 		$noHtml    = trim(strip_tags($text));
+
 
 		$exploded   = explode(' ', $noHtml, ($words + 1));
 		if (count($exploded) > $words)
@@ -266,7 +270,8 @@ class Posts extends BLL
 			array_pop($exploded);
 			$exploded[] = '...';
 		}
-		return implode(' ', $exploded);
+		mb_regex_encoding('UTF-8');
+		return mb_ereg_replace('/ {2,}/','s',implode(' ', $exploded));
 	}
 
 	public function createAuthorTagsTable($tableName)
