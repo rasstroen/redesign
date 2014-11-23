@@ -15,10 +15,55 @@ class Posts extends BLL
 	const PIC_STATUS_UNKNOWN        = 0;
 	const PIC_STATUS_HAS_PIC        = 1;
 	const PIC_STATUS_HASNOT_PIC     = 2;
+	const PIC_STATUS_HAS_WIDE_PIC   = 3;
 
 	const VIDEO_STATUS_UNKNOWN      = 0;
 	const VIDEO_STATUS_HAS_PIC      = 1;
 	const VIDEO_STATUS_HASNOT_PIC   = 2;
+
+	public function setHasPic($postId, $authorId, $hasPic)
+	{
+		$yearMonth = $this->getYearMonthByAuthorIdPostId($postId, $authorId);
+
+		$this->updatePostByYearMonth($postId, $authorId, $yearMonth, array(
+			'has_pic' => $hasPic
+		));
+	}
+
+	public function getPostByAuthorIdPostId($postId, $authorId)
+	{
+		$yearMonth = $this->getYearMonthByAuthorIdPostId($postId, $authorId);
+
+		return $this->application->db->master->selectRow('SELECT * FROM `_posts_archive__' . $yearMonth. '`
+			WHERE post_id=? AND author_id=?', array($postId, $authorId));
+	}
+
+	public function updatePostByYearMonth($postId, $authorId, $yearMonth, $data)
+	{
+		$sqlParts = array();
+		foreach($data as $field => $value)
+		{
+			$sqlParts[] = '`'.$field.'`=' .  $this->application->db->master->pdo->quote($value) . '';
+		}
+		return $this->application->db->master->query(
+			'UPDATE `_posts_archive__' . $yearMonth. '` SET '. implode(',', $sqlParts).'
+			WHERE post_id=? AND author_id=?
+			',
+			array($postId, $authorId)
+			);
+	}
+
+	public function getYearMonthByAuthorIdPostId($postId, $authorId)
+	{
+		$tableName = '_posts_author__' . ($authorId % self::SHARDS_COUNT_AUTHOR);
+		return $this->application->db->master->selectSingle(
+			'SELECT `year_month` FROM '. $tableName . ' WHERE post_id=? AND author_id=?',
+			array(
+				$postId,
+				$authorId
+			)
+			);
+	}
 
 	public function preparePosts(array &$posts)
 	{
@@ -35,8 +80,18 @@ class Posts extends BLL
 			$post['short'] 	= $this->shortText($post['short'], 70);
 			$post['pub_date']	= date('d.m.y H:i', $post['pub_time']);
 			$post['title']	= $this->shortText($post['title'], 70);
+			$post['image_src'] = '';
+			if($post['has_pic'] == self::PIC_STATUS_HAS_WIDE_PIC || $post['has_pic'] == self::PIC_STATUS_HAS_PIC)
+			{
+				$post['image_src'] = $this->getPostImageUrl($post['post_id'], $post['author_id'], $post['has_pic'] == self::PIC_STATUS_HAS_PIC ? '_b' : '_w');
+			}
 		}
 		unset($post);
+	}
+
+	function getPostImageUrl($postId, $authorId, $postfix = '')
+	{
+		return $this->application->configuration->getStaticWebUrl() . '/pstmgs/' . ($postId % 20) . '/' . ($authorId % 20) . '/' . $postId . $postfix . '.jpg';
 	}
 
 	public function getPopularPosts($limit = 3)

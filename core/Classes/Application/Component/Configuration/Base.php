@@ -26,6 +26,11 @@ class Base extends \Application\Component\Base
 		return $this->configuration['rootPath'];
 	}
 
+	public function getStaticWebUrl()
+	{
+		return 'http://lj-top.ru/static';
+	}
+
 	/**
 	 * @param $pageKey
 	 * @return array

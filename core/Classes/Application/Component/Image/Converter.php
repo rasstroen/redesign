@@ -4,13 +4,13 @@ use Application\Component\Base;
 
 class Converter extends Base
 {
-	public function resize($orig_file_path, $settings, $target_file_path)
+	public function resize($orig_file_path, $settings, $target_file_path, $size)
 	{
 		$quality = 95;
 
 		$crop = $settings['crop_method'];
-		$current_width = $settings['width'];
-		$current_height = $settings['height'];
+		$current_width = $size[0];
+		$current_height = $size[1];
 		$target_width = min($current_width, $settings['width_requested']);
 		$target_height = min($current_height, $settings['height_requested']);
 
@@ -37,6 +37,6 @@ class Converter extends Base
 		$im->stripImage();
 		$im->writeImage($target_file_path);
 		$im->destroy();
-		return array($new_width, $new_height, $target_width, $target_height);
+		return array($new_width, $new_height, $target_width, $target_height, $target_file_path);
 	}
 }

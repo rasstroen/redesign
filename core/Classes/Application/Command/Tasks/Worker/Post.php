@@ -1,18 +1,130 @@
 <?php
 namespace Application\Command\Tasks\Worker;
 
+use Application\BLL\Posts;
 use Application\BLL\Queue;
 
 class Post extends Base
 {
+	private $minSizeX	= 200;
+	private $minSizeY	= 200;
 	private $minPostsComments   = 30;
+	private $wideSize = 700;
+
+	private $settings = array(
+		'small' => array(
+			'crop_method' 		=> 1,
+			'width_requested' 	=> 90,
+			'height_requested' 	=> 90,
+		),
+		'normal' => array(
+			'crop_method' 		=> 1,
+			'width_requested' 	=> 150,
+			'height_requested' 	=> 150,
+		),
+		'big' => array(
+			'crop_method' 		=> 1,
+			'width_requested' 	=> 300,
+			'height_requested' 	=> 300,
+		),
+		'wide' => array(
+			'crop_method' 		=> 0,
+			'width_requested' 	=> 700,
+			'height_requested' 	=> 150,
+		),
+	);
 
 	public function methodProcessImages($data)
 	{
-		$this->log('PROCESS IMAGES');
-		$this->log(print_r($data,1));
-		die();
+		$this->log('processing images');
+
+		if(isset($data['url'])) {
+			$username = explode('/', $data['url']);
+			$postId   = intval(array_pop($username));
+			$username = str_replace('-', '_', $username[2]);
+			$username = reset(explode('.', $username));
+			$author   = $this->application->bll->author->getByUserName($username);
+			$authorId = $author['author_id'];
+			$description = $data['description'];
+		}
+		else
+		{
+			$authorId 	= $data['author_id'];
+			$postId		= $data['post_id'];
+			$post		= $this->application->bll->posts->getPostByAuthorIdPostId($postId, $authorId);
+			$description	= $post['text'];
+		}
+
+		preg_match_all("/(<img )(.+?)( \/)?(>)/", $description, $images);
+		$urls = array();
+		foreach ($images[2] as $val)
+		{
+			if (preg_match("/(src=)('|\")(.+?)('|\")/", $val, $matches) == 1)
+			{
+				$urls[$matches[3]] = $matches[3];
+			}
+		}
+
+		if (!count($urls))
+		{
+			$this->log('no pictures');
+			return;
+		}
+
+
+		$temp = '/tmp/' . md5(rand(12,10112)) . '.jpg';
+		$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
+
+		foreach($urls as $picUrl)
+		{
+			$res = array();
+			file_put_contents($temp, file_get_contents($picUrl));
+			$size = getimagesize($temp);
+			if ($size) {
+				if(($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY))
+				{
+					$hasPic = Posts::PIC_STATUS_HAS_PIC;
+					if($size[0] >= $this->wideSize)
+					{
+						$hasPic = Posts::PIC_STATUS_HAS_WIDE_PIC;
+						$res[] = $this->application->imageConverter->resize($temp, $this->settings['wide'], $this->getLocalImagePathWide($postId, $authorId), $size);
+					}
+					$res[] = $this->application->imageConverter->resize($temp, $this->settings['normal'], $this->getLocalImagePath($postId, $authorId), $size);
+					$res[] = $this->application->imageConverter->resize($temp, $this->settings['small'], $this->getLocalImagePathSmall($postId, $authorId), $size);
+					$res[] = $this->application->imageConverter->resize($temp, $this->settings['big'], $this->getLocalImagePathBig($postId, $authorId), $size);
+					break;
+				}
+			}
+		}
+		$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic);
 	}
+
+	function getLocalImagePath($postId, $authorId)
+	{
+		return $this->getLocalImageFolder($postId, $authorId) . $postId . '.jpg';
+	}
+
+	function getLocalImagePathSmall($postId, $authorId)
+	{
+		return $this->getLocalImageFolder($postId, $authorId) . $postId . '_s.jpg';
+	}
+
+	function getLocalImagePathBig($postId, $authorId)
+	{
+		return $this->getLocalImageFolder($postId, $authorId) . $postId . '_b.jpg';
+	}
+
+	function getLocalImagePathWide($postId, $authorId)
+	{
+		return $this->getLocalImageFolder($postId, $authorId) . $postId . '_w.jpg';
+	}
+
+
+	function getLocalImageFolder($postId, $authorId) {
+		return '/home/sites/lj-top.ru/static/pstmgs/' . ($postId % 20) . '/' . ($authorId % 20) . '/';
+	}
+
+
 	/**
 	 * @param $posts
 	 */
