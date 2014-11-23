@@ -101,7 +101,6 @@ class Post extends Base
 		}
 		$this->log(print_r($res,1));
 		$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic);
-		exit(0);
 	}
 
 	function getLocalImagePath($postId, $authorId)
