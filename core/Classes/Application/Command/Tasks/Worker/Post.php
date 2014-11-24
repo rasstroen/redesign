@@ -51,7 +51,14 @@ class Post extends Base
 		{
 			$authorId 	= $data['author_id'];
 			$postId		= $data['post_id'];
-			$post		= $this->application->bll->posts->getPostByAuthorIdPostId($postId, $authorId);
+			try
+			{
+				$post		= $this->application->bll->posts->getPostByAuthorIdPostId($postId, $authorId);
+			}
+			catch(\Exception $e)
+			{
+				$this->log(print_r($e,1). ' '. $authorId.' , '. $postId);
+			}
 			$description	= $post['text'];
 		}
 
@@ -68,12 +75,13 @@ class Post extends Base
 		if (!count($urls))
 		{
 			$this->log('no pictures');
+			$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic = Posts::PIC_STATUS_HASNOT_PIC);
 			return;
 		}
 
 		mt_rand(1,21312323);
 		$temp = '/tmp/images/' . md5(rand(12,101122332)).time(). microtime(true) . '.jpg';
-		$this->log('saving to temp: ' . $temp);
+		$this->log('pic saving to temp: ' . $temp .' postId=' . $postId .' authorId='. $authorId);
 		$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
 
 		foreach($urls as $picUrl)

@@ -63,7 +63,7 @@ class Post extends Base
 				$this->log('adding task to process post images: '. $post['post_id']);
 				$this->application->bll->queue->addTask(
 					Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
-					$post['post_id'] . $post['author_id'],
+					$post['post_id'] . '_' . $post['author_id'],
 					$post
 				);
 			}
@@ -78,7 +78,7 @@ class Post extends Base
 				$this->log('adding task to process post images: '. $post['post_id']);
 				$this->application->bll->queue->addTask(
 					Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
-					$post['post_id'] . $post['author_id'],
+					$post['post_id'] . '_' . $post['author_id'],
 					$post
 				);
 			}
