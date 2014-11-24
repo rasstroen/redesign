@@ -6,6 +6,17 @@ namespace Application\BLL;
  */
 class Rubric extends BLL
 {
+
+	public function linkPostToRubricWithWord($phraseId, $postId, $authorId, $pubDate, $rubricId)
+	{
+		$this->getDbMaster()->query(
+			'INSERT INTO rubric_auto_link(rubric_id, post_id, author_id, pub_date, phrase_id) VALUES(?,?,?,?,?)',
+			array(
+				$rubricId, $postId, $authorId, $pubDate, $phraseId
+			)
+		);
+	}
+
 	public function getAll()
 	{
 		return $this->getDbMaster()->selectAll('SELECT * FROM `rubric` ORDER BY `parent_id`, `position`', array(), 'rubric_id');

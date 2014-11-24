@@ -95,6 +95,20 @@ class Posts extends BLL
 		return $this->application->configuration->getStaticWebUrl() . '/pstmgs/' . ($postId % 20) . '/' . ($authorId % 20) . '/' . $postId . $postfix . '.jpg';
 	}
 
+
+	public function getPopularPostsWithOffset($offset, $limit)
+	{
+		$postsIds = $this->application->db->master->selectAll(
+			'SELECT * FROM `active_posts` ORDER BY `rating` DESC LIMIT ?, ?',
+			array(
+				$offset,
+				$limit
+			)
+		);
+
+		return $this->getPostsByIds($postsIds);
+	}
+
 	public function getPopularPosts($limit = 3)
 	{
 		$postsIds = $this->application->db->master->selectAll(
@@ -115,9 +129,10 @@ class Posts extends BLL
 		return $this->getPostsByIds($postsIds);
 	}
 
-	private function getPostsByIds(array $ids = array())
+	public function getPostsByIds(array $ids = array())
 	{
 		$i=0;
+		$postsByMonthsPostIds = array();
 		foreach($ids as $data)
 		{
 			$month = date('Y_m', $data['pub_time']);
@@ -141,7 +156,7 @@ class Posts extends BLL
 				$allPosts[$post['author_id'].'_'.$post['post_id']] = $post;
 			}
 		}
-
+		$out = array();
 		foreach($ids as $data)
 		{
 			$out[] = $allPosts[$data['author_id'].'_'.$data['post_id']];
