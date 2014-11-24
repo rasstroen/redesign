@@ -2,7 +2,7 @@
 
 function templateMenuListIndex($data)
 {
-	?><ul class="adminMenu"><?php
+	?><ul class="topMenu"><?php
 	$menuItems = $data['items'];
 	foreach($menuItems as $name => $item)
 	{

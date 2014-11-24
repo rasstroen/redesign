@@ -44,9 +44,13 @@ class Top extends Base
 	public function actionListIndex()
 	{
 		$selectedFirstLevelItemName   = explode('/', $this->application->request->getUrl());
-		$selectedFirstLevelItemName   = isset($selectedFirstLevelItemName[2]) ? $selectedFirstLevelItemName[2] : '';
+		$selectedFirstLevelItemName   = isset($selectedFirstLevelItemName[1]) ? $selectedFirstLevelItemName[1] : '';
 		$data = array(
 			'items' => array(
+				'' => array(
+					'title' => 'Главная',
+					'url'   => $this->application->routing->getUrl(''),
+				),
 				'top' => array(
 					'title' => 'Рейтинг авторов',
 					'url'   => $this->application->routing->getUrl('top/month/authors'),

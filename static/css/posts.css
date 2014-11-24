@@ -1,0 +1,23 @@
+.post_list_item
+{
+	display: block;
+	width: 690px;
+	padding: 0;
+	margin-bottom: 10px;
+	background: #fff;
+	float: none;
+	position: relative;
+}
+
+.post_list_item .widepic
+{
+	width: 690px;
+	overflow: hidden;
+}
+
+.post_list_item .pic
+{
+	position: relative;
+	float: left;
+	padding: 10px;
+}

@@ -184,9 +184,6 @@ return array(
 			'layout'    => 'index',
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
-				'header'   => array(
-					'top_menu_index'=>$modules['top_menu_index'],
-				),
 				'content' => array(
 					'index_top_popular'=>$modules['index_top_popular'],
 					'index_top_new'=>$modules['index_top_new'],
@@ -224,6 +221,18 @@ return array(
 			'blocks'    => array(
 				'header'   => array(
 					'admin_menu_index'=>$modules['admin_menu_index'],
+				),
+			)
+		),
+		'index' => array(
+			'css' => array(
+				'reset' => '/static/css/reset.css',
+				'index' => '/static/css/layout/index.css',
+				'posts' => '/static/css/posts.css',
+			),
+			'blocks'    => array(
+				'header'   => array(
+					'top_menu_index'=>$modules['top_menu_index'],
 				),
 			)
 		)

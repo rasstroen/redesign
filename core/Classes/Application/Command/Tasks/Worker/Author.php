@@ -161,7 +161,7 @@ class Author extends Base
 		}
 		if(isset($index['YA:CITY']))
 		{
-			$data['journal_city_name'] = $values[$index['YA:CITY'][0]]['attributes']['DC:TITLE'];
+			$data['journal_city_name'] = urldecode($values[$index['YA:CITY'][0]]['attributes']['DC:TITLE']);
 		}
 		$data['journal_created']            = $values[$index['FOAF:WEBLOG'][0]]['attributes']['LJ:DATECREATED'];
 		if(isset($index['YA:BIO']))

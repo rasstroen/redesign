@@ -77,7 +77,7 @@ class Posts extends BLL
 		foreach ($posts as &$post)
 		{
 			$post['author'] = $authors[$post['author_id']];
-			$post['short'] 	= $this->shortText($post['short'], 70);
+			$post['short'] 	= $this->shortText($post['short'], 50);
 			$post['pub_date']	= date('d.m.y H:i', $post['pub_time']);
 			$post['title']	= $this->shortText($post['title'], 70);
 			$post['image_src'] = '';
