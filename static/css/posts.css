@@ -21,3 +21,18 @@
 	float: left;
 	padding: 10px;
 }
+
+.post_item
+{
+	display: block;
+	width: 690px;
+	padding: 0;
+	margin-bottom: 10px;
+	background: #fff;
+	float: none;
+	position: relative;
+}
+
+.post_item img{
+	max-width: 690px;
+}

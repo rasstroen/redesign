@@ -78,6 +78,7 @@ class Posts extends BLL
 		{
 			$post['author'] = $authors[$post['author_id']];
 			$post['short'] 	= $this->shortText($post['short'], 50);
+			$post['text'] 	= $this->prepareText($post['text']);
 			$post['pub_date']	= date('d.m.y H:i', $post['pub_time']);
 			$post['title']	= $this->shortText($post['title'], 70);
 			$post['image_src'] = '';
@@ -305,6 +306,13 @@ class Posts extends BLL
 				$postData['description'],
 			)
 		);
+	}
+
+	public function prepareText($text)
+	{
+		$text = html_entity_decode(str_replace('&nbsp;',' ',$text), ENT_QUOTES, 'UTF-8');
+		$text = strip_tags($text, '<quote><article><h1><h2><h3><b><strong><p><i><em><ul><ol><li><hr><div><embed><object><br><img><a><lj-embed>');
+		return $text;
 	}
 
 	public function shortText($text, $words = 200)

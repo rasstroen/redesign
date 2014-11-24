@@ -72,7 +72,8 @@ class Post extends Base
 		}
 
 		mt_rand(1,21312323);
-		$temp = '/tmp/' . md5(rand(12,101122332)).time() . '.jpg';
+		$temp = '/tmp/images/' . md5(rand(12,101122332)).time(). microtime(true) . '.jpg';
+		$this->log('saving to temp: ' . $temp);
 		$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
 
 		foreach($urls as $picUrl)

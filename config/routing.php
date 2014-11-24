@@ -83,16 +83,33 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'indexTopNew'
 	),
+	/**
+	 * топ новых на главной
+	 */
+	'post_item'=> array(
+		'className' => '\Application\Module\Post',
+		'template'  => 'post',
+		'action'    => 'show',
+		'mode'      => 'item'
+	),
 
 );
 
 return array(
 	'map'  => array(
-
 		'top' => array(
 			'month' => array(
 				'authors' => array(
 					'' => 'authors_top',
+				)
+			)
+		),
+		'post' => array(
+			'%s' => array(
+				'_var' => 'username',
+				'%d' => array(
+					'_var' => 'postId',
+					'' => 'post_item',
 				)
 			)
 		),
@@ -205,6 +222,22 @@ return array(
 				)
 			)
 		),
+		/**
+		 * Страница поста
+		 */
+		'post_item'=> array(
+			'layout'    => 'index',
+			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
+			'blocks'    => array(
+				'header'   => array(
+					'top_menu_index'=>$modules['top_menu_index'],
+				),
+				'content' => array(
+					'post_item'=>$modules['post_item'],
+				)
+			)
+		),
+
 	),
 	/**
 	 * Умолчания для лайаутов

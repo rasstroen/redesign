@@ -1,4 +1,25 @@
 <?php
+
+function templatePostShowItem(array $data)
+{
+	$post = $data['post'];
+	?>
+	<div class="post_item clearfix">
+		<div>
+			<h3>
+				<span><?=htmlspecialchars($post['author']['username'])?></span>
+				<span><?=htmlspecialchars($post['title'])?></span>
+			</h3>
+		</div>
+		<div class="text"><?=trim($post['text'])?><br>
+			<?=$post['comments']?>
+			<br>
+			<?=$post['pub_date']?>
+			<br>
+		</div>
+	</div>
+<?php
+}
 function templatePostListIndexTopPopular(array $data)
 {
 	?><h2>Популярное</h2><?php
