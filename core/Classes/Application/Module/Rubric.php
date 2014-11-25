@@ -12,8 +12,10 @@ class Rubric extends Base
 			$rubric['adminUrl']     = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id']);
 			$rubric['addUrl']       = $this->application->routing->getUrl('admin/rubric/0/edit?parentId=' . $rubric['rubric_id']);
 			$rubric['editUrl']      = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id'] .'/edit');
+			$rubric['linkedUrl']    = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id'] .'/linked');
 			$rubric['deleteUrl']    = $this->application->routing->getUrl('admin/rubric/?writemodule=admin/rubric&method=delete&rubricId=' . $rubric['rubric_id']);
-			$rubric['restoreUrl']    = $this->application->routing->getUrl('admin/rubric/?writemodule=admin/rubric&method=restore&rubricId=' . $rubric['rubric_id']);
+			$rubric['restoreUrl']   = $this->application->routing->getUrl('admin/rubric/?writemodule=admin/rubric&method=restore&rubricId=' . $rubric['rubric_id']);
+			$rubric['posts_count']  = 0;
 		}
 		unset($rubric);
 		$parents    = array();
@@ -59,13 +61,37 @@ class Rubric extends Base
 		);
 	}
 
+	public function actionListAdminLinkedPosts(array $variables)
+	{
+		$isDone     = isset($variables['isDone']) && $variables['isDone'] == 'done';
+		$rubricId   = $variables['rubricId'];
+		$rubric     = $this->application->bll->rubric->getById($rubricId);
+		$counts     = $this->application->bll->rubric->getPhrasesCountsByRubricId($rubricId);
+
+		$data['posts']      = $this->application->bll->rubric->getRubricAutoLinkedPosts($rubricId);
+		$data['isDone']     = $isDone;
+		$data['counts']     = $counts;
+		$data['rubric']     = $rubric;
+		$data['notDoneUrl'] = $this->application->routing->getUrl('admin/rubric/' . $rubricId .'/linked');
+		$data['doneUrl']    = $this->application->routing->getUrl('admin/rubric/' . $rubricId .'/linked/done');
+		uasort($data['posts'], function ($post1, $post2){
+			return count($post2['phrases']) - count($post1['phrases']);
+		});
+		return $data;
+	}
+
+
 	public function actionEditItem(array $variables = array())
 	{
+
 		$parentId   =  $this->application->request->getQueryParam('parentId' , 0);
 		$rubricId   =  $variables['rubricId'];
+		$phrases    = array();
 		if($rubricId)
 		{
-			$rubric = $this->application->bll->rubric->getById($rubricId);
+			$rubric                 = $this->application->bll->rubric->getById($rubricId);
+			$rubric['linkedUrl']    = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id'] .'/linked');
+			$phrases                = $this->application->bll->rubric->getPhrasesCountsByRubricId($rubricId);
 		}
 		else
 		{
@@ -83,7 +109,8 @@ class Rubric extends Base
 		return array(
 			'parentId'      => $parentId,
 			'rubric'        => $rubric,
-			'parentRubric'  => $parentRubric
+			'parentRubric'  => $parentRubric,
+			'phrases'       => $phrases
 		);
 	}
 }

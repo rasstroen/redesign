@@ -4,7 +4,7 @@ namespace Application\Command;
 
 class Search extends Base
 {
-
+	private $minWeight = 2;
 	public function actionApplyRubrics()
 	{
 
@@ -13,32 +13,39 @@ class Search extends Base
 		foreach($rubrics as $rubric)
 		{
 			$this->log('searching for post to bind to "' . $rubric['name'] . '"');
-			$stopWords = array(
-				1=>'Владимир Путин',
-				2=>'Дмитрий Медведев',
-			);
+			$stopWords = $this->application->bll->rubric->getPhrasesCountsByRubricId($rubric['rubric_id']);
+			$this->log(print_r($stopWords, 1));
 
 			$cl = new \SphinxClient();
-			$cl->SetMatchMode(SPH_MATCH_ANY);
+			$cl->SetMatchMode(SPH_MATCH_EXTENDED2);
 			$cl->SetSortMode(SPH_SORT_RELEVANCE);
-			$cl->SetLimits(0, 100, 5000);
+			$cl->SetLimits(0, 100, 200);
 			$posts = array();
 			foreach($stopWords as $phraseId => $phrase)
 			{
+				$phrase = $phrase['phrase'];
 				$q = array();
 				$words = explode(" ", $phrase);
-				foreach($words as $word)
+				/*foreach($words as $word)
 				{
 					$w = trim($cl->EscapeString($word));
 					$q[] = '(' . $w . ' | *' . $w . '*)';
-				}
+				}*/
+
+				$w = trim($cl->EscapeString($phrase));
+				$q[] = '(' . $w . ')';
+
 				$q = implode(' & ', $q);
 				$this->log($q);
 				$result = $cl->Query($q, 'ljtop_active_new_index');
-
+				$i=1;
 				foreach($result['matches'] as $match)
 				{
 					$weight     = $match['weight'];
+					if($weight < $this->minWeight)
+					{
+						continue;
+					}
 					$postId     = $match['attrs']['post_id'];
 					$authorId   = $match['attrs']['author_id'];
 					$pubDate    = $match['attrs']['pub_date'];
@@ -61,7 +68,7 @@ class Search extends Base
 						);
 					}
 
-					if(count($posts) > 4)
+					if($i++ >= 30)
 					{
 						break;
 					}

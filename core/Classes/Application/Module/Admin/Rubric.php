@@ -6,6 +6,15 @@ use Application\Module\Base;
 
 class Rubric extends Base
 {
+	public function doAddWord()
+	{
+		$rubricId   = $this->application->request->getPostParam('rubricId' , 0);
+		$this->application->bll->rubric->addPhrase(
+			$rubricId,
+			$this->application->request->getPostParam('name' , '')
+		);
+
+	}
 	public function doDelete()
 	{
 		$rubricId   = $this->application->request->getQueryParam('rubricId' , 0);

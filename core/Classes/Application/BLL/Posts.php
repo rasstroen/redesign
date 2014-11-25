@@ -129,20 +129,53 @@ class Posts extends BLL
 		return $this->getPostsByIds($postsIds);
 	}
 
-	public function getPostsByIds(array $ids = array())
+	public function prepareMultiSelectQuery(array $ids = array())
 	{
 		$i=0;
 		$postsByMonthsPostIds = array();
 		foreach($ids as $data)
 		{
-			$month = date('Y_m', $data['pub_time']);
+			if(isset($data['pub_time']) || isset($data['pub_date']))
+			{
+				$month = date('Y_m', isset($data['pub_time']) ? $data['pub_time'] : $data['pub_date']);
+			}
+			else
+			{
+				$month = 0;
+			}
 			$i++;
-			$postsByMonthsPairs[$month][] = '(?, ?)';
-			$postsByMonthsPostIds[$month][] = '?';
-			$values[$month]['post_ids'][$data['post_id']] 	= $data['post_id'];
-			$values[$month]['ids'][] 						= $data['post_id'];
-			$values[$month]['ids'][] 						= $data['author_id'];
+			$key = $data['post_id'].'-'.$data['author_id'];
+			$postsByMonthsPairs[$month][$key] = '(?, ?)';
+			$postsByMonthsPostIds[$month][$key] = '?';
+			$values[$month]['post_ids'][$key] 	= $data['post_id'];
+			$values[$month]['ids'][$key . '-pid'] 						= $data['post_id'];
+			$values[$month]['ids'][$key . '-aid'] 						= $data['author_id'];
 		}
+		return array($postsByMonthsPostIds, $postsByMonthsPairs, $values);
+	}
+
+	private function prepareMultiSelectDateQuery(array $ids = array())
+	{
+		$i=0;
+		$postsByMonthsPostIds = array();
+		foreach($ids as $data)
+		{
+			$month = date('Y_m', isset($data['pub_time']) ? $data['pub_time'] : $data['pub_date']);
+			$i++;
+			$key = $data['post_id'].'-'.$data['author_id'];
+			$postsByMonthsPairs[$month][$key] = '(?, ?)';
+			$postsByMonthsPostIds[$month][$key] = '?';
+			$values[$month]['post_ids'][$key] 	= $data['post_id'];
+			$values[$month]['ids'][$key . '-pid'] 						= $data['post_id'];
+			$values[$month]['ids'][$key . '-aid'] 						= $data['author_id'];
+		}
+		return array($postsByMonthsPostIds, $postsByMonthsPairs, $values);
+	}
+
+	public function getPostsByIds(array $ids = array())
+	{
+		list($postsByMonthsPostIds, $postsByMonthsPairs, $values) = $this->prepareMultiSelectDateQuery($ids);
+
 		$allPosts = array();
 		foreach ($postsByMonthsPostIds as $month => $data)
 		{
@@ -153,13 +186,13 @@ class Posts extends BLL
 				);
 			foreach($postsMonths as $post)
 			{
-				$allPosts[$post['author_id'].'_'.$post['post_id']] = $post;
+				$allPosts[$post['author_id'] . '_' . $post['post_id']] = $post;
 			}
 		}
 		$out = array();
 		foreach($ids as $data)
 		{
-			$out[] = $allPosts[$data['author_id'].'_'.$data['post_id']];
+			$out[$data['post_id'] . '_' . $data['author_id']] = $allPosts[$data['author_id'] . '_' . $data['post_id']];
 		}
 
 		return $out;

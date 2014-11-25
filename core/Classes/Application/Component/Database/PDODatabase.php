@@ -125,7 +125,8 @@ class PDODatabase{
 		else
 		{
 			$errorInfo = $stmt->errorInfo();
-			throw new \Exception('Database error:' . print_r($errorInfo, 1) . print_r($parameters, 1) . print_r($query, true));
+
+			throw new \Exception('Database error:' . print_r(count($parameters), 1).' '.print_r($errorInfo, 1) . print_r($query, true) .  print_r($parameters, true));
 		}
 	}
 }

@@ -96,10 +96,13 @@ function templateAdminListAdminRubrics(array $data)
 	if(isset($rubricsByParents[0])) {
 		foreach ($rubricsByParents[0] as $parentRubric) {
 			?>
-			<li><a class="item<?php if($parentRubric['deleted']) echo ' deleted';?>" href="<?=$parentRubric['adminUrl']?>"><?=htmlspecialchars($parentRubric['title'])?></a>
+			<li><a class="item<?php if($parentRubric['deleted']) echo ' deleted';?>" href="<?=$parentRubric['adminUrl']?>">
+				<?=htmlspecialchars($parentRubric['title'])?>
+				(<?=intval($parentRubric['posts_count'])?>)
+			</a>
 			<a href="<?=$parentRubric['addUrl']?>">+добавить подрубрику</a>
 			<a href="<?=$parentRubric['editUrl']?>">редактировать</a>
-
+			<a href="<?=$parentRubric['linkedUrl']?>">связанные посты</a>
 
 			<?php if(!isset($rubricsByParents[$parentRubric['rubric_id']])){
 				?>
@@ -112,8 +115,12 @@ function templateAdminListAdminRubrics(array $data)
 					?>
 					<li>
 					<a class="subitem item<?php if($childRubric['deleted']) echo ' deleted';?>"
-					   href="<?= $childRubric['adminUrl'] ?>"><?= htmlspecialchars($childRubric['title']) ?></a>
+					   href="<?= $childRubric['adminUrl'] ?>">
+						<?= htmlspecialchars($childRubric['title']) ?>
+						(<?=intval($childRubric['posts_count'])?>)
+					</a>
 					<a href="<?= $childRubric['editUrl'] ?>">редактировать</a>
+					<a href="<?= $childRubric['linkedUrl'] ?>">связанные посты</a>
 					<a href="<?= $childRubric['deleteUrl'] ?>">-<?=$childRubric['deleted'] ? 'удалить' : 'скрыть'?></a>
 					<?php if($childRubric['deleted']) {?>
 						<a href="<?=$childRubric['restoreUrl']?>">показать</a>
@@ -156,5 +163,25 @@ function templateAdminEditItem(array $data)
 		</div>
 		<input type="submit" value="Сохранить" />
 	</form>
+
+	<h3><a href="<?=$data['rubric']['linkedUrl']?>">Автопривязки</a></h3>
+	<?php foreach($data['phrases'] as $phrase){?>
+	<div>
+		"<?=$phrase['phrase']?>", постов : <?=$phrase['posts_count']?>
+	</div>
+	<?php }?>
+	<h3>Добавить фразу</h3>
+	<form enctype="multipart/form-data" method="post">
+		<input type="hidden" name="writemodule" value="admin/rubric">
+		<input type="hidden" name="method" value="addWord">
+		<input type="hidden" name="rubricId" value="<?=isset($data['rubric'])?$data['rubric']['rubric_id'] : 0?>">
+		<input type="hidden" name="parentId" value="<?=isset($data['parentId'])?$data['parentId'] : 0?>">
+		<div>
+			<span>Новая фраза</span>
+			<input name="name" value="">
+		</div>
+		<input type="submit" value="добавить" />
+	</form>
+
 <?php
 }

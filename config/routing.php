@@ -92,7 +92,15 @@ $modules = array(
 		'action'    => 'show',
 		'mode'      => 'item'
 	),
-
+	/**
+	 * привязки постов
+	 */
+	'admin_linked_posts'=> array(
+		'className' => '\Application\Module\Rubric',
+		'template'  => 'rubric',
+		'action'    => 'list',
+		'mode'      => 'adminLinkedPosts'
+	),
 );
 
 return array(
@@ -127,7 +135,14 @@ return array(
 				'%d'	=> array(
 					'_var'  => 'rubricId',
 					''  => 'admin_rubric',
-					'edit'  => 'admin_rubric_edit'
+					'edit'  => 'admin_rubric_edit',
+					'linked'    => array(
+						''      => 'admin_linked_posts',
+						'done'  => array(
+							''=>	'admin_linked_posts',
+							'_var'  => 'isDone',
+						),
+					)
 					)
 			),
 			'demons' => array(
@@ -190,6 +205,18 @@ return array(
 			'blocks'    => array(
 				'content'   => array(
 					'admin_rubric'=>$modules['admin_rubric'],
+				),
+			)
+		),
+		/**
+		 * Привязки постов к рубрикам
+		 */
+		'admin_linked_posts' => array(
+			'layout'    => 'admin',
+			'title'     => 'Привязки',
+			'blocks'    => array(
+				'content'   => array(
+					'admin_linked_posts'=>$modules['admin_linked_posts'],
 				),
 			)
 		),
