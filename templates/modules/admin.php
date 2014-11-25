@@ -2,9 +2,9 @@
 function templateAdminShowItem(array $data)
 {
 	if($data['parentRubric']) {
-		?><h1>Привязки записей к рубрике <a href="<?= $data['parentRubric']['adminUrl'] ?>">"<?= $data['parentRubric']['title'] ?>"</a> / "<?= $data['rubric']['title'] ?>"</h1><?php
+		?><h1>"<a href="<?= $data['parentRubric']['adminUrl'] ?>"><?= $data['parentRubric']['title'] ?>"</a> / "<?= $data['rubric']['title'] ?>"</h1><?php
 	}else{
-		?><h1>Привязки записей к рубрике "<?= $data['rubric']['title'] ?>"</h1><?php
+		?><h1><?= $data['rubric']['title'] ?></h1><?php
 	}
 }
 

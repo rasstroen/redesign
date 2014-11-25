@@ -10,7 +10,7 @@ class Posts extends BLL
 
 	const SHARDS_COUNT_AUTHOR       = 128;
 
-	const POST_ACTIVE_LIFE_DAYS     = 10;
+	const POST_ACTIVE_LIFE_DAYS     = 7;
 
 	const PIC_STATUS_UNKNOWN        = 0;
 	const PIC_STATUS_HAS_PIC        = 1;
