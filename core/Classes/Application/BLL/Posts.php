@@ -67,11 +67,16 @@ class Posts extends BLL
 
 	public function preparePosts(array &$posts)
 	{
+		$authorIds = array();
 		foreach ($posts as $post)
 		{
 			$authorIds[] = 	$post['author_id'];
 		}
 
+		if(!count($authorIds))
+		{
+			return $posts;
+		}
 		$authors = $this->application->bll->author->getByIds($authorIds);
 
 		foreach ($posts as &$post)
@@ -132,7 +137,9 @@ class Posts extends BLL
 	public function prepareMultiSelectQuery(array $ids = array())
 	{
 		$i=0;
-		$postsByMonthsPostIds = array();
+		$postsByMonthsPostIds   = array();
+		$postsByMonthsPairs     = array();
+		$values                 = array();
 		foreach($ids as $data)
 		{
 			if(isset($data['pub_time']) || isset($data['pub_date']))
@@ -174,6 +181,10 @@ class Posts extends BLL
 
 	public function getPostsByIds(array $ids = array())
 	{
+		if(!count($ids))
+		{
+			return array();
+		}
 		list($postsByMonthsPostIds, $postsByMonthsPairs, $values) = $this->prepareMultiSelectDateQuery($ids);
 
 		$allPosts = array();

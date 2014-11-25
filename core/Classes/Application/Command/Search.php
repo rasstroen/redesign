@@ -4,7 +4,6 @@ namespace Application\Command;
 
 class Search extends Base
 {
-	private $minWeight = 2;
 	public function actionApplyRubrics()
 	{
 
@@ -17,15 +16,16 @@ class Search extends Base
 			$this->log(print_r($stopWords, 1));
 
 			$cl = new \SphinxClient();
-			$cl->SetMatchMode(SPH_MATCH_EXTENDED2);
+			$cl->SetMatchMode(SPH_MATCH_ANY);
 			$cl->SetSortMode(SPH_SORT_RELEVANCE);
-			$cl->SetLimits(0, 100, 200);
+			$cl->SetLimits(0, 100, 5000);
 			$posts = array();
 			foreach($stopWords as $phraseId => $phrase)
 			{
 				$phrase = $phrase['phrase'];
 				$q = array();
 				$words = explode(" ", $phrase);
+				$minWeight = count($words);
 				/*foreach($words as $word)
 				{
 					$w = trim($cl->EscapeString($word));
@@ -42,7 +42,7 @@ class Search extends Base
 				foreach($result['matches'] as $match)
 				{
 					$weight     = $match['weight'];
-					if($weight < $this->minWeight)
+					if($weight < $minWeight)
 					{
 						continue;
 					}

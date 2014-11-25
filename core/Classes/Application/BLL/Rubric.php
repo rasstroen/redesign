@@ -20,7 +20,7 @@ class Rubric extends BLL
 	public function getPostsAutoLinkedPhrases(array $postsIds, $rubricId)
 	{
 		list($postsByMonthsPostIds, $postsByMonthsPairs, $values) = $this->application->bll->posts->prepareMultiSelectQuery($postsIds);
-
+		$autoLinks = array();
 		foreach ($postsByMonthsPostIds as $month => $data)
 		{
 			$autoLinks = $this->getDbMaster()->selectAll(
