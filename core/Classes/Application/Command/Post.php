@@ -30,7 +30,7 @@ class Post extends Base
 			{
 				$hoursLeft = ceil((time() - $post['pub_time']) / 60 / 60);
 				$dateCoefficient = (Posts::POST_ACTIVE_LIFE_DAYS * 24 - $hoursLeft) / (Posts::POST_ACTIVE_LIFE_DAYS *24);
-				$post['rating'] =  100 * $dateCoefficient * (ceil($post['comments']/ 20));
+				$post['rating'] =  100 * $dateCoefficient * (ceil($post['comments']/ 6));
 				echo $post['comments'].' '.$hoursLeft.'=lrfth '.$dateCoefficient.'=coef rat='.$post['rating'] ."\n";
 				$post['coef']   = $dateCoefficient;
 				$post['date']   = date('Y-m-d H:i:s', $post['pub_time']);
