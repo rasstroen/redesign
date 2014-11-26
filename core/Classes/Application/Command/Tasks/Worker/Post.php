@@ -6,8 +6,8 @@ use Application\BLL\Queue;
 
 class Post extends Base
 {
-	private $minSizeX	= 200;
-	private $minSizeY	= 200;
+	private $minSizeX	= 300;
+	private $minSizeY	= 300;
 	private $minPostsComments   = 30;
 	private $wideSize = 700;
 
@@ -30,7 +30,7 @@ class Post extends Base
 		'wide' => array(
 			'crop_method' 		=> 0,
 			'width_requested' 	=> 700,
-			'height_requested' 	=> 150,
+			'height_requested' 	=> 250,
 		),
 	);
 
