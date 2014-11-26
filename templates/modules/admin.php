@@ -167,7 +167,13 @@ function templateAdminEditItem(array $data)
 	<h3><a href="<?=$data['rubric']['linkedUrl']?>">Автопривязки</a></h3>
 	<?php foreach($data['phrases'] as $phrase){?>
 	<div>
+		<form enctype="multipart/form-data" method="post">
+			<input type="hidden" name="writemodule" value="admin/rubric">
+			<input type="hidden" name="method" value="delWord">
+			<input type="hidden" name="phraseId" value="<?=$phrase['phrase_id']?>">
 		"<?=$phrase['phrase']?>", постов : <?=$phrase['posts_count']?>
+			<input type="submit" value="удалить" />
+		</form>
 	</div>
 	<?php }?>
 	<h3>Добавить фразу</h3>

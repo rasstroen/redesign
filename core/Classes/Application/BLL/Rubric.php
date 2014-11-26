@@ -49,6 +49,7 @@ class Rubric extends BLL
 
 		foreach($posts as &$post)
 		{
+			$post['phrases'] = array();
 			if(isset($phrasesIds[$post['post_id']][$post['author_id']]))
 			{
 				$phrases = $phrasesIds[$post['post_id']][$post['author_id']];
@@ -70,6 +71,16 @@ class Rubric extends BLL
 		  AND
 		  RAL.phrase_id=RP.phrase_id
 		 WHERE RP.rubric_id=? GROUP BY RP.phrase_id', array($rubricId), 'phrase_id');
+	}
+
+	public function delPhrase($phraseId)
+	{
+		return $this->getDbMaster()->query(
+			'DELETE FROM `rubric_phrases` WHERE `phrase_id` = ?',
+			array(
+				$phraseId
+			)
+		);
 	}
 
 	public function addPhrase($rubricId, $phrase)

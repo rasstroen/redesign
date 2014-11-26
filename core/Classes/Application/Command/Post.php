@@ -40,7 +40,7 @@ class Post extends Base
 			{
 				return $b['rating'] - $a['rating'];
 			});
-			
+
 			/**
 			 * Просчитываем рейтинг
 			 */
