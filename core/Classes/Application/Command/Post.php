@@ -29,7 +29,7 @@ class Post extends Base
 			foreach($posts as &$post)
 			{
 				$hoursLeft = ceil((time() - $post['pub_time']) / 60 / 60);
-				$dateCoefficient = (Posts::POST_ACTIVE_LIFE_DAYS * 24 - $hoursLeft) / (Posts::POST_ACTIVE_LIFE_DAYS *24) / ($hoursLeft/10);
+				$dateCoefficient = min(2, (Posts::POST_ACTIVE_LIFE_DAYS * 24 - $hoursLeft) / (Posts::POST_ACTIVE_LIFE_DAYS *24) / ($hoursLeft/10));
 				$post['rating'] =  $dateCoefficient * (ceil($post['comments']));
 				echo $post['comments'].' '.$hoursLeft.'=lrfth '.$dateCoefficient.'=coef rat='.$post['rating'] ."\n";
 				$post['coef']   = $dateCoefficient;
@@ -40,6 +40,7 @@ class Post extends Base
 			{
 				return $b['rating'] - $a['rating'];
 			});
+			
 			/**
 			 * Просчитываем рейтинг
 			 */
