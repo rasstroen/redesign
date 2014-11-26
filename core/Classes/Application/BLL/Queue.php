@@ -28,6 +28,8 @@ class Queue extends BLL
 
 	const QUEUE_POSTS_PROCESS_POSTS_IMAGES = 5;
 
+	const QUEUE_POSTS_PROCESS_RECALCULATE_RUBRICS = 6;
+
 
 	private $queues = array(
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
@@ -73,6 +75,15 @@ class Queue extends BLL
 			'tasks_per_worker'  => 12,
 			'command'           => 'Post',
 			'method'            => 'processImages',
+			'enabled'           => 1,
+		),
+		self::QUEUE_POSTS_PROCESS_RECALCULATE_RUBRICS => array(
+			'name'              => 'QUEUE_POSTS_PROCESS_RECALCULATE_RUBRICS',
+			'priority'          => 1,
+			'workers'           => 1,
+			'tasks_per_worker'  => 1,
+			'command'           => 'Rubric',
+			'method'            => 'recalculate',
 			'enabled'           => 1,
 		),
 );

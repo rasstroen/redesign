@@ -10,7 +10,7 @@ class Http extends Base
 
 	public function getWithCache($url, $cacheTime, $timeout = 10)
 	{
-		$fileName = '/tmp/getWCache_'.md5($url);
+		$fileName = '/tmp/cache/getWCache_'.md5($url);
 		if(file_exists($fileName))
 		{
 			if(time() - fileatime($fileName) < $cacheTime)

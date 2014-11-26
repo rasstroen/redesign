@@ -1,7 +1,13 @@
 <?php
 function templateRubricListAdminLinkedPosts(array $data)
 {
-	?><div class="choose"><?php
+	?>
+	<form enctype="multipart/form-data" method="post">
+		<input type="hidden" name="writemodule" value="admin/rubric">
+		<input type="hidden" name="method" value="recalc">
+		<input type="submit" value="перегенерить автопривязки" />
+	</form>
+	<div class="choose"><?php
 	if($data['isDone'])
 	{
 		?>

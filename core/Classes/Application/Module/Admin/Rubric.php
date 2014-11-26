@@ -2,10 +2,18 @@
 
 namespace Application\Module\Admin;
 
+use Application\BLL\Queue;
 use Application\Module\Base;
 
 class Rubric extends Base
 {
+	public function doRecalc()
+	{
+		$this->application->bll->queue->addTask(
+			Queue::QUEUE_POSTS_PROCESS_RECALCULATE_RUBRICS
+		);
+	}
+
 	public function doDelWord()
 	{
 		$phraseId   = $this->application->request->getPostParam('phraseId' , 0);

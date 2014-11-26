@@ -89,6 +89,11 @@ function templateAdminShowDemons(array $data)
 function templateAdminListAdminRubrics(array $data)
 {
 	?><h1>Управление рубриками</h1>
+	<form enctype="multipart/form-data" method="post">
+		<input type="hidden" name="writemodule" value="admin/rubric">
+		<input type="hidden" name="method" value="recalc">
+		<input type="submit" value="перегенерить автопривязки" />
+	</form>
 	<ul class="admin_rubrics">
 	<div class="add"><a href="<?=$data['addUrl']?>">+добавить корневую рубрику</a></div>
 	<?php
