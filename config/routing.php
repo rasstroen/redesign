@@ -101,6 +101,15 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'adminLinkedPosts'
 	),
+	/**
+	 * рубрики на главной
+	 */
+	'index_rubrics'=> array(
+		'className' => '\Application\Module\Rubric',
+		'template'  => 'rubric',
+		'action'    => 'list',
+		'mode'      => 'index'
+	),
 );
 
 return array(
@@ -229,6 +238,7 @@ return array(
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
 				'content' => array(
+					'index_rubrics'=>$modules['index_rubrics'],
 					'index_top_popular'=>$modules['index_top_popular'],
 					'index_top_new'=>$modules['index_top_new'],
 				)

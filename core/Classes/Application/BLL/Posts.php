@@ -110,8 +110,9 @@ class Posts extends BLL
 				$limit
 			)
 		);
-
-		return $this->getPostsByIds($postsIds);
+		$posts = $this->getPostsByIds($postsIds);
+		$this->preparePosts($posts);
+		return $posts;
 	}
 
 	public function getPopularPosts($limit = 3)
@@ -197,13 +198,13 @@ class Posts extends BLL
 				);
 			foreach($postsMonths as $post)
 			{
-				$allPosts[$post['author_id'] . '_' . $post['post_id']] = $post;
+				$allPosts[$post['author_id'] . '-' . $post['post_id']] = $post;
 			}
 		}
 		$out = array();
 		foreach($ids as $data)
 		{
-			$out[$data['post_id'] . '_' . $data['author_id']] = $allPosts[$data['author_id'] . '_' . $data['post_id']];
+			$out[$data['post_id'] . '-' . $data['author_id']] = $allPosts[$data['author_id'] . '-' . $data['post_id']];
 		}
 
 		return $out;
@@ -377,7 +378,7 @@ class Posts extends BLL
 	public function shortText($text, $words = 200)
 	{
 		$text 		= html_entity_decode(str_replace('&nbsp;',' ',$text), ENT_QUOTES, 'UTF-8');
-		$text 		= str_replace(array('<br>', '<br />', '<br/>'), ' ' , $text);
+		$text 		= str_replace(array('<br>', '<br />', '<br/>'), '' , $text);
 		$noHtml    	= trim(strip_tags($text));
 		$exploded   = explode(' ', $noHtml, ($words + 1));
 		if (count($exploded) > $words)

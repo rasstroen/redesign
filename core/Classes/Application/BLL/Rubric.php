@@ -7,6 +7,38 @@ namespace Application\BLL;
 class Rubric extends BLL
 {
 
+	public function getByIds(array $rubricIds)
+	{
+		return $this->application->db->master->selectAll('SELECT * FROM `rubric` WHERE `rubric_id` IN (?)', array(array_values($rubricIds)) , 'rubric_id');
+	}
+	public function getActiveLinkedPosts()
+	{
+		$date           = new \DateTime();
+		$interval       = new \DateInterval('P' . Posts::POST_ACTIVE_LIFE_DAYS . 'D');
+		$currentMonth   = $date->format('Y_m');
+		$previousMonth  = $date->sub($interval)->format('Y_m');
+
+		$months[$currentMonth]  = $currentMonth;
+		$months[$previousMonth] = $previousMonth;
+
+		$start  = time() - Posts::POST_ACTIVE_LIFE_DAYS * 24 * 60 * 60;
+
+		foreach($months as $month)
+		{
+			$posts = $this->getDbMaster()->selectAll(
+				'SELECT * FROM `rubric_link_' . $month . '` LM
+				 INNER JOIN `active_posts` PA ON PA.post_id=LM.post_id AND PA.author_id=LM.author_id
+				 ORDER BY `rating` DESC
+				', array($start)
+			);
+
+			foreach($posts as $post)
+			{
+				$postIds[] = $post;
+			}
+		}
+		return $postIds;
+	}
 	public function linkPostToRubricWithWord($phraseId, $postId, $authorId, $pubDate, $rubricId)
 	{
 		$this->getDbMaster()->query(

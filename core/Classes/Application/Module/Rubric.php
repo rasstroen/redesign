@@ -4,6 +4,39 @@ namespace Application\Module;
 
 class Rubric extends Base
 {
+
+	public function actionListIndex()
+	{
+		$postsCountInRubric = 3;
+		$postsLinks      = $this->application->bll->rubric->getActiveLinkedPosts();
+		foreach($postsLinks as $postLink)
+		{
+			$rubricIds[$postLink['rubric_id']]      = $postLink['rubric_id'];
+			$postsByRubric[$postLink['rubric_id']][$postLink['post_id'].'-'.$postLink['author_id']]  = $postLink;
+		}
+		$rubrics    = $this->application->bll->rubric->getByIds($rubricIds);
+		$toFetch = array();
+		foreach($rubrics as $rubric)
+		{
+			if(!isset($rubrics[$rubric['rubric_id']]['posts']))
+			{
+				$rubrics[$rubric['rubric_id']]['posts'] = array();
+			}
+			if(count($rubrics[$rubric['rubric_id']]['posts']) < $postsCountInRubric)
+			{
+				$rubrics[$rubric['rubric_id']]['posts'] = $postsByRubric[$rubric['rubric_id']];
+				$toFetch += $postsByRubric[$rubric['rubric_id']];
+			}
+		}
+		$posts = $this->application->bll->posts->getPostsByIds($toFetch);
+		$this->application->bll->posts->preparePosts($posts);
+		$data = array(
+			'rubrics'   => $rubrics,
+			'posts'     => $posts
+		);
+		return $data;
+	}
+
 	public function actionListAdminRubrics()
 	{
 		$rubrics    = $this->application->bll->rubric->getAll();

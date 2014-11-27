@@ -1,4 +1,20 @@
 <?php
+
+function templateRubricListIndex($data)
+{
+	require_once 'post.php';
+	?><h2>Рубрики</h2><?php
+	foreach($data['rubrics'] as $rubricId => $rubric)
+	{
+		?><h3><a href="/rubric/<?=$rubric['name']?>"><?=$rubric['title']?></a></h3><?php
+		foreach($rubric['posts'] as $postKey => $postLink)
+		{
+			$post = $data['posts'][$postKey];
+			_drawTopPostInList($post);
+		}
+	}
+}
+
 function templateRubricListAdminLinkedPosts(array $data)
 {
 	?>
