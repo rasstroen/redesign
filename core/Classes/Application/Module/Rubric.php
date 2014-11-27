@@ -66,16 +66,29 @@ class Rubric extends Base
 		$isDone     = isset($variables['isDone']) && $variables['isDone'] == 'done';
 		$rubricId   = $variables['rubricId'];
 		$rubric     = $this->application->bll->rubric->getById($rubricId);
-		$counts     = $this->application->bll->rubric->getPhrasesCountsByRubricId($rubricId);
 
-		$data['posts']      = $this->application->bll->rubric->getRubricAutoLinkedPosts($rubricId);
+		if(!$isDone)
+		{
+			$data['posts']      = $this->application->bll->rubric->getRubricAutoLinkedPosts($rubricId);
+		}
+		else
+		{
+			$data['posts']      = $this->application->bll->rubric->getRubricLinkedPosts($rubricId);
+		}
 		$data['isDone']     = $isDone;
-		$data['counts']     = $counts;
 		$data['rubric']     = $rubric;
 		$data['notDoneUrl'] = $this->application->routing->getUrl('admin/rubric/' . $rubricId .'/linked');
 		$data['doneUrl']    = $this->application->routing->getUrl('admin/rubric/' . $rubricId .'/linked/done');
-		uasort($data['posts'], function ($post1, $post2){
-			return count($post2['phrases']) - count($post1['phrases']);
+		uasort($data['posts'], function ($post1, $post2)
+		{
+			if(!isset($post2['phrases']))
+			{
+				return $post1['pub_time'] - $post2['pub_time'];
+			}
+			else
+			{
+				return count($post2['phrases']) - count($post1['phrases']);
+			}
 		});
 		return $data;
 	}

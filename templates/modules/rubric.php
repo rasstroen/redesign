@@ -25,11 +25,11 @@ function templateRubricListAdminLinkedPosts(array $data)
 	?></div><?php
 	foreach($data['posts'] as $post)
 	{
-		_drawRubricPostInList($post);
+		_drawRubricPostInList($post, $data['rubric']['rubric_id'], $data['isDone']);
 	}
 }
 
-function _drawRubricPostInList($post)
+function _drawRubricPostInList($post, $rubricId, $isDone)
 {
 	?>
 	<div class="post_list_item main_popular clearfix" style="margin-bottom:20px">
@@ -51,10 +51,33 @@ function _drawRubricPostInList($post)
 		<div class="text"><?=trim($post['short'])?><br>
 			<?=$post['pub_date']?>
 			<br/>
-			<i>Совпадения по фразам:</i>
+
+			<?php if(isset($post['phrases'])){ ?>
+				<i>Совпадения по фразам:</i>
 			<?php foreach($post['phrases'] as $phrase){?>
 				фраза: <b><?=$phrase['phrase']?></b>
-			<?php   }?>
+			<?php   }}?>
+			<?php if(!$isDone) { ?>
+			<form enctype="multipart/form-data" method="post">
+				<input type="hidden" name="writemodule" value="admin/rubric">
+				<input type="hidden" name="method" value="confirmLink">
+				<input type="hidden" name="postId" value="<?=intval($post['post_id'])?>">
+				<input type="hidden" name="authorId" value="<?=intval($post['author_id'])?>">
+				<input type="hidden" name="pubDate" value="<?=intval($post['pub_time'])?>">
+				<input type="hidden" name="rubricId" value="<?=$rubricId?>">
+				<input type="submit" value="подтвердить привязку" />
+			</form>
+			<?php } else{?>
+				<form enctype="multipart/form-data" method="post">
+					<input type="hidden" name="writemodule" value="admin/rubric">
+					<input type="hidden" name="method" value="deleteLink">
+					<input type="hidden" name="postId" value="<?=intval($post['post_id'])?>">
+					<input type="hidden" name="authorId" value="<?=intval($post['author_id'])?>">
+					<input type="hidden" name="pubDate" value="<?=intval($post['pub_time'])?>">
+					<input type="hidden" name="rubricId" value="<?=$rubricId?>">
+					<input type="submit" value="удалить привязку" />
+				</form>
+			<?php }?>
 		</div>
 	</div>
 <?php

@@ -7,6 +7,26 @@ use Application\Module\Base;
 
 class Rubric extends Base
 {
+	public function doConfirmLink()
+	{
+		$this->application->bll->rubric->confirmPostLink(
+			$this->application->request->getPostParam('postId' , 0),
+			$this->application->request->getPostParam('authorId' , 0),
+			$this->application->request->getPostParam('pubDate' , 0),
+			$this->application->request->getPostParam('rubricId' , 0)
+		);
+	}
+
+	public function doDeleteLink()
+	{
+		$this->application->bll->rubric->deletePostLink(
+			$this->application->request->getPostParam('postId' , 0),
+			$this->application->request->getPostParam('authorId' , 0),
+			$this->application->request->getPostParam('pubDate' , 0),
+			$this->application->request->getPostParam('rubricId' , 0)
+		);
+	}
+
 	public function doRecalc()
 	{
 		$this->application->bll->queue->addTask(
