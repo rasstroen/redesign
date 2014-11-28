@@ -115,10 +115,8 @@ $modules = array(
 return array(
 	'map'  => array(
 		'top' => array(
-			'month' => array(
 				'authors' => array(
 					'' => 'authors_top',
-				)
 			)
 		),
 		'post' => array(
@@ -238,9 +236,9 @@ return array(
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
 				'content' => array(
-					'index_rubrics'=>$modules['index_rubrics'],
-					'index_top_popular'=>$modules['index_top_popular'],
-					'index_top_new'=>$modules['index_top_new'],
+					'index_top_popular' => $modules['index_top_popular'],
+					'index_top_new'     => $modules['index_top_new'],
+					'index_rubrics'     => $modules['index_rubrics'],
 				)
 			)
 		),

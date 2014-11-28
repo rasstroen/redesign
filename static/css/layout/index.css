@@ -91,20 +91,39 @@ h1{
 	background: #dedede;
 }
 
+ul.topMenu .subItem{
+	display: none;
+	position: absolute;
+	top:60px;
+	left:0px;
+	background:#666;
+	z-index: 10;
+}
+
+ul.topMenu li:hover .subItem{
+	display: block;
+	white-space:nowrap;
+}
 
 ul.topMenu li
 {
+	position: relative;
 	padding:0 20px;
 	text-align: center;
 	display: inline-block;
 }
+
+ul.topMenu .subItem li{
+	display: block;
+}
+
 ul.topMenu li:hover
 {
 	background:#666;
 }
 ul.topMenu li a{
 	color: #fff;
-	font-weight: 400;
+
 	text-decoration: none;
 	font-size: 12px;
 }

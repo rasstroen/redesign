@@ -43,28 +43,54 @@ class Top extends Base
 	 */
 	public function actionListIndex()
 	{
-		$selectedFirstLevelItemName   = explode('/', $this->application->request->getUrl());
-		$selectedFirstLevelItemName   = isset($selectedFirstLevelItemName[1]) ? $selectedFirstLevelItemName[1] : '';
+		$selected                       = explode('/', $this->application->request->getUrl());
+		$selectedFirstLevelItemName     = isset($selected[1]) ? $selected[1] : '';
+		$selectedSecondLevelItemName    = isset($selected[2]) ? $selected[2] : '';
 		$data = array(
 			'items' => array(
 				'' => array(
 					'title' => 'Главная',
 					'url'   => $this->application->routing->getUrl(''),
 				),
-				'top' => array(
-					'title' => 'Рейтинг авторов',
-					'url'   => $this->application->routing->getUrl('top/month/authors'),
+				'popular' => array(
+					'title' => 'Записи',
+					'url'   => $this->application->routing->getUrl('popular'),
 				),
 				'theme' => array(
-					'title' => 'Популярные темы',
+					'title' => 'Темы',
 					'url'   => $this->application->routing->getUrl('theme'),
+				),
+				'top' => array(
+					'title' => 'Рейтинги',
+					'items' => array(
+						'authors'   => array(
+							'title' => 'Рейтинг авторов',
+							'url'   => $this->application->routing->getUrl('top/authors'),
+						),
+						'community' => array(
+							'title' => 'Рейтинг сообществ',
+							'url'   => $this->application->routing->getUrl('top/community'),
+						),
+					)
+				),
+				'video' => array(
+					'title' => 'Видео',
+					'url'   => $this->application->routing->getUrl('video'),
+				),
+				'public' => array(
+					'title' => 'Паблики',
+					'url'   => $this->application->routing->getUrl('public'),
 				),
 			)
 		);
-
 		if(isset($data['items'][$selectedFirstLevelItemName]))
 		{
 			$data['items'][$selectedFirstLevelItemName]['selected'] = true;
+			if(isset($data['items'][$selectedFirstLevelItemName]['items'][$selectedSecondLevelItemName]))
+			{
+				$data['items'][$selectedFirstLevelItemName]['items'][$selectedSecondLevelItemName]['selected'] = true;
+
+			}
 		}
 
 		return $data;

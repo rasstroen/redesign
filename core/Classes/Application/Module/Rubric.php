@@ -14,6 +14,10 @@ class Rubric extends Base
 			$rubricIds[$postLink['rubric_id']]      = $postLink['rubric_id'];
 			$postsByRubric[$postLink['rubric_id']][$postLink['post_id'].'-'.$postLink['author_id']]  = $postLink;
 		}
+		if(!$rubricIds)
+		{
+			return array();
+		}
 		$rubrics    = $this->application->bll->rubric->getByIds($rubricIds);
 		$toFetch = array();
 		foreach($rubrics as $rubric)
