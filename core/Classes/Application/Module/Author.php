@@ -4,6 +4,13 @@ namespace Application\Module;
 
 class Author extends Base
 {
+	public function actionShowItem(array $variables)
+	{
+		$author =$this->application->bll->author->getByUserName($variables['username']);
+		return array(
+			'author' => $author
+		);
+	}
 	public function actionListTop(array $variables)
 	{
 		$page       = max(1, $this->application->request->getQueryParam('p'));

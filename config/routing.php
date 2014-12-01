@@ -93,6 +93,15 @@ $modules = array(
 		'mode'      => 'item'
 	),
 	/**
+	 * Страница автора
+	 */
+	'author'=> array(
+		'className' => '\Application\Module\Author',
+		'template'  => 'author',
+		'action'    => 'show',
+		'mode'      => 'item'
+	),
+	/**
 	 * привязки постов
 	 */
 	'admin_linked_posts'=> array(
@@ -125,7 +134,13 @@ return array(
 					'' => 'authors_top',
 			),
 		),
-		'post' => array(
+		'author'    => array(
+			'%s' => array(
+				'_var'  => 'username',
+				'' => 'author',
+			)
+		),
+		'post'      => array(
 			'%s' => array(
 				'_var' => 'username',
 				'%d' => array(
@@ -275,6 +290,21 @@ return array(
 				),
 				'content' => array(
 					'post_item'=>$modules['post_item'],
+				)
+			)
+		),
+		/**
+		 * Страница автора
+		 */
+		'author'=> array(
+			'layout'    => 'index',
+			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
+			'blocks'    => array(
+				'header'   => array(
+					'top_menu_index'=>$modules['top_menu_index'],
+				),
+				'content' => array(
+					'author'=>$modules['author'],
 				)
 			)
 		),

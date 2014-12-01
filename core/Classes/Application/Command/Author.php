@@ -12,6 +12,9 @@ class Author extends Base
 
 	/**
 	 * Пересчитываем позиции авторов в соответствии с рейтингом активных постов в топе
+	 *
+	 * @param int $authorType
+	 * @throws \Exception
 	 */
 	public function actionCalculateRating($authorType = \Application\BLL\Author::AUTHOR_TYPE_USER)
 	{

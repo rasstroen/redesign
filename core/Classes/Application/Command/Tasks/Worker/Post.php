@@ -2,14 +2,13 @@
 namespace Application\Command\Tasks\Worker;
 
 use Application\BLL\Posts;
-use Application\BLL\Queue;
 
 class Post extends Base
 {
-	private $minSizeX	= 300;
-	private $minSizeY	= 300;
+	private $minSizeX	        = 300;
+	private $minSizeY	        = 300;
 	private $minPostsComments   = 30;
-	private $wideSize = 700;
+	private $wideSize           = 700;
 
 	private $settings = array(
 		'small' => array(
