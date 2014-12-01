@@ -8,17 +8,17 @@ class Misc extends Base
 		$date           = new \DateTime();
 		$interval       = new \DateInterval('P1M');
 		$currentMonth   = $date->format('Y_m');
-		$previousMonth  = $date->sub($interval)->format('Y_m');
+		$nextMonth      = $date->add($interval)->format('Y_m');
 
-		$this->log($currentMonth . '  ' . $previousMonth);
+		$this->log($currentMonth . '  ' . $nextMonth);
 		/**
 		 * checking date tables
 		 */
 		$monthTables = array('rubric_link_');
 		foreach($monthTables as $tablePrefix)
 		{
-			$this->log('Creating table ' . $tablePrefix . $currentMonth);
-			$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `' . $tablePrefix . $currentMonth . '` LIKE `' . $tablePrefix . $previousMonth .'`');
+			$this->log('Creating table ' . $tablePrefix . $nextMonth);
+			$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `' . $tablePrefix . $nextMonth . '` LIKE `' . $tablePrefix . $currentMonth .'`');
 		}
 
 	}
