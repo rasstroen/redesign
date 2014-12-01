@@ -115,9 +115,15 @@ $modules = array(
 return array(
 	'map'  => array(
 		'top' => array(
+
 				'authors' => array(
+					'_var'  => 'authorType',
 					'' => 'authors_top',
-			)
+				),
+				'community' => array(
+					'_var'  => 'authorType',
+					'' => 'authors_top',
+			),
 		),
 		'post' => array(
 			'%s' => array(

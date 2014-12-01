@@ -13,9 +13,9 @@ class Author extends Base
 	/**
 	 * Пересчитываем позиции авторов в соответствии с рейтингом активных постов в топе
 	 */
-	public function actionCalculateRating()
+	public function actionCalculateRating($authorType = \Application\BLL\Author::AUTHOR_TYPE_USER)
 	{
-		$authors    = $this->application->bll->author->getTopQueryUse(\Application\BLL\Author::AUTHOR_TYPE_USER);
+		$authors    = $this->application->bll->author->getTopQueryUse($authorType);
 		$allAuthors = array();
 		while($author = $authors->fetch(\PDO::FETCH_ASSOC))
 		{
@@ -35,7 +35,8 @@ class Author extends Base
 
 			foreach($chunk as $authorId => $rating)
 			{
-				if(isset($ratings[$authorId])) {
+				if(isset($ratings[$authorId]))
+				{
 					$ratingAuthors[$authorId] = $ratings[$authorId]['rating'];
 				}
 			}
@@ -43,12 +44,17 @@ class Author extends Base
 
 		arsort($ratingAuthors);
 
-		$this->application->db->master->query('UPDATE `author` SET position=0'); // @todo
+		if($authorType == \Application\BLL\Author::AUTHOR_TYPE_USER)
+		{
+			$this->log('UPDATE all authors rating to 0');
+			$this->application->db->master->query('UPDATE `author` SET position=0'); // @todo
+		}
 
 
 		$chunks = array_chunk($ratingAuthors, 100 , true);
 
 		$position = 0;
+		$this->log('Start updating');
 		foreach($chunks as $chunk)
 		{
 			foreach($chunk as $authorId => $rating)
@@ -61,6 +67,12 @@ class Author extends Base
 				);
 				$position++;
 			}
+		}
+
+		if($authorType == \Application\BLL\Author::AUTHOR_TYPE_USER)
+		{
+			$this->log('Calculating communities rating');
+			$this->actionCalculateRating(\Application\BLL\Author::AUTHOR_TYPE_COMMUNITY);
 		}
 	}
 	/**
