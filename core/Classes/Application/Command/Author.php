@@ -47,12 +47,15 @@ class Author extends Base
 
 		arsort($ratingAuthors);
 
-		$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `author_temp` LIKE `author`');
-		$this->application->db->master->query('TRUNCATE `author_temp`');
-		$this->application->db->master->query('ALTER TABLE `author_temp` DISABLE KEYS');
+
 		if($authorType == \Application\BLL\Author::AUTHOR_TYPE_USER)
 		{
-			$this->log('COPY all authors rating to 0');
+			$this->log('Creating author_temp');
+			$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `author_temp` LIKE `author`');
+			$this->log('Truncating author_temp');
+			$this->application->db->master->query('TRUNCATE `author_temp`');
+			$this->application->db->master->query('ALTER TABLE `author_temp` DISABLE KEYS');
+			$this->log('COPY all authors from author to author_temp');
 			$this->application->db->master->query('INSERT INTO `author_temp`( SELECT * FROM `author`)');
 		}
 
@@ -89,7 +92,6 @@ class Author extends Base
 			$this->application->db->master->query('RENAME TABLE `author` to `author_remove`, `author_temp` to `author`');
 			$this->log('deleting tables');
 			$this->application->db->master->query('DROP TABLE `author_remove`');
-			$this->application->db->master->query('DROP TABLE `author_temp`');
 		}
 	}
 	/**
