@@ -132,7 +132,7 @@ class Author extends BLL
 		return $this->getDbMaster()->lastInsertId();
 	}
 
-	public function updateById($authorId, $userData)
+	public function updateById($authorId, $userData, $table ='author')
 	{
 		$sqlParts   = array();
 		$values     = array();
@@ -152,7 +152,7 @@ class Author extends BLL
 		$values[] = $authorId;
 
 		$this->getDbMaster()->query(
-			'UPDATE `author` SET ' . implode(',', $sqlParts) . ' WHERE `author_id` = ?',
+			'UPDATE `' . $table . '` SET ' . implode(',', $sqlParts) . ' WHERE `author_id` = ?',
 			$values
 		);
 	}

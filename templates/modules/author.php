@@ -1,10 +1,33 @@
 <?php
 function templateAuthorShowItem(array $data)
 {
+
 	$author = $data['author'];
-	echo '<pre>';
-	print_r($author);
-	echo '</pre>';
+	?>
+	<div>
+		<div class="pic">
+			<?php if($author['journal_pic']){?>
+				<img src="<?=$author['journal_pic'];?>">
+			<?php }?>
+		</div>
+		<div class="naming">
+			<h1><?=htmlspecialchars($author['username'])?></h1>
+			<h2><?=htmlspecialchars($author['journal_title'])?></h2>
+			<h3><?=htmlspecialchars($author['journal_subtitle'])?></h3>
+		</div>
+		<div>
+			<?php if($author['position']) {?>
+			<h3><?=$author['position']?> место в рейтинге</h3>
+			<?php }?>
+			<div>Журнал создан <?=date('d.m.Y', $author['journal_created'])?></div>
+			<div>запостил <?=$author['journal_posted']?> записей, оставил <?=$author['journal_commented']?> комментариев, получил <?=$author['journal_comments_received']?> комментариев</div>
+			<?php if($author['journal_country_code'] && $author['journal_city_name']){?>
+				<div><?= $author['journal_city_name']?>, <?=$author['journal_country_code']?></div>
+			<?php }?>
+		</div>
+	</div>
+
+<?php
 }
 function templateAuthorListTop(array $data)
 {

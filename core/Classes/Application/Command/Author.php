@@ -47,16 +47,18 @@ class Author extends Base
 
 		arsort($ratingAuthors);
 
+		$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `author_temp` LIKE `author`');
+		$this->application->db->master->query('ALTER TABLE `author_temp` DISABLE KEYS');
 		if($authorType == \Application\BLL\Author::AUTHOR_TYPE_USER)
 		{
-			$this->log('UPDATE all authors rating to 0');
-			$this->application->db->master->query('UPDATE `author` SET position=0'); // @todo
+			$this->log('COPY all authors rating to 0');
+			$this->application->db->master->query('INSERT INTO `author_temp`( SELECT * FROM `author`)');
 		}
 
 
 		$chunks = array_chunk($ratingAuthors, 100 , true);
 
-		$position = 0;
+		$position = 1;
 		$this->log('Start updating');
 		foreach($chunks as $chunk)
 		{
@@ -66,16 +68,27 @@ class Author extends Base
 					array(
 						'rating_last_position'  => $rating,
 						'position'              => $position
-					)
+					), 'author_temp'
 				);
 				$position++;
 			}
 		}
+		$this->log('last position is ' . $position);
+
 
 		if($authorType == \Application\BLL\Author::AUTHOR_TYPE_USER)
 		{
 			$this->log('Calculating communities rating');
 			$this->actionCalculateRating(\Application\BLL\Author::AUTHOR_TYPE_COMMUNITY);
+		}
+		else
+		{
+			$this->application->db->master->query('ALTER TABLE `author_temp` ENABLE KEYS');
+			$this->log('replacing tables');
+			$this->application->db->master->query('RENAME TABLE `author` to `author_remove`, `author_temp` to `author`');
+			$this->log('deleting tables');
+			$this->application->db->master->query('DROP TABLE `author_remove`');
+			$this->application->db->master->query('DROP TABLE `author_temp`');
 		}
 	}
 	/**

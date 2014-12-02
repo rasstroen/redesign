@@ -60,11 +60,11 @@ class Post extends Base
 
 		$postsToInsertNewest = array_slice($posts, 0 , self::MAX_POSTS_IN_NEW , true);
 		$this->log('creating active_posts_temp');
-		$this->application->db->master->query('CREATE TABLE `active_posts_temp` LIKE `active_posts`');
+		$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `active_posts_temp` LIKE `active_posts`');
 		$this->log('disabling keys');
 		$this->application->db->master->query('ALTER TABLE `active_posts_temp` DISABLE KEYS');
 		$this->log('inserting popular');
-		// @todo bul update
+		// @todo bulk update
 		foreach($postsToInsert as $post)
 		{
 			if($post['has_pic'] == Posts::PIC_STATUS_UNKNOWN)
@@ -79,7 +79,7 @@ class Post extends Base
 
 			$this->application->bll->posts->savePostToActive($post['post_id'], $post['author_id'], $post, 'active_posts_temp');
 		}
-		// @todo bul update
+		// @todo bulk update
 		$this->log('inserting newest');
 		foreach($postsToInsertNewest as $post)
 		{
@@ -99,6 +99,7 @@ class Post extends Base
 		$this->application->db->master->query('RENAME TABLE `active_posts` to `active_posts_remove`, `active_posts_temp` to `active_posts`');
 		$this->log('deleting tables');
 		$this->application->db->master->query('DROP TABLE `active_posts_remove`');
+		$this->application->db->master->query('DROP TABLE `active_posts_temp`');
 	}
 	/**
 	 * Парсим выдачу Яндекса - вытаскиваем свежие записи
