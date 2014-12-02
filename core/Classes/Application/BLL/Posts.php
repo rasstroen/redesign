@@ -287,10 +287,10 @@ class Posts extends BLL
 
 	}
 
-	public function savePostToActive($postId, $authorId , $postData)
+	public function savePostToActive($postId, $authorId , $postData, $table = 'active_posts')
 	{
 		$this->createActivePostsTable('active_posts');
-		$this->application->db->master->query('INSERT INTO `active_posts`
+		$this->application->db->master->query('INSERT INTO `'. $table .'`
 			SET
 				`post_id`           = ?,
 				`author_id`         = ?,

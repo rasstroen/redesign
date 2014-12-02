@@ -8,7 +8,8 @@ class Rubric extends Base
 	public function actionListIndex()
 	{
 		$postsCountInRubric = 3;
-		$postsLinks      = $this->application->bll->rubric->getActiveLinkedPosts();
+		$postsLinks         = $this->application->bll->rubric->getActiveLinkedPosts();
+		$rubricIds          = array();
 		foreach($postsLinks as $postLink)
 		{
 			$rubricIds[$postLink['rubric_id']]      = $postLink['rubric_id'];
@@ -16,7 +17,10 @@ class Rubric extends Base
 		}
 		if(!$rubricIds)
 		{
-			return array();
+			return array(
+				'rubrics'   => array(),
+				'posts'     => array()
+			);
 		}
 		$rubrics    = $this->application->bll->rubric->getByIds($rubricIds);
 		$toFetch = array();

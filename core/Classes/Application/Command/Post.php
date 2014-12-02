@@ -17,7 +17,8 @@ class Post extends Base
 
 		$months[$currentMonth]  = $currentMonth;
 		$months[$previousMonth] = $previousMonth;
-		$minPubTime = time() - 24 * 60 * 60 * Posts::POST_ACTIVE_LIFE_DAYS;
+		$minPubTime             = time() - 24 * 60 * 60 * Posts::POST_ACTIVE_LIFE_DAYS;
+		$posts                  = array();
 		foreach($months as $month)
 		{
 			$this->log('getting all posts from ' . date('Y-m-d H:i:s', $minPubTime) . ' from table ' . $month);
@@ -25,22 +26,25 @@ class Post extends Base
 			 * Забираем все посты
 			 */
 
-			$posts = $this->application->bll->posts->getByPeriodFromDateTable($minPubTime, time(), $month);
-			foreach($posts as &$post)
+			$monthPosts = $this->application->bll->posts->getByPeriodFromDateTable($minPubTime, time(), $month);
+			foreach($monthPosts as &$post)
 			{
 				$hoursLeft = ceil((time() - $post['pub_time']) / 60 / 60);
 				$dateCoefficient = min(2, (Posts::POST_ACTIVE_LIFE_DAYS * 24 - $hoursLeft) / (Posts::POST_ACTIVE_LIFE_DAYS *24) / ($hoursLeft/10));
 				$post['rating'] =  $dateCoefficient * (ceil($post['comments']));
-				echo $post['comments'].' '.$hoursLeft.'=lrfth '.$dateCoefficient.'=coef rat='.$post['rating'] ."\n";
 				$post['coef']   = $dateCoefficient;
 				$post['date']   = date('Y-m-d H:i:s', $post['pub_time']);
 			}
 			unset($post);
-			uasort($posts, function($a, $b)
+			uasort($monthPosts, function($a, $b)
 			{
 				return $b['rating'] - $a['rating'];
 			});
 
+			foreach($monthPosts as $monthPost)
+			{
+				$posts[] = $monthPost;
+			}
 			/**
 			 * Просчитываем рейтинг
 			 */
@@ -55,8 +59,12 @@ class Post extends Base
 		});
 
 		$postsToInsertNewest = array_slice($posts, 0 , self::MAX_POSTS_IN_NEW , true);
-		$this->application->db->master->query('TRUNCATE active_posts');
-		$this->application->db->master->query('ALTER TABLE active_posts DISABLE KEYS');
+		$this->log('creating active_posts_temp');
+		$this->application->db->master->query('CREATE TABLE `active_posts_temp` LIKE `active_posts`');
+		$this->log('disabling keys');
+		$this->application->db->master->query('ALTER TABLE `active_posts_temp` DISABLE KEYS');
+		$this->log('inserting popular');
+		// @todo bul update
 		foreach($postsToInsert as $post)
 		{
 			if($post['has_pic'] == Posts::PIC_STATUS_UNKNOWN)
@@ -69,9 +77,10 @@ class Post extends Base
 				);
 			}
 
-			$this->application->bll->posts->savePostToActive($post['post_id'], $post['author_id'], $post);
+			$this->application->bll->posts->savePostToActive($post['post_id'], $post['author_id'], $post, 'active_posts_temp');
 		}
-
+		// @todo bul update
+		$this->log('inserting newest');
 		foreach($postsToInsertNewest as $post)
 		{
 			if($post['has_pic'] == Posts::PIC_STATUS_UNKNOWN)
@@ -83,9 +92,13 @@ class Post extends Base
 					$post
 				);
 			}
-			$this->application->bll->posts->savePostToActive($post['post_id'], $post['author_id'], $post);
+			$this->application->bll->posts->savePostToActive($post['post_id'], $post['author_id'], $post, 'active_posts_temp');
 		}
-		$this->application->db->master->query('ALTER TABLE active_posts ENABLE KEYS');
+		$this->application->db->master->query('ALTER TABLE `active_posts_temp` ENABLE KEYS');
+		$this->log('replacing tables');
+		$this->application->db->master->query('RENAME TABLE `active_posts` to `active_posts_remove`, `active_posts_temp` to `active_posts`');
+		$this->log('deleting tables');
+		$this->application->db->master->query('DROP TABLE `active_posts_remove`');
 	}
 	/**
 	 * Парсим выдачу Яндекса - вытаскиваем свежие записи

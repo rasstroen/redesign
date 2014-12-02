@@ -22,7 +22,7 @@ class Rubric extends BLL
 		$months[$previousMonth] = $previousMonth;
 
 		$start  = time() - Posts::POST_ACTIVE_LIFE_DAYS * 24 * 60 * 60;
-
+		$postIds = array();
 		foreach($months as $month)
 		{
 			$posts = $this->getDbMaster()->selectAll(
