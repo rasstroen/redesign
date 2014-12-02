@@ -48,6 +48,7 @@ class Author extends Base
 		arsort($ratingAuthors);
 
 		$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `author_temp` LIKE `author`');
+		$this->application->db->master->query('TRUNCATE `author_temp`');
 		$this->application->db->master->query('ALTER TABLE `author_temp` DISABLE KEYS');
 		if($authorType == \Application\BLL\Author::AUTHOR_TYPE_USER)
 		{

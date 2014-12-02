@@ -61,6 +61,7 @@ class Post extends Base
 		$postsToInsertNewest = array_slice($posts, 0 , self::MAX_POSTS_IN_NEW , true);
 		$this->log('creating active_posts_temp');
 		$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `active_posts_temp` LIKE `active_posts`');
+		$this->application->db->master->query('TRUNCATE `active_posts_temp`');
 		$this->log('disabling keys');
 		$this->application->db->master->query('ALTER TABLE `active_posts_temp` DISABLE KEYS');
 		$this->log('inserting popular');
