@@ -16,6 +16,12 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'admin'
 	),
+	'admin_theme_item' => array(
+		'className' => '\Application\Module\Admin\Theme',
+		'template'  => 'theme',
+		'action'    => 'show',
+		'mode'      => 'item'
+	),
 	/**
 	 * Меню в админке
 	 */
@@ -185,7 +191,8 @@ return array(
 			'theme' => array(
 				''  => 'admin_themes',
 				'%d'    => array(
-					'' => 'admin_theme_item'
+					'_var'  => 'themeId',
+					'' => 'admin_theme_item',
 				)
 			)
 		),
@@ -227,10 +234,22 @@ return array(
 		 */
 		'admin_themes' => array(
 			'layout' => 'admin',
-			'title' => 'Демоны',
+			'title' => 'Темы',
 			'blocks' => array(
 				'content' => array(
 					'admin_themes' => $modules['admin_themes'],
+				),
+			)
+		),
+		/**
+		 * Управление темой
+		 */
+		'admin_theme_item' => array(
+			'layout' => 'admin',
+			'title' => 'Тема',
+			'blocks' => array(
+				'content' => array(
+					'admin_theme_item' => $modules['admin_theme_item'],
 				),
 			)
 		),

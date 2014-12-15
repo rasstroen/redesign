@@ -1,5 +1,6 @@
 <?php
 namespace Application\BLL;
+
 /**
  * Class Theme
  * @package Application\BLL
@@ -11,4 +12,22 @@ class Theme extends BLL
 		return $this->application->db->web->selectAll('SELECT * FROM `theme`');
 	}
 
+	public function add(
+		$title,
+		$name,
+		$finish,
+		$description
+	)
+	{
+		$this->getDbMaster()->query(
+			'INSERT INTO `theme` (`title`, `name`, `finish`, `description`) VALUES(?,?,?,?)',
+			array(
+				$title,
+				$name,
+				$finish,
+				$description
+			)
+		);
+		return $this->getDbMaster()->lastInsertId();
+	}
 }
