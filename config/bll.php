@@ -13,4 +13,7 @@ return array(
 	'rubric'  => array(
 		'className' => '\Application\BLL\Rubric',
 	),
+	'theme'  => array(
+		'className' => '\Application\BLL\Theme',
+	),
 );
