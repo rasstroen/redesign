@@ -21,6 +21,19 @@ class Theme extends Base
 				$this->application->routing->getUrl('admin/theme/' . $themeId)
 			);
 		}
+		else
+		{
+			$this->application->bll->theme->updateById(
+				$themeId,
+				$this->application->request->getPostParam('title'),
+				$this->application->request->getPostParam('name'),
+				$this->application->request->getPostParam('finish'),
+				$this->application->request->getPostParam('description' , '')
+			);
+			return $this->application->request->redirect(
+				$this->application->routing->getUrl('admin/theme/' . $themeId)
+			);
+		}
 	}
 
 	public function actionListAdmin()
@@ -35,6 +48,10 @@ class Theme extends Base
 	{
 		$data               = array();
 		$themeId            = $params['themeId'];
+		if($themeId)
+		{
+			$data['theme'] = $this->application->bll->theme->getById($themeId);
+		}
 		$data['themeId']    = $themeId;
 		return $data;
 	}

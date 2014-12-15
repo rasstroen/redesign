@@ -12,6 +12,16 @@ class Theme extends BLL
 		return $this->application->db->web->selectAll('SELECT * FROM `theme`');
 	}
 
+	public function getById($themeId)
+	{
+		return $this->application->db->web->selectRow(
+			'SELECT * FROM `theme` WHERE `theme_id` = ?',
+			array(
+				$themeId
+			)
+		);
+	}
+
 	public function add(
 		$title,
 		$name,
@@ -28,6 +38,28 @@ class Theme extends BLL
 				$description
 			)
 		);
+
 		return $this->getDbMaster()->lastInsertId();
+	}
+
+	public function updateById(
+		$themeId,
+		$title,
+		$name,
+		$finish,
+		$description
+	)
+	{
+		$this->getDbMaster()->query(
+			'UPDATE `theme` SET `title` =? , `name` = ?, `finish` =? , `description` =?
+			WHERE theme_id=?',
+			array(
+				$title,
+				$name,
+				$finish,
+				$description,
+				$themeId
+			)
+		);
 	}
 }

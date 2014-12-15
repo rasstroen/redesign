@@ -18,10 +18,11 @@ function templateThemeShowItem(array $data)
 			ник <input name="name" value="<?=isset($data['theme']['name']) ? $data['theme']['name'] : ''?>">
 		</div>
 		<div>
-			тайтл <input name="title" value="<?=isset($data['theme']['name']) ? $data['theme']['name'] : ''?>">
+			тайтл <input name="title" value="<?=isset($data['theme']['title']) ? $data['theme']['title'] : ''?>">
 		</div>
 		<div>
-			годна до YYYY-MM-DD <input name="finish" value="<?=isset($data['theme']['name']) ? $data['theme']['name'] :
+			годна до YYYY-MM-DD <input name="finish" value="<?=isset($data['theme']['finish']) ?
+				$data['theme']['finish'] :
 				''?>">
 		</div>
 		<input type="submit" value="сохранить" />
