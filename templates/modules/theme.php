@@ -19,6 +19,10 @@ function templateThemeListAdmin(array $data)
 
 function templateThemeShowItem(array $data)
 {
+	if(isset($data['themes']))
+	{
+		$data['theme'] = reset($data['themes']);
+	}
 	if(isset($data['theme']))
 	{
 		?><h1>Тема "<?= $data['theme']['title'] ?>"</h1><?php
@@ -27,6 +31,7 @@ function templateThemeShowItem(array $data)
 	{
 		?><h1>Создание темы</h1><?php
 	}
+
 	?>
 
 	<form enctype="multipart/form-data" method="post">
@@ -52,6 +57,18 @@ function templateThemeShowItem(array $data)
 
 	<?php if(isset($data['theme'])){?>
 	<h1>Управление фразами</h1>
+	<?php if(isset($data['theme']['phrases']))
+	{
+		foreach($data['theme']['phrases'] as $phrase)
+		{
+			?><div><?=htmlspecialchars($phrase)?>
+			<a
+			href="?writemodule=admin/theme&method=delete&themeId=<?=$data['theme']['theme_id']?>&phrase=<?=urlencode
+		($phrase)
+		?>">удалить</a></div><?php
+		}
+	}
+		?>
 	<h2>добавление фразы</h2>
 	<form method="post">
 		<input type="hidden" name="writemodule" value="admin/theme">

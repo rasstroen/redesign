@@ -19,6 +19,17 @@ class Theme extends Base
 		);
 	}
 
+	public function doDelete()
+	{
+		$themeId    = $this->application->request->getQueryParam('themeId' , 0);
+		$phrase     = $this->application->request->getQueryParam('phrase');
+		if($phrase && $themeId)
+		{
+			$this->application->bll->theme->delPhrase($themeId, $phrase);
+		}
+	}
+
+
 	public function doUpdate()
 	{
 		$themeId = $this->application->request->getPostParam('themeId' , 0);
@@ -54,7 +65,7 @@ class Theme extends Base
 		$data = array();
 		$data['themes'] = $this->application->bll->theme->getAll();
 		$this->application->bll->theme->prepareThemesPhrases($data['themes']);
-		die(print_r($data));
+
 		foreach($data['themes'] as &$theme)
 		{
 			$theme['editUrl'] = $this->application->routing->getUrl('admin/theme/' . $theme['theme_id']);
@@ -70,7 +81,8 @@ class Theme extends Base
 		$themeId            = $params['themeId'];
 		if($themeId)
 		{
-			$data['theme'] = $this->application->bll->theme->getById($themeId);
+			$data['themes'][$themeId] = $this->application->bll->theme->getById($themeId);
+			$this->application->bll->theme->prepareThemesPhrases($data['themes']);
 		}
 		$data['themeId']    = $themeId;
 		return $data;

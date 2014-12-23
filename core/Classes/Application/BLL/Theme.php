@@ -34,6 +34,17 @@ class Theme extends BLL
 		);
 	}
 
+	public function delPhrase($themeId, $phrase)
+	{
+		return $this->getDbMaster()->query(
+			'DELETE FROM `theme_phrases` WHERE `theme_id` = ? AND phrase = ?',
+			array(
+				$themeId,
+				$phrase
+			)
+		);
+	}
+
 	public function addPhrase($themeId, $phrase)
 	{
 		$this->getDbMaster()->query(
