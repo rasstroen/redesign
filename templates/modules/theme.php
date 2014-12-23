@@ -2,30 +2,66 @@
 function templateThemeListAdmin(array $data)
 {
 	?><h1>Темы</h1><?php
+	foreach($data['themes'] as $theme)
+	{
+		?>
+		<div>
+			<a href="<?= $theme['editUrl'] ?>">
+				<?= htmlspecialchars($theme['title']) ?>
+			</a>
+		</div>
+	<?php
+	}
 	?>
-<a href="<?=$data['addUrl']?>">Создать тему</a>
+	<a href="<?= $data['addUrl'] ?>">Создать тему</a>
 <?php
 }
 
 function templateThemeShowItem(array $data)
 {
+	if(isset($data['theme']))
+	{
+		?><h1>Тема "<?= $data['theme']['title'] ?>"</h1><?php
+	}
+	else
+	{
+		?><h1>Создание темы</h1><?php
+	}
 	?>
+
 	<form enctype="multipart/form-data" method="post">
 		<input type="hidden" name="writemodule" value="admin/theme">
 		<input type="hidden" name="method" value="update">
-		<input type="hidden" name="themeId" value="<?=$data['themeId']?>">
+		<input type="hidden" name="themeId" value="<?= $data['themeId'] ?>">
+
 		<div>
-			ник <input name="name" value="<?=isset($data['theme']['name']) ? $data['theme']['name'] : ''?>">
+			ник <input name="name" value="<?= isset($data['theme']['name']) ? $data['theme']['name'] : '' ?>">
 		</div>
 		<div>
-			тайтл <input name="title" value="<?=isset($data['theme']['title']) ? $data['theme']['title'] : ''?>">
+			тайтл <input name="title" value="<?= isset($data['theme']['title']) ? $data['theme']['title'] : '' ?>">
 		</div>
 		<div>
-			годна до YYYY-MM-DD <input name="finish" value="<?=isset($data['theme']['finish']) ?
-				$data['theme']['finish'] :
-				''?>">
+			годна до YYYY-MM-DD <input name="finish" value="<?= isset($data['theme']['finish'])
+				?
+				$data['theme']['finish']
+				:
+				'' ?>">
 		</div>
-		<input type="submit" value="сохранить" />
+		<input type="submit" value="сохранить"/>
 	</form>
+
+	<?php if(isset($data['theme'])){?>
+	<h1>Управление фразами</h1>
+	<h2>добавление фразы</h2>
+	<form method="post">
+		<input type="hidden" name="writemodule" value="admin/theme">
+		<input type="hidden" name="method" value="add_phrase">
+		<input type="hidden" name="themeId" value="<?= $data['theme']['theme_id'] ?>">
+		<div>
+			фраза <input name="phrase" value="">
+		</div>
+		<input type="submit" value="сохранить"/>
+	</form>
+	<?php }?>
 <?php
 }

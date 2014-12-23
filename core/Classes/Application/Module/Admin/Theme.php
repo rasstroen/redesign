@@ -6,6 +6,19 @@ use Application\Module\Base;
 
 class Theme extends Base
 {
+	public function doAdd_phrase()
+	{
+		$themeId    = $this->application->request->getPostParam('themeId' , 0);
+		$phrase     = $this->application->request->getPostParam('phrase');
+		if($phrase && $themeId)
+		{
+			$this->application->bll->theme->addPhrase($themeId, $phrase);
+		}
+		return $this->application->request->redirect(
+			$this->application->routing->getUrl('admin/theme/' . $themeId)
+		);
+	}
+
 	public function doUpdate()
 	{
 		$themeId = $this->application->request->getPostParam('themeId' , 0);
@@ -40,6 +53,13 @@ class Theme extends Base
 	{
 		$data = array();
 		$data['themes'] = $this->application->bll->theme->getAll();
+		$this->application->bll->theme->prepareThemesPhrases($data['themes']);
+		die(print_r($data));
+		foreach($data['themes'] as &$theme)
+		{
+			$theme['editUrl'] = $this->application->routing->getUrl('admin/theme/' . $theme['theme_id']);
+		}
+		unset($theme);
 		$data['addUrl'] = $this->application->routing->getUrl('admin/theme/0');
 		return $data;
 	}

@@ -9,7 +9,19 @@ class Theme extends BLL
 {
 	public function getAll()
 	{
-		return $this->application->db->web->selectAll('SELECT * FROM `theme`');
+		return $this->application->db->web->selectAll('SELECT * FROM `theme`', array(), 'theme_id');
+	}
+
+	public function prepareThemesPhrases(array &$themes)
+	{
+		$phrases = $this->getDbWeb()->selectAll(
+			'SELECT * FROM `theme_phrases` WHERE `theme_id` IN (?)',
+			array(array_keys($themes))
+		);
+		foreach($phrases as $phrase)
+		{
+			$themes[$phrase['theme_id']]['phrases'][] = $phrase['phrase'];
+		}
 	}
 
 	public function getById($themeId)
@@ -20,6 +32,19 @@ class Theme extends BLL
 				$themeId
 			)
 		);
+	}
+
+	public function addPhrase($themeId, $phrase)
+	{
+		$this->getDbMaster()->query(
+			'INSERT INTO `theme_phrases` SET `theme_id` = ?, phrase = ?',
+			array(
+				$themeId,
+				$phrase
+			)
+		);
+
+		return $this->getDbMaster()->lastInsertId();
 	}
 
 	public function add(
