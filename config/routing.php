@@ -131,6 +131,12 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'index'
 	),
+	'admin_theme_posts'=> array(
+		'className' => '\Application\Module\Admin\Theme',
+		'template'  => 'theme',
+		'action'    => 'list',
+		'mode'      => 'adminThemePosts'
+	),
 );
 
 return array(
@@ -250,6 +256,7 @@ return array(
 			'blocks' => array(
 				'content' => array(
 					'admin_theme_item' => $modules['admin_theme_item'],
+					'admin_theme_posts' => $modules['admin_theme_posts'],
 				),
 			)
 		),

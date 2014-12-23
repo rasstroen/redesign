@@ -7,6 +7,21 @@ use Application\Module\Base;
 
 class Theme extends Base
 {
+	public function actionListAdminThemePosts(array $variables)
+	{
+		$themeId    = $variables['themeId'];
+		$toFetch    = $this->application->bll->theme->getPostsIds($themeId);
+
+		$posts = $this->application->bll->posts->getPostsByIds($toFetch);
+
+		$this->application->bll->posts->preparePosts($posts);
+
+		$data = array(
+			'posts'     => $posts
+		);
+		return $data;
+	}
+
 	public function doRecalc()
 	{
 		$this->application->bll->queue->addTask(

@@ -14,6 +14,14 @@ class Theme extends BLL
 		return $this->application->db->web->selectAll('SELECT * FROM `theme`', array(), 'theme_id');
 	}
 
+	public function getPostsIds($themeId)
+	{
+		return $this->application->db->web->selectAll(
+			'SELECT * FROM `theme_post_active` WHERE `theme_id` = ? ORDER BY pub_time DESC',
+			array($themeId)
+		);
+	}
+
 	public function createThemePostsTable($tableName)
 	{
 		if(!$this->application->bll->posts->existsTable($tableName))
@@ -36,7 +44,7 @@ class Theme extends BLL
 		$post = $this->application->bll->posts->getPostByAuthorIdPostId(
 			$postId, $authorId
 		);
-		
+
 		$date = date('Y_m', $post['pub_time']);
 
 		$this->createThemePostsTable('theme_post_' . $date);
