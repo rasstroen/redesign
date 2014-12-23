@@ -48,13 +48,18 @@ class Top extends Base
 		$selectedSecondLevelItemName    = isset($selected[2]) ? $selected[2] : '';
 		$data = array(
 			'items' => array(
-				'' => array(
-					'title' => 'Главная',
-					'url'   => $this->application->routing->getUrl(''),
-				),
 				'popular' => array(
 					'title' => 'Записи',
-					'url'   => $this->application->routing->getUrl('popular'),
+					'items' => array(
+						'authors'   => array(
+							'title' => 'Популярные',
+							'url'   => $this->application->routing->getUrl('popular'),
+						),
+						'community' => array(
+							'title' => 'Свежие',
+							'url'   => $this->application->routing->getUrl('newest'),
+						),
+					)
 				),
 				'theme' => array(
 					'title' => 'Темы',

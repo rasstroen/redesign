@@ -1,139 +1,46 @@
-@import "http://webfonts.ru/import/fira.css";
-
-body{
-	font-size:12px;
-	font-family: 'Fira Sans';
-	margin: 0;
-	padding: 0;
-	border-collapse: collapse;
-	min-width: 980px;
-	background: #fff;
-	font-size: 11pt;
+.logo
+{
+	display: inline-block;;
+	width:150px;
+	height:100px;
 }
 
-html{
-	overflow-y: scroll;
+.logo a{
+	font-size: 28px;
+	font-weight: bold;
+	text-transform: uppercase;
+	display: inline-block;;
+	width:100px;
+	height:40px;
 }
 
-body,html{
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}
-*{
-	margin: 0;
-	padding: 0;
-	text-align: left;
-}
-
-h1{
-	font-size:18px;
-	font-weight:400;
-}
-
-
-.header{
-	height: 60px;
-	line-height:60px;
-	position: relative;
-	background: #444;
-}
-.header a{
-	text-decoration:none;
-}
-
-.wrapper{
-	overflow:hidden;
-	min-width:980px;
-	max-width:1280px;
-	display: block;
-	padding: 10px 0 60px;
-}
-
-.container{
-	min-width:980px;
-	max-width:980px;
-	min-height: 100%;
-	height:auto !important;
-	height:100%;
-	margin:0 auto;
-	position: relative;
-	display: block;
-	width: 100%;
-	background: #efefef;
-}
-
-.content{
-	min-width: 690px;
-	max-width: 690px;
-	width:auto !important;
-	width:100%;
+ul.menu.index
+{
 	display: inline-block;
-	background: #efefef;
+	height:100px;
 }
 
-.sidebar{
-	float:left;
-	width:270px;
-	text-align: center;
+ul.menu.index, ul.menu.index .subitem
+{
+	list-style: none;
+}
+
+ul.menu.index li
+{
+	text-transform: uppercase;
+	font-size: 18px;
+	font-weight: bolder;
 	display: inline-block;
-	overflow: hidden;
-	background: #dedede;
+	margin: 10px;
 }
 
-.footer{
-	position: relative;
-	width:100%;
-	margin:-60px 0 0;
-	height:60px;
-	z-index:20;
-	text-align: right;
-	overflow: hidden;
-	background: #dedede;
-}
-
-ul.topMenu .subItem{
+ul.menu.index .subitem li
+{
 	display: none;
-	position: absolute;
-	top:60px;
-	left:0px;
-	background:#666;
-	z-index: 10;
 }
 
-ul.topMenu li:hover .subItem{
-	display: block;
-	white-space:nowrap;
-}
-
-ul.topMenu li
+.container
 {
-	position: relative;
-	padding:0 20px;
-	text-align: center;
-	display: inline-block;
-}
-
-ul.topMenu .subItem li{
-	display: block;
-}
-
-ul.topMenu li:hover
-{
-	background:#666;
-}
-ul.topMenu li a{
-	color: #fff;
-
-	text-decoration: none;
-	font-size: 12px;
-}
-
-ul.topMenu li.selected {
-	background: #ccc;
-}
-
-ul.topMenu li.selected a{
-	color: #333;
-	text-decoration: none;
+	width: 1240px;
+	margin: 0 auto;
 }

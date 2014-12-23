@@ -2,14 +2,17 @@
 
 function templateMenuListIndex($data)
 {
-	?><ul class="topMenu"><?php
+
+	?>
+	<div class="logo"><a href="/">Lj-top.ru</a></div>
+	<ul class="menu index"><?php
 	$menuItems = $data['items'];
 	foreach($menuItems as $name => $item)
 	{
 		?><li <?php if(isset($item['selected'])) echo 'class="selected"'?>>
 		<?php if(isset($item['items'])){?>
 		<?=htmlspecialchars($item['title'])?>
-		<ul class="subItem">
+		<ul class="subitem">
 			<?php foreach($item['items'] as $subItem){?>
 				<li <?php if(isset($subItem['selected'])) echo 'class="selected"'?>>
 					<a href="<?=$subItem['url']?>">

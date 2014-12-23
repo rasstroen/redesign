@@ -11,7 +11,6 @@ require_once $application->configuration->getRootPath() . 'templates/helpers/hea
 		<div class="header"><?=$view->renderBlock('header', $modulesData)?></div>
 		<div class="wrapper">
 			<div class="content"><?=$view->renderBlock('content', $modulesData)?></div>
-			<div class="sidebar"><?=$view->renderBlock('sidebar', $modulesData)?></div>
 		</div>
 	</div>
 	<div class="footer"><?=$view->renderBlock('footer', $modulesData)?></div>
