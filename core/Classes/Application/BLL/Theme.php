@@ -7,9 +7,71 @@ namespace Application\BLL;
  */
 class Theme extends BLL
 {
+	private $existsTables = null;
+
 	public function getAll()
 	{
 		return $this->application->db->web->selectAll('SELECT * FROM `theme`', array(), 'theme_id');
+	}
+
+	public function createThemePostsTable($tableName)
+	{
+		if(!$this->application->bll->posts->existsTable($tableName))
+		{
+			$query = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
+		        `post_id` int(10) unsigned NOT NULL,
+		        `author_id` int(10) unsigned NOT NULL,
+		        `theme_id` int(10) unsigned NOT NULL,
+		        `pub_time`  int(10) unsigned NOT NULL,
+		        PRIMARY KEY (`post_id`,`author_id`),
+		        KEY `theme_id` (`theme_id`,`pub_time`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+			$this->application->db->master->query($query);
+			$this->existsTables[$tableName] = true;
+		}
+	}
+
+	public function bindPostToTheme($postId, $authorId, $themeId)
+	{
+		$post = $this->application->bll->posts->getPostByAuthorIdPostId(
+			$postId, $authorId
+		);
+		
+		$date = date('Y_m', $post['pub_time']);
+
+		$this->createThemePostsTable('theme_post_' . $date);
+
+		$this->getDbMaster()->query('INSERT INTO `theme_post_'.$date.'` SET
+		`post_id`=?,
+		`author_id`=?,
+		`theme_id`=?,
+		`pub_time`=?
+		ON DUPLICATE KEY UPDATE post_id=?',
+			array(
+				$postId,
+				$authorId,
+				$themeId,
+				$post['pub_time'],
+				$postId
+			)
+		);
+
+		$this->createThemePostsTable('theme_post_active');
+
+		$this->getDbMaster()->query('INSERT INTO `theme_post_active` SET
+		`post_id`=?,
+		`author_id`=?,
+		`theme_id`=?,
+		`pub_time`=?
+		ON DUPLICATE KEY UPDATE post_id=?',
+		                            array(
+			                            $postId,
+			                            $authorId,
+			                            $themeId,
+			                            $post['pub_time'],
+			                            $postId
+		                            )
+		);
 	}
 
 	public function prepareThemesPhrases(array &$themes)

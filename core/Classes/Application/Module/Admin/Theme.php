@@ -2,10 +2,18 @@
 
 namespace Application\Module\Admin;
 
+use Application\BLL\Queue;
 use Application\Module\Base;
 
 class Theme extends Base
 {
+	public function doRecalc()
+	{
+		$this->application->bll->queue->addTask(
+			Queue::QUEUE_POSTS_PROCESS_RECALCULATE_THEMES
+		);
+	}
+
 	public function doAdd_phrase()
 	{
 		$themeId    = $this->application->request->getPostParam('themeId' , 0);

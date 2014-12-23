@@ -1,6 +1,9 @@
 <?php
 namespace Application\Command;
 
+use Application\BLL\Posts;
+use Application\Module\Post;
+
 class Misc extends Base
 {
 	public function actionDaily()
@@ -21,5 +24,12 @@ class Misc extends Base
 			$this->application->db->master->query('CREATE TABLE IF NOT EXISTS `' . $tablePrefix . $nextMonth . '` LIKE `' . $tablePrefix . $currentMonth .'`');
 		}
 
+		$this->deleteOldThemePosts();
+	}
+
+	public function deleteOldThemePosts()
+	{
+		$oldTime = time() - Posts::POST_ACTIVE_LIFE_DAYS * 24 * 60 * 60;
+		$this->application->db->master->query('DELETE FROM `theme_post_active` WHERE `pub_time` < ?', array($oldTime));
 	}
 }

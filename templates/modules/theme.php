@@ -1,7 +1,15 @@
 <?php
 function templateThemeListAdmin(array $data)
 {
-	?><h1>Темы</h1><?php
+	?><h1>Темы</h1>
+
+	<form enctype="multipart/form-data" method="post">
+		<input type="hidden" name="writemodule" value="admin/theme">
+		<input type="hidden" name="method" value="recalc">
+		<input type="submit" value="перепривязать все темы" />
+	</form>
+
+	<?php
 	foreach($data['themes'] as $theme)
 	{
 		?>

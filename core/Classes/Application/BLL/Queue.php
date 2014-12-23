@@ -30,6 +30,8 @@ class Queue extends BLL
 
 	const QUEUE_POSTS_PROCESS_RECALCULATE_RUBRICS = 6;
 
+	const QUEUE_POSTS_PROCESS_RECALCULATE_THEMES = 7;
+
 
 	private $queues = array(
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
@@ -83,6 +85,15 @@ class Queue extends BLL
 			'workers'           => 1,
 			'tasks_per_worker'  => 1,
 			'command'           => 'Rubric',
+			'method'            => 'recalculate',
+			'enabled'           => 1,
+		),
+		self::QUEUE_POSTS_PROCESS_RECALCULATE_THEMES => array(
+			'name'              => 'QUEUE_POSTS_PROCESS_RECALCULATE_THEMES',
+			'priority'          => 1,
+			'workers'           => 1,
+			'tasks_per_worker'  => 1,
+			'command'           => 'Theme',
 			'method'            => 'recalculate',
 			'enabled'           => 1,
 		),
