@@ -83,6 +83,15 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'top'
 	),
+	'index_top_authors'=> array(
+		'className' => '\Application\Module\Author',
+		'template'  => 'author',
+		'action'    => 'list',
+		'mode'      => 'indexTop',
+		'variables' => array(
+			'limit' => 5
+		)
+	),
 	/**
 	 * топ популярных постов на главной
 	 */
@@ -346,6 +355,9 @@ return array(
 				),
 				'block1-right-top' => array(
 					'index_top_popular_popular3' => $modules['index_top_popular_popular3'],
+				),
+				'block1-right-bottom-left' => array(
+					'index_top_authors' => $modules['index_top_authors'],
 				),
 				'content' => array(
 					//'index_top_popular' => $modules['index_top_popular'],
