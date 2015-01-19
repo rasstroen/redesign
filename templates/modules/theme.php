@@ -1,5 +1,10 @@
 <?php
-
+function templateThemeListMainSlider()
+{
+	?><div class="slider">
+	Слайдер с темами
+	</div><?php
+}
 function templateThemeListAdminThemePosts($data)
 {
 	foreach($data['posts'] as $post)

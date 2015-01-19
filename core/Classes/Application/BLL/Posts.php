@@ -82,7 +82,7 @@ class Posts extends BLL
 		foreach ($posts as &$post)
 		{
 			$post['author'] = $authors[$post['author_id']];
-			$post['short'] 	= $this->shortText($post['short'], 50);
+			$post['short'] 	= $this->shortText($post['short'], 20);
 			$post['text'] 	= $this->prepareText($post['text']);
 			$post['pub_date']	= date('d.m.y H:i', $post['pub_time']);
 			$post['title']	= $this->shortText($post['title'], 70);
@@ -90,6 +90,8 @@ class Posts extends BLL
 			if($post['has_pic'] == self::PIC_STATUS_HAS_WIDE_PIC || $post['has_pic'] == self::PIC_STATUS_HAS_PIC)
 			{
 				$post['image_src'] = $this->getPostImageUrl($post['post_id'], $post['author_id'], $post['has_pic'] == self::PIC_STATUS_HAS_PIC ? '_b' : '_w');
+				$post['image_src_small'] = $this->getPostImageUrl($post['post_id'], $post['author_id'], '_s');
+				$post['image_src_normal'] = $this->getPostImageUrl($post['post_id'], $post['author_id'], '_b');
 			}
 		}
 		unset($post);
@@ -115,11 +117,14 @@ class Posts extends BLL
 		return $posts;
 	}
 
-	public function getPopularPosts($limit = 3)
+	public function getPopularPosts($limit = 3, $offset = 0)
 	{
 		$postsIds = $this->application->db->master->selectAll(
-			'SELECT * FROM `active_posts` ORDER BY `rating` DESC LIMIT ?',
-			array($limit)
+			'SELECT * FROM `active_posts` ORDER BY `rating` DESC LIMIT ?, ?',
+			array(
+				$offset,
+				$limit
+			)
 		);
 
 		return $this->getPostsByIds($postsIds);

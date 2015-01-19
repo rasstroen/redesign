@@ -22,7 +22,6 @@ function templatePostShowItem(array $data)
 }
 function templatePostListIndexTopPopular(array $data)
 {
-	?><h2>Популярное</h2><?php
 	foreach($data['posts'] as $post)
 	{
 		_drawTopPostInList($post);
@@ -50,11 +49,11 @@ function _drawTopPostInList($post)
 		</div>
 		<?php if($post['has_pic'] == \Application\BLL\Posts::PIC_STATUS_HAS_PIC){?>
 			<div class="pic">
-				<img src="<?=$post['image_src']?>">
+				<img src="<?=$post['image_src_normal']?>">
 			</div>
 		<?php } elseif($post['has_pic'] == \Application\BLL\Posts::PIC_STATUS_HAS_WIDE_PIC) {?>
 			<div class="widepic">
-				<img src="<?=$post['image_src']?>">
+				<img src="<?=$post['image_src_normal']?>">
 			</div>
 		<?php }?>
 		<div class="text"><?=trim($post['short'])?><br>

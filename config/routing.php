@@ -86,11 +86,24 @@ $modules = array(
 	/**
 	 * топ популярных постов на главной
 	 */
-	'index_top_popular'=> array(
+	'index_top_popular_top3'=> array(
 		'className' => '\Application\Module\Post',
 		'template'  => 'post',
 		'action'    => 'list',
-		'mode'      => 'indexTopPopular'
+		'mode'      => 'indexTopPopular',
+		'variables' => array(
+			'limit' => 3
+		)
+	),
+	'index_top_popular_popular3'=> array(
+		'className' => '\Application\Module\Post',
+		'template'  => 'post',
+		'action'    => 'list',
+		'mode'      => 'indexTopPopular',
+		'variables' => array(
+			'offset'  => 3,
+			'limit' => 2
+		)
 	),
 	/**
 	 * топ новых на главной
@@ -142,6 +155,12 @@ $modules = array(
 		'template'  => 'theme',
 		'action'    => 'list',
 		'mode'      => 'adminThemePosts'
+	),
+	'index_top_themes'=> array(
+		'className' => '\Application\Module\Theme',
+		'template'  => 'theme',
+		'action'    => 'list',
+		'mode'      => 'mainSlider'
 	),
 );
 
@@ -319,10 +338,19 @@ return array(
 				'header'   => array(
 					'top_banner'=>$modules['top_banner'],
 				),
+				'block1-left-top' => array(
+					'index_top_themes' => $modules['index_top_themes'],
+				),
+				'block1-left-bottom' => array(
+					'index_top_popular_top3' => $modules['index_top_popular_top3'],
+				),
+				'block1-right-top' => array(
+					'index_top_popular_popular3' => $modules['index_top_popular_popular3'],
+				),
 				'content' => array(
-					'index_top_popular' => $modules['index_top_popular'],
-					'index_top_new'     => $modules['index_top_new'],
-					'index_rubrics'     => $modules['index_rubrics'],
+					//'index_top_popular' => $modules['index_top_popular'],
+					//'index_top_new'     => $modules['index_top_new'],
+					//'index_rubrics'     => $modules['index_rubrics'],
 				)
 			)
 		),
@@ -330,7 +358,7 @@ return array(
 		 * Топ авторов
 		 */
 		'authors_top'=> array(
-			'layout'    => 'index',
+			'layout'    => 'inner',
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
 				'header'   => array(
@@ -345,7 +373,7 @@ return array(
 		 * Страница поста
 		 */
 		'post_item'=> array(
-			'layout'    => 'index',
+			'layout'    => 'inner',
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
 				'header'   => array(
@@ -360,7 +388,7 @@ return array(
 		 * Страница автора
 		 */
 		'author'=> array(
-			'layout'    => 'index',
+			'layout'    => 'inner',
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
 				'header'   => array(
@@ -395,6 +423,18 @@ return array(
 			'css' => array(
 				'reset' => '/static/css/reset.css',
 				'index' => '/static/css/layout/index.css',
+				'posts' => '/static/css/posts.css',
+			),
+			'blocks'    => array(
+				'header'   => array(
+					'top_menu_index'=>$modules['top_menu_index'],
+				),
+			)
+		),
+		'inner' => array(
+			'css' => array(
+				'reset' => '/static/css/reset.css',
+				'index' => '/static/css/layout/inner.css',
 				'posts' => '/static/css/posts.css',
 			),
 			'blocks'    => array(

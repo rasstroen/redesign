@@ -20,9 +20,11 @@ class Post extends Base
 			'post'  => reset($posts)
 		);
 	}
-	public function actionListIndexTopPopular()
+	public function actionListIndexTopPopular(array $variables)
 	{
-		$posts = $this->application->bll->posts->getPopularPosts(self::POSTS_POPULAR_ON_MAIN);
+		$limit = isset($variables['limit']) ? $variables['limit'] : self::POSTS_POPULAR_ON_MAIN;
+		$offset = isset($variables['offset']) ? $variables['offset'] : 0;
+		$posts = $this->application->bll->posts->getPopularPosts($limit, $offset);
 		$this->application->bll->posts->preparePosts($posts);
 		return array(
 			'posts' => $posts

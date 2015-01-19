@@ -9,3 +9,7 @@
 .clearfix {
 	display: block;
 }
+*{
+	padding: 0;
+	margin: 0;
+}

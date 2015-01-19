@@ -1,28 +1,3 @@
-.content.block1 .left
-{
-	display: inline-block;
-	width: 720px;
-	overflow: hidden;
-	float: left;
-}
-.content.block1 .left .top .slider{
-	width: 100%;
-	height:400px;
-	background: #555;
-	color:#fff;
-	font-size: 24px;
-	text-align: center;
-	vertical-align: middle;
-}
-
-.content.block1 .right
-{
-	display: inline-block;
-	width: 480px;
-	overflow: hidden;
-	float: left;
-}
-
 .logo
 {
 	display: inline-block;;
@@ -72,7 +47,7 @@ ul.menu.index .subitem li
 
 .container
 {
-	width: 1200px;
+	width: 1240px;
 	margin: 0 auto;
 }
 

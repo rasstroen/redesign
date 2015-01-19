@@ -53,7 +53,12 @@ class Web extends Base
 				$data[$blockName][$key] = array(
 					'configuration' => $moduleConfiguration
 				);
-				$data[$blockName][$key]['data'] = $this->processModule($moduleConfiguration, $urlVariables);
+				$moduleVariables = $urlVariables;
+				if(!empty($moduleConfiguration['variables']))
+				{
+					$moduleVariables += $moduleConfiguration['variables'];
+				}
+				$data[$blockName][$key]['data'] = $this->processModule($moduleConfiguration, $moduleVariables);
 			}
 		}
 
