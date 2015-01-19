@@ -4,7 +4,7 @@ namespace Application\Module;
 
 class Post extends Base
 {
-	const POSTS_POPULAR_ON_MAIN 	= 3;
+	const POSTS_POPULAR_ON_MAIN 	= 12;
 	const POSTS_NEW_ON_MAIN 		= 3;
 
 	public function actionShowItem(array $variables)

@@ -103,7 +103,7 @@ function templateAdminListAdminRubrics(array $data)
 			?>
 			<li><a class="item<?php if($parentRubric['deleted']) echo ' deleted';?>" href="<?=$parentRubric['linkedUrl']?>">
 				<?=htmlspecialchars($parentRubric['title'])?>
-				(<?=intval($parentRubric['posts_count'])?>)
+				(<?=intval($parentRubric['posts_count_active'])?> / <?=intval($parentRubric['posts_count_unlinked'])?>)
 			</a>
 			<a href="<?=$parentRubric['addUrl']?>">+добавить подрубрику</a>
 			<a href="<?=$parentRubric['editUrl']?>">редактировать</a>

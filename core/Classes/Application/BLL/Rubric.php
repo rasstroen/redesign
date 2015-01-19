@@ -131,7 +131,7 @@ class Rubric extends BLL
 		 RAL.rubric_id=RP.rubric_id
 		  AND
 		  RAL.phrase_id=RP.phrase_id
-		 WHERE RP.rubric_id=? GROUP BY RP.phrase_id', array($rubricId), 'phrase_id');
+		 WHERE RP.rubric_id=? GROUP BY RP.phrase_id ORDER BY phrase', array($rubricId), 'phrase_id');
 	}
 
 	public function confirmPostLink($postId, $authorId, $pubTime, $rubricId)
@@ -189,6 +189,44 @@ class Rubric extends BLL
 				$phrase
 			)
 		);
+	}
+
+	public function getPostsCountsUnlinked(array $ids)
+	{
+		return $this->getDbMaster()->selectAll('SELECt rubric_id, count(1) as cnt  FROM rubric_auto_link WHERE rubric_id in(?) GROUP BY
+		`rubric_id` ', array($ids), 'rubric_id');
+	}
+
+	public function getPostsCountsActive(array $ids)
+	{
+		$out = array();
+		$date           = new \DateTime();
+		$interval       = new \DateInterval('P' . Posts::POST_ACTIVE_LIFE_DAYS . 'D');
+		$currentMonth   = $date->format('Y_m');
+		$previousMonth  = $date->sub($interval)->format('Y_m');
+
+		$months[$currentMonth]  = $currentMonth;
+		$months[$previousMonth] = $previousMonth;
+
+		$start  = time() - Posts::POST_ACTIVE_LIFE_DAYS * 24 * 60 * 60;
+		foreach($months as $month)
+		{
+			$links = $this->getDbWeb()->selectAll(
+				'SELECT rubric_id, count(1) as cnt FROM `rubric_link_' . $month . '` WHERE `pub_date`>? AND `rubric_id` IN(?) GROUP BY
+`rubric_id`',
+				array(
+					$start,
+					$ids
+				),
+				'rubric_id'
+			);
+			foreach($links as $rubricId => $rubric)
+			{
+				$out[$rubricId] = $rubric['cnt'];
+			}
+		}
+
+		return $out;
 	}
 
 	public function getAll()
