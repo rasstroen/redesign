@@ -101,7 +101,9 @@ function templateAdminListAdminRubrics(array $data)
 	if(isset($rubricsByParents[0])) {
 		foreach ($rubricsByParents[0] as $parentRubric) {
 			?>
-			<li><a class="item<?php if($parentRubric['deleted']) echo ' deleted';?>" href="<?=$parentRubric['linkedUrl']?>">
+			<li><a class="item<?php if($parentRubric['deleted']) echo ' deleted';?> <?php if
+			(!$parentRubric['posts_count_active']) echo ' inactive';?>"
+				href="<?=$parentRubric['linkedUrl']?>">
 				<?=htmlspecialchars($parentRubric['title'])?>
 				(<?=intval($parentRubric['posts_count_active'])?> / <?=intval($parentRubric['posts_count_unlinked'])?>)
 			</a>

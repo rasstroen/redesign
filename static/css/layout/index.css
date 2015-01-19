@@ -5,6 +5,12 @@
 	height:100px;
 }
 
+.top-banner
+{
+	margin: 0 auto;
+	text-align: center;
+}
+
 .logo a{
 	font-size: 28px;
 	font-weight: bold;
@@ -43,4 +49,15 @@ ul.menu.index .subitem li
 {
 	width: 1240px;
 	margin: 0 auto;
+}
+
+ul.rubrics
+{
+	margin: 0;
+	padding: 0;
+}
+
+ul.rubrics li{
+	list-style: none;
+	display: inline-block;
 }

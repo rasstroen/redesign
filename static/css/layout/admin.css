@@ -124,7 +124,7 @@ ul.adminMenu li.selected a{
 	text-decoration: none;
 }
 
-/*Рубрики */
+/*пїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
 ul.admin_rubrics
 {
 	list-style: none;
@@ -141,6 +141,13 @@ ul.admin_rubrics li a.item{
 	font-size: 20px;
 	color:#44f;
 }
+
+ul.admin_rubrics li a.item.inactive{
+	font-size: 20px;
+	color:#f44;
+}
+
+
 
 ul.admin_rubrics li a{
 	color:#333;

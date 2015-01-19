@@ -17,7 +17,7 @@ class Misc extends Base
 		/**
 		 * checking date tables
 		 */
-		$monthTables = array('rubric_link_');
+		$monthTables = array('rubric_link_', 'rubric_link_abandon_');
 		foreach($monthTables as $tablePrefix)
 		{
 			$this->log('Creating table ' . $tablePrefix . $nextMonth);

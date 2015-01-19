@@ -98,6 +98,13 @@ class Top extends Base
 			}
 		}
 
+		$data['rubrics'] = $this->application->bll->rubric->getTop();
+		foreach($data['rubrics'] as &$rubric)
+		{
+			$rubric['url'] = '/rubric/' . $rubric['name'];
+		}
+		unset($rubric);
+
 		return $data;
 	}
 }

@@ -207,6 +207,12 @@ class Search extends Base
 				}
 			}
 		}
+		/**
+		 * Удаляем привязанные рубрики
+		 */
+		$this->log('deleting already linked');
+		$this->application->bll->rubric->deleteAlreadyLinkedFromAutolink();
+		$this->log('deleted already linked');
 	}
 
 	public function actionGenerateXml()

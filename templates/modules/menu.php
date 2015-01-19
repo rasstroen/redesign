@@ -28,7 +28,20 @@ function templateMenuListIndex($data)
 		<?php }?>
 		</li><?php
 	}
-	?></ul><?php
+	?></ul>
+	<ul class="rubrics">
+		<?php foreach($data['rubrics'] as $rubric){?>
+			<li>
+				<a href="<?=$rubric['url']?>"><?=htmlspecialchars($rubric['title'])?></a>
+			</li>
+	<?php }?>
+		<li>
+			<a class="more" >ещё</a>
+		</li>
+	</ul>
+<?php
+
+
 }
 
 function templateMenuListAdmin($data)

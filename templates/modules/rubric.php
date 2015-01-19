@@ -24,18 +24,28 @@ function templateRubricListAdminLinkedPosts(array $data)
 		<input type="submit" value="перегенерить автопривязки" />
 	</form>
 	<div class="choose"><?php
-	if($data['isDone'])
+	if($data['isDone'] == 1)
 	{
 		?>
 		<a href="<?=$data['notDoneUrl']?>">Непривязанные</a>
+		<a href="<?=$data['abandonUrl']?>">Запрещенные к привязке</a>
 		<h1>Привязанные к рубрике "<?=htmlspecialchars($data['rubric']['title']);?>" активные посты</h1>
 		<?php
+	}
+	elseif($data['isDone'] == 0)
+	{
+		?>
+		<a href="<?=$data['doneUrl']?>">Привязанные</a>
+		<a href="<?=$data['abandonUrl']?>">Запрещенные к привязке</a>
+		<h1>Не привязанные к рубрике "<?=htmlspecialchars($data['rubric']['title']);?>" активные посты</h1>
+	<?php
 	}
 	else
 	{
 		?>
 		<a href="<?=$data['doneUrl']?>">Привязанные</a>
-		<h1>Не привязанные к рубрике "<?=htmlspecialchars($data['rubric']['title']);?>" активные посты</h1>
+		<a href="<?=$data['notDoneUrl']?>">Непривязанные</a>
+		<h1>Запрещенные к привязке к рубрике "<?=htmlspecialchars($data['rubric']['title']);?>" активные посты</h1>
 	<?php
 	}
 	?></div><?php
@@ -73,7 +83,7 @@ function _drawRubricPostInList($post, $rubricId, $isDone)
 			<?php foreach($post['phrases'] as $phrase){?>
 				фраза: <b><?=$phrase['phrase']?></b>
 			<?php   }}?>
-			<?php if(!$isDone) { ?>
+			<?php if(0==$isDone) { ?>
 			<form enctype="multipart/form-data" method="post">
 				<input type="hidden" name="writemodule" value="admin/rubric">
 				<input type="hidden" name="method" value="confirmLink">
@@ -82,8 +92,9 @@ function _drawRubricPostInList($post, $rubricId, $isDone)
 				<input type="hidden" name="pubDate" value="<?=intval($post['pub_time'])?>">
 				<input type="hidden" name="rubricId" value="<?=$rubricId?>">
 				<input type="submit" value="подтвердить привязку" />
+				<input type="submit" name="abandon" value="запретить привязку" />
 			</form>
-			<?php } else{?>
+			<?php } elseif(1 == $isDone){?>
 				<form enctype="multipart/form-data" method="post">
 					<input type="hidden" name="writemodule" value="admin/rubric">
 					<input type="hidden" name="method" value="deleteLink">
@@ -93,7 +104,17 @@ function _drawRubricPostInList($post, $rubricId, $isDone)
 					<input type="hidden" name="rubricId" value="<?=$rubricId?>">
 					<input type="submit" value="удалить привязку" />
 				</form>
-			<?php }?>
+			<?php  } elseif(2 == $isDone){?>
+				<form enctype="multipart/form-data" method="post">
+					<input type="hidden" name="writemodule" value="admin/rubric">
+					<input type="hidden" name="method" value="confirmLink">
+					<input type="hidden" name="postId" value="<?=intval($post['post_id'])?>">
+					<input type="hidden" name="authorId" value="<?=intval($post['author_id'])?>">
+					<input type="hidden" name="pubDate" value="<?=intval($post['pub_time'])?>">
+					<input type="hidden" name="rubricId" value="<?=$rubricId?>">
+					<input type="submit" value="подтвердить привязку" />
+				</form>
+<?php }?>
 		</div>
 	</div>
 <?php

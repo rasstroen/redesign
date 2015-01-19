@@ -10,6 +10,12 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'index'
 	),
+	'top_banner' => array(
+		'className' => '\Application\Module\Misc',
+		'template'  => 'banner',
+		'action'    => 'show',
+		'mode'      => 'top'
+	),
 	'admin_themes' => array(
 		'className' => '\Application\Module\Admin\Theme',
 		'template'  => 'theme',
@@ -188,6 +194,10 @@ return array(
 							''=>	'admin_linked_posts',
 							'_var'  => 'isDone',
 						),
+						'abandon'  => array(
+							''=>	'admin_linked_posts',
+							'_var'  => 'isDone',
+						),
 					)
 					)
 			),
@@ -306,6 +316,9 @@ return array(
 			'layout'    => 'index',
 			'title'     => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks'    => array(
+				'header'   => array(
+					'top_banner'=>$modules['top_banner'],
+				),
 				'content' => array(
 					'index_top_popular' => $modules['index_top_popular'],
 					'index_top_new'     => $modules['index_top_new'],

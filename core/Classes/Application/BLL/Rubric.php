@@ -7,6 +7,37 @@ namespace Application\BLL;
 class Rubric extends BLL
 {
 
+	public function getTop($limit = 12)
+	{
+		return $this->getDbWeb()->selectAll('SELECT * FROM `rubric` ORDER BY `weight` DESC LIMIT ?', array($limit),
+		                              'rubric_id');
+	}
+
+	public function deleteAlreadyLinkedFromAutolink()
+	{
+		$date = date('Y_m');
+		$this->getDbMaster()->query(
+			'delete a from rubric_auto_link a join rubric_link_' . $date . ' c on c.post_id=a.post_id
+	and c.author_id = a.author_id'
+		);
+		$date = date('Y_m', time() - 24 * 60 * 60 * Posts::POST_ACTIVE_LIFE_DAYS);
+		$this->getDbMaster()->query(
+			'delete a from rubric_auto_link a join rubric_link_' . $date . ' c on c.post_id=a.post_id
+	and c.author_id = a.author_id'
+		);
+
+		$date = date('Y_m');
+		$this->getDbMaster()->query(
+			'delete a from rubric_auto_link a join rubric_link_abandon_' . $date . ' c on c.post_id=a.post_id
+	and c.author_id = a.author_id'
+		);
+		$date = date('Y_m', time() - 24 * 60 * 60 * Posts::POST_ACTIVE_LIFE_DAYS);
+		$this->getDbMaster()->query(
+			'delete a from rubric_auto_link a join rubric_link_abandon_' . $date . ' c on c.post_id=a.post_id
+	and c.author_id = a.author_id'
+		);
+	}
+
 	public function getByIds(array $rubricIds)
 	{
 		return $this->application->db->master->selectAll('SELECT * FROM `rubric` WHERE `rubric_id` IN (?)', array(array_values($rubricIds)) , 'rubric_id');
@@ -62,6 +93,35 @@ class Rubric extends BLL
 			break;
 		}
 		return $autoLinks;
+	}
+
+	public function getRubricAbandonPosts($rubricId)
+	{
+		$date           = new \DateTime();
+		$interval       = new \DateInterval('P' . Posts::POST_ACTIVE_LIFE_DAYS . 'D');
+		$currentMonth   = $date->format('Y_m');
+		$previousMonth  = $date->sub($interval)->format('Y_m');
+
+		$months[$currentMonth]  = $currentMonth;
+		$months[$previousMonth] = $previousMonth;
+
+		$start  = time() - Posts::POST_ACTIVE_LIFE_DAYS * 24 * 60 * 60;
+
+		foreach($months as $month)
+		{
+			$links = $this->getDbMaster()->selectAll(
+				'SELECT * FROM `rubric_link_abandon_' . $month . '` WHERE `pub_date`>? AND `rubric_id` =? ORDER BY `pub_date` DESC',
+				array(
+					$start,
+					$rubricId
+				)
+			);
+		}
+
+		$posts  = $this->application->bll->posts->getPostsByIds($links);
+		$this->application->bll->posts->preparePosts($posts);
+
+		return $posts;
 	}
 
 	public function getRubricLinkedPosts($rubricId)
@@ -132,6 +192,29 @@ class Rubric extends BLL
 		  AND
 		  RAL.phrase_id=RP.phrase_id
 		 WHERE RP.rubric_id=? GROUP BY RP.phrase_id ORDER BY phrase', array($rubricId), 'phrase_id');
+	}
+
+	public function abandonPostLink($postId, $authorId, $pubTime, $rubricId)
+	{
+		$month = date('Y_m', $pubTime);
+		$this->getDbMaster()->query(
+			'REPLACE INTO `rubric_link_abandon_' . $month . '` VALUES(?,?,?,?)',
+			array(
+				$rubricId,
+				$postId,
+				$authorId,
+				$pubTime
+			)
+		);
+
+		$this->getDbMaster()->query(
+			'DELETE FROM `rubric_auto_link` WHERE post_id=? AND author_id=? AND rubric_id=?',
+			array(
+				$postId,
+				$authorId,
+				$rubricId
+			)
+		);
 	}
 
 	public function confirmPostLink($postId, $authorId, $pubTime, $rubricId)

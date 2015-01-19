@@ -110,21 +110,27 @@ class Rubric extends Base
 
 	public function actionListAdminLinkedPosts(array $variables)
 	{
-		$isDone     = isset($variables['isDone']) && $variables['isDone'] == 'done';
+		$isDone     = isset($variables['isDone']) && $variables['isDone'] == 'done' ? 1 :
+			isset($variables['isDone']) && $variables['isDone'] == 'abandon' ? 2 : 0;
 		$rubricId   = $variables['rubricId'];
 		$rubric     = $this->application->bll->rubric->getById($rubricId);
 
-		if(!$isDone)
+		if(0 == $isDone)
 		{
 			$data['posts']      = $this->application->bll->rubric->getRubricAutoLinkedPosts($rubricId);
 		}
-		else
+		elseif(1 == $isDone)
 		{
 			$data['posts']      = $this->application->bll->rubric->getRubricLinkedPosts($rubricId);
+		}
+		else
+		{
+			$data['posts']      = $this->application->bll->rubric->getRubricAbandonPosts($rubricId);
 		}
 		$data['isDone']     = $isDone;
 		$data['rubric']     = $rubric;
 		$data['notDoneUrl'] = $this->application->routing->getUrl('admin/rubric/' . $rubricId .'/linked');
+		$data['abandonUrl'] = $this->application->routing->getUrl('admin/rubric/' . $rubricId .'/linked/abandon');
 		$data['doneUrl']    = $this->application->routing->getUrl('admin/rubric/' . $rubricId .'/linked/done');
 		uasort($data['posts'], function ($post1, $post2)
 		{
