@@ -21,10 +21,10 @@ require_once $application->configuration->getRootPath() . 'templates/helpers/hea
 				</div>
 			</div>
 			<div class="right">
-				<div class="top">
+				<div class="top clearfix">
 					<?= $view->renderBlock('block1-right-top', $modulesData) ?>
 				</div>
-				<div class="bottom">
+				<div class="bottom clearfix">
 					<div class="left">
 						<?= $view->renderBlock('block1-right-bottom-left', $modulesData) ?>
 					</div>

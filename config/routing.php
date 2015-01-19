@@ -114,6 +114,16 @@ $modules = array(
 			'limit' => 2
 		)
 	),
+	'index_top_commented'=> array(
+		'className' => '\Application\Module\Post',
+		'template'  => 'post',
+		'action'    => 'list',
+		'mode'      => 'indexTopCommented',
+		'variables' => array(
+			'offset'  => 5,
+			'limit' => 2
+		)
+	),
 	/**
 	 * топ новых на главной
 	 */
@@ -358,6 +368,9 @@ return array(
 				),
 				'block1-right-bottom-left' => array(
 					'index_top_authors' => $modules['index_top_authors'],
+				),
+				'block1-right-bottom-right' => array(
+					'index_top_commented' => $modules['index_top_commented'],
 				),
 				'content' => array(
 					//'index_top_popular' => $modules['index_top_popular'],

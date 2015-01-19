@@ -21,6 +21,33 @@
 	width: 480px;
 	overflow: hidden;
 	float: left;
+	position: relative;
+}
+
+.content.block1 .right .top
+{
+	position: relative;
+	display: block;
+	width: 480px;
+	min-height: 100px;
+}
+
+.content.block1 .right .bottom
+{
+	position: relative;
+	display: block;
+	width: 480px;
+	min-height: 100px;
+}
+
+.content.block1 .right .bottom .left{
+	display: inline-block;
+	max-width: 240px;
+}
+
+.content.block1 .right .bottom .right{
+	display: inline-block;
+	max-width: 240px;
 }
 
 .logo

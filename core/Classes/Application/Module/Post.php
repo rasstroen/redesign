@@ -31,6 +31,17 @@ class Post extends Base
 		);
 	}
 
+	public function actionListIndexTopCommented(array $variables)
+	{
+		$limit = isset($variables['limit']) ? $variables['limit'] : self::POSTS_POPULAR_ON_MAIN;
+		$offset = isset($variables['offset']) ? $variables['offset'] : 0;
+		$posts = $this->application->bll->posts->getPopularPosts($limit, $offset);
+		$this->application->bll->posts->preparePosts($posts);
+		return array(
+			'posts' => $posts
+		);
+	}
+
 	public function actionListIndexTopNew()
 	{
 		$posts = $this->application->bll->posts->getNewPosts(self::POSTS_NEW_ON_MAIN);

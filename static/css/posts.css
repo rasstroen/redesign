@@ -26,6 +26,20 @@
 	max-width: 232px;
 }
 
+.content.block1 .right .bottom .post_list_item.main_popular
+{
+	display: inline-block;
+	width: 232px;
+	padding: 4px;
+	vertical-align: top;
+	overflow: hidden;
+	float: left;
+}
+
+.content.block1 .right .bottom .post_list_item.main_popular img{
+	max-width: 232px;
+}
+
 .content.block1 .post_list_item h3
 {
 	font-size: 14px;

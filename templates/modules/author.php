@@ -36,9 +36,7 @@ function templateAuthorListIndexTop(array $data)
 {
 	foreach($data['authors'] as $author)
 	{
-
-		?>
-		<div>
+		?><div>
 			<span><img width="50px" src="<?=$author['journal_pic']?>"></span>
 			<span>#<?=htmlspecialchars($author['position'])?></span>
 			<span><h3><?=htmlspecialchars($author['username'])?></h3></span>
