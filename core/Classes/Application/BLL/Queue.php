@@ -32,6 +32,8 @@ class Queue extends BLL
 
 	const QUEUE_POSTS_PROCESS_RECALCULATE_THEMES = 7;
 
+	const QUEUE_POSTS_PROCESS_POSTS_VIDEOS = 8;
+
 
 	private $queues = array(
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
@@ -95,6 +97,15 @@ class Queue extends BLL
 			'tasks_per_worker'  => 1,
 			'command'           => 'Theme',
 			'method'            => 'recalculate',
+			'enabled'           => 1,
+		),
+		self::QUEUE_POSTS_PROCESS_POSTS_VIDEOS => array(
+			'name'              => 'QUEUE_POSTS_PROCESS_POSTS_VIDEOS',
+			'priority'          => 1,
+			'workers'           => 6,
+			'tasks_per_worker'  => 12,
+			'command'           => 'Post',
+			'method'            => 'processVideos',
 			'enabled'           => 1,
 		),
 );

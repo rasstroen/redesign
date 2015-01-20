@@ -78,6 +78,16 @@ class Post extends Base
 				);
 			}
 
+			if($post['has_video'] == Posts::VIDEO_STATUS_UNKNOWN)
+			{
+				$this->log('adding task to process post videos: '. $post['post_id']);
+				$this->application->bll->queue->addTask(
+					Queue::QUEUE_POSTS_PROCESS_POSTS_VIDEOS,
+					$post['post_id'] . '_' . $post['author_id'],
+					$post
+				);
+			}
+
 			$this->application->bll->posts->savePostToActive($post['post_id'], $post['author_id'], $post, 'active_posts_temp');
 		}
 		// @todo bulk update
@@ -89,6 +99,16 @@ class Post extends Base
 				$this->log('adding task to process post images: '. $post['post_id']);
 				$this->application->bll->queue->addTask(
 					Queue::QUEUE_POSTS_PROCESS_POSTS_IMAGES,
+					$post['post_id'] . '_' . $post['author_id'],
+					$post
+				);
+			}
+
+			if($post['has_video'] == Posts::VIDEO_STATUS_UNKNOWN)
+			{
+				$this->log('adding task to process post videos: '. $post['post_id']);
+				$this->application->bll->queue->addTask(
+					Queue::QUEUE_POSTS_PROCESS_POSTS_VIDEOS,
 					$post['post_id'] . '_' . $post['author_id'],
 					$post
 				);

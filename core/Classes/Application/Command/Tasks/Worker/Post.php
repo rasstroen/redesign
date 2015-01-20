@@ -33,6 +33,12 @@ class Post extends Base
 		),
 	);
 
+	public function methodProcessVideos($data)
+	{
+		$this->log('processing videos');
+		die();
+	}
+
 	public function methodProcessImages($data)
 	{
 		$this->log('processing images');
