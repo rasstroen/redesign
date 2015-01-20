@@ -33,6 +33,7 @@ class Search extends Base
 					}
 					$q      = implode(' & ', $q);
 					$result = $cl->Query($q, 'ljtop_active_new_index');
+					if(!empty($result['matches']))
 					foreach($result['matches'] as $match)
 					{
 						$weight = $match['weight'];
@@ -74,16 +75,22 @@ class Search extends Base
 				$theme = $themeToPhrase[$phrase];
 				if(!isset($resultPosts[$key]))
 				{
-
-
 					$resultPosts[$key] = array();
-					$resultPosts[$key]['weights'][$theme['theme_id']]   = $post['weight'];
+					$resultPosts[$key]['weights'][$theme['theme_id']]   = $post['weight'] * 2;
 					$resultPosts[$key]['counts'][$theme['theme_id']]    = 1;
 				}
 				else
 				{
-					$resultPosts[$key]['weights'][$theme['theme_id']] += $post['weight'];
-					$resultPosts[$key]['counts'][$theme['theme_id']] += 1;
+					if(!isset($resultPosts[$key]['weights'][$theme['theme_id']]))
+					{
+						$resultPosts[$key]['weights'][$theme['theme_id']]   = $post['weight'] * 2;
+						$resultPosts[$key]['counts'][$theme['theme_id']]    = 1;
+					}
+					else
+					{
+						$resultPosts[$key]['weights'][$theme['theme_id']] += $post['weight'] * 2;
+						$resultPosts[$key]['counts'][$theme['theme_id']] += 1;
+					}
 				}
 			}
 		}
@@ -103,14 +110,17 @@ class Search extends Base
 				{
 					continue;
 				}
-				$resultPosts[$key]['total'][$theme['theme_id']] = $resultPosts[$key]['weights'][$theme['theme_id']] /
-					$resultPosts[$key]['counts'][$theme['theme_id']];
+				$resultPosts[$key]['total'][$theme['theme_id']] =
+					sqrt($resultPosts[$key]['weights'][$theme['theme_id']]) /
+					sqrt($resultPosts[$key]['counts'][$theme['theme_id']])
+					+ sqrt($resultPosts[$key]['counts'][$theme['theme_id']]);
 
 			}
 		}
 		unset($post);
 
 		$postsToTheme = array();
+
 
 		foreach($resultPosts as $key => $data)
 		{
@@ -131,7 +141,7 @@ class Search extends Base
 		foreach($postsToTheme as $key => $themeId)
 		{
 			list($postId, $authorId) = explode('-', $key);
-			$this->log('applying theme'. "$postId, $authorId, to theme# $themeId *");
+			$this->log('applying post '. "$postId, $authorId, to theme# $themeId *");
 			$this->application->bll->theme->bindPostToTheme($postId, $authorId, $themeId);
 		}
 	}
