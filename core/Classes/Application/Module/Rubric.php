@@ -110,8 +110,9 @@ class Rubric extends Base
 
 	public function actionListAdminLinkedPosts(array $variables)
 	{
-		$isDone     = isset($variables['isDone']) && $variables['isDone'] == 'done' ? 1 :
-			isset($variables['isDone']) && $variables['isDone'] == 'abandon' ? 2 : 0;
+		$isDone     = (isset($variables['isDone']) && $variables['isDone'] == 'done') ? 1 :
+			((isset($variables['isDone']) && $variables['isDone'] == 'abandon') ? 2 : 0);
+
 		$rubricId   = $variables['rubricId'];
 		$rubric     = $this->application->bll->rubric->getById($rubricId);
 
