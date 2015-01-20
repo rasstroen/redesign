@@ -96,6 +96,50 @@
 	position: relative;
 }
 
+/** bock 4 **/
+
+.content.block4 .left
+{
+	display: inline-block;
+	width: 400px;
+	float: left;
+}
+
+.content.block4 .center
+{
+	display: inline-block;
+	width: 600px;
+}
+
+.content.block4 .right
+{
+	display: inline-block;
+	width: 200px;
+	float: right;
+}
+
+
+
+.content.block4 .left .slider{
+	width: 100%;
+	height:200px;
+	background: #555;
+	color:#fff;
+	font-size: 24px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.content.block4 .center .slider{
+	width: 100%;
+	height:200px;
+	background: #555;
+	color:#fff;
+	font-size: 24px;
+	text-align: center;
+	vertical-align: middle;
+}
+
 /** top authors **/
 .top-author div
 {
@@ -135,7 +179,12 @@
 ul.menu.index
 {
 	display: inline-block;
-	height:100px;
+}
+
+form.search, form.login
+{
+	display: inline-block;
+	float: right;
 }
 
 ul.menu.index, ul.menu.index .subitem

@@ -42,9 +42,11 @@ class Post extends Base
 		);
 	}
 
-	public function actionListIndexTopNew()
+	public function actionListIndexTopNew(array $variables)
 	{
-		$posts = $this->application->bll->posts->getNewPosts(self::POSTS_NEW_ON_MAIN);
+		$limit = isset($variables['limit']) ? $variables['limit'] : self::POSTS_NEW_ON_MAIN;
+		$offset = isset($variables['offset']) ? $variables['offset'] : 0;
+		$posts = $this->application->bll->posts->getNewPosts($limit, $offset);
 		$this->application->bll->posts->preparePosts($posts);
 		return array(
 			'posts' => $posts

@@ -131,11 +131,14 @@ class Posts extends BLL
 		return $this->getPostsByIds($postsIds);
 	}
 
-	public function getNewPosts($limit = 3)
+	public function getNewPosts($limit = 3, $offset = 0)
 	{
 		$postsIds = $this->application->db->master->selectAll(
-			'SELECT * FROM `active_posts` ORDER BY `pub_time` DESC LIMIT ?',
-			array($limit)
+			'SELECT * FROM `active_posts` ORDER BY `pub_time` DESC LIMIT ?, ?',
+			array(
+				$offset,
+				$limit
+			)
 		);
 
 		return $this->getPostsByIds($postsIds);

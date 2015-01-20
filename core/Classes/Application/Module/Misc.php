@@ -13,4 +13,9 @@ class Misc extends Base
 	{
 		return array();
 	}
+
+	public function actionShowRightBottom()
+	{
+		return array();
+	}
 }

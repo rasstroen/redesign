@@ -53,7 +53,28 @@ require_once $application->configuration->getRootPath() . 'templates/helpers/hea
 				</div>
 			</div>
 		</div>
+		<!-- block 3-->
+		<div class="content_block content block3 clearfix">
+			<?= $view->renderBlock('block3', $modulesData) ?>
+		</div>
+		<!-- block 4 -->
+		<div class="content_block content block4 clearfix">
+			<div class="left clearfix">
+				<?= $view->renderBlock('block4-left', $modulesData) ?>
+			</div>
+			<div class="center clearfix">
+				<?= $view->renderBlock('block4-center', $modulesData) ?>
+			</div>
+			<div class="right clearfix">
+				<?= $view->renderBlock('block4-right', $modulesData) ?>
+			</div>
+		</div>
+		<!-- footer -->
+		<div class="content_block content block5 clearfix">
+			футер
+		</div>
 	</div>
+</div>
 </div>
 <div class="footer"><?= $view->renderBlock('footer', $modulesData) ?></div>
 </body>

@@ -87,7 +87,26 @@
 	max-width: 232px;
 }
 
+/** block 3 index **/
 
+.content.block3
+{
+	padding-top: 20px;
+}
+
+.content.block3 .post_list_item.main_popular
+{
+	display: inline-block;
+	width: 232px;
+	padding: 4px;
+	vertical-align: top;
+	overflow: hidden;
+}
+
+.content.block3  .post_list_item.main_popular img{
+	max-width: 232px;
+}
+/** post item **/
 
 .post_item
 {

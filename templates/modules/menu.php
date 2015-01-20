@@ -29,6 +29,13 @@ function templateMenuListIndex($data)
 		</li><?php
 	}
 	?></ul>
+	<form class="login" method="get" action="/login/">
+		<input type="submit" name="phrase" value="Войти">
+	</form>
+	<form class="search" method="get" action="/search/">
+		<input type="text" name="phrase" value="Искать по записям">
+	</form>
+
 	<ul class="rubrics">
 		<?php foreach($data['rubrics'] as $rubric){?>
 			<li>
