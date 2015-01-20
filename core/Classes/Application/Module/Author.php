@@ -15,8 +15,9 @@ class Author extends Base
 
 	public function actionListIndexTop(array $variables)
 	{
+		$type = isset($variables['type']) ? $variables['type'] : \Application\BLL\Author::AUTHOR_TYPE_USER;
 		$authors = $this->application->bll->author->getTop(
-			\Application\BLL\Author::AUTHOR_TYPE_USER,
+			$type,
 			1,
 			$variables['limit']
 		);
@@ -24,7 +25,7 @@ class Author extends Base
 		return
 			array(
 				'authors' => $authors,
-				'type'    => \Application\BLL\Author::AUTHOR_TYPE_USER,
+				'type'    => $type,
 			);
 	}
 

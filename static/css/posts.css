@@ -1,3 +1,11 @@
+/** blocks on index **/
+.content_block .post_list_item h3
+{
+	font-size: 14px;
+}
+
+
+/** block 1 index **/
 .content.block1 .left .bottom .post_list_item.main_popular
 {
 	display: inline-block;
@@ -40,10 +48,44 @@
 	max-width: 232px;
 }
 
-.content.block1 .post_list_item h3
+
+/** block 2 index **/
+
+.content.block2
 {
-	font-size: 14px;
+	padding-top: 20px;
 }
+
+.content.block2 .left .post_list_item.main_popular
+{
+	display: inline-block;
+	width: 232px;
+	padding: 4px;
+	vertical-align: top;
+	overflow: hidden;
+	float: left;
+}
+
+.content.block2 .left .post_list_item.main_popular img{
+	max-width: 232px;
+}
+
+
+.content.block2 .right .bottom .post_list_item.main_popular
+{
+	display: inline-block;
+	width: 232px;
+	padding: 4px;
+	vertical-align: top;
+	overflow: hidden;
+	float: left;
+}
+
+.content.block2 .right .bottom .post_list_item.main_popular img{
+	max-width: 232px;
+}
+
+
 
 .post_item
 {

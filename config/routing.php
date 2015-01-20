@@ -16,6 +16,12 @@ $modules = array(
 		'action'    => 'show',
 		'mode'      => 'top'
 	),
+	'right-banner' => array(
+		'className' => '\Application\Module\Misc',
+		'template'  => 'banner',
+		'action'    => 'show',
+		'mode'      => 'right'
+	),
 	'admin_themes' => array(
 		'className' => '\Application\Module\Admin\Theme',
 		'template'  => 'theme',
@@ -92,6 +98,16 @@ $modules = array(
 			'limit' => 5
 		)
 	),
+	'index_top_communities'=> array(
+		'className' => '\Application\Module\Author',
+		'template'  => 'author',
+		'action'    => 'list',
+		'mode'      => 'indexTop',
+		'variables' => array(
+			'limit' => 5,
+			'type'  => 1//\Application\BLL\Author::AUTHOR_TYPE_COMMUNITY
+		)
+	),
 	/**
 	 * топ популярных постов на главной
 	 */
@@ -104,6 +120,16 @@ $modules = array(
 			'limit' => 3
 		)
 	),
+	'index_top_popular_popular9'=> array(
+		'className' => '\Application\Module\Post',
+		'template'  => 'post',
+		'action'    => 'list',
+		'mode'      => 'indexTopPopular',
+		'variables' => array(
+			'offset'  => 10,
+			'limit' => 9
+		)
+	),
 	'index_top_popular_popular3'=> array(
 		'className' => '\Application\Module\Post',
 		'template'  => 'post',
@@ -114,6 +140,16 @@ $modules = array(
 			'limit' => 2
 		)
 	),
+	'index_top_popular_readnow'=> array(
+		'className' => '\Application\Module\Post',
+		'template'  => 'post',
+		'action'    => 'list',
+		'mode'      => 'indexTopPopular',
+		'variables' => array(
+			'offset'  => 19,
+			'limit' => 2
+		)
+	),
 	'index_top_commented'=> array(
 		'className' => '\Application\Module\Post',
 		'template'  => 'post',
@@ -121,7 +157,7 @@ $modules = array(
 		'mode'      => 'indexTopCommented',
 		'variables' => array(
 			'offset'  => 5,
-			'limit' => 2
+			'limit' => 5
 		)
 	),
 	/**
@@ -357,6 +393,7 @@ return array(
 				'header'   => array(
 					'top_banner'=>$modules['top_banner'],
 				),
+				// block 1
 				'block1-left-top' => array(
 					'index_top_themes' => $modules['index_top_themes'],
 				),
@@ -372,6 +409,20 @@ return array(
 				'block1-right-bottom-right' => array(
 					'index_top_commented' => $modules['index_top_commented'],
 				),
+				// block 2
+				'block2-left' => array(
+					'index_top_popular_popular9' => $modules['index_top_popular_popular9'],
+				),
+				'block2-right-left' => array(
+					'index_top_communities' => $modules['index_top_communities'],
+				),
+				'block2-right-right'   => array(
+					'right-banner'=>$modules['right-banner'],
+				),
+				'block2-right-bottom'   => array(
+					'index_top_popular_readnow'=>$modules['index_top_popular_readnow'],
+				),
+
 				'content' => array(
 					//'index_top_popular' => $modules['index_top_popular'],
 					//'index_top_new'     => $modules['index_top_new'],

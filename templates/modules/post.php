@@ -40,20 +40,8 @@ function templatePostListIndexTopCommented(array $data)
 					<span><a href="/post/<?=htmlspecialchars($post['author']['username'])?>/<?=htmlspecialchars($post['post_id'])?>"><?=htmlspecialchars($post['title'])?></a></span>
 				</h3>
 			</div>
-			<?php if($post['has_pic'] == \Application\BLL\Posts::PIC_STATUS_HAS_PIC){?>
-				<div class="pic">
-					<img src="<?=$post['image_src_normal']?>">
-				</div>
-			<?php } elseif($post['has_pic'] == \Application\BLL\Posts::PIC_STATUS_HAS_WIDE_PIC) {?>
-				<div class="widepic">
-					<img src="<?=$post['image_src_normal']?>">
-				</div>
-			<?php }?>
-			<div class="text"><?=trim($post['short'])?><br>
-				<?=$post['comments']?>
-				<br>
-				<?=$post['pub_date']?>
-				<br>
+
+			<div class="text"><?=trim($post['short_5'])?>
 			</div>
 		</div>
 	<?php

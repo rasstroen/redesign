@@ -8,4 +8,9 @@ class Misc extends Base
 	{
 		return array();
 	}
+
+	public function actionShowRight()
+	{
+		return array();
+	}
 }

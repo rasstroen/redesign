@@ -34,15 +34,18 @@ function templateAuthorShowItem(array $data)
 
 function templateAuthorListIndexTop(array $data)
 {
+	?><div class="top-author"><?php
 	foreach($data['authors'] as $author)
 	{
-		?><div>
-			<span><img width="50px" src="<?=$author['journal_pic']?>"></span>
-			<span>#<?=htmlspecialchars($author['position'])?></span>
-			<span><h3><?=htmlspecialchars($author['username'])?></h3></span>
+		?><div class="author">
+		<span class="position">#<?=htmlspecialchars($author['position'])?></span>
+			<span class="img"><img width="50px" src="<?=$author['journal_pic']?>"></span>
+
+			<span class="name"><h3><?=htmlspecialchars($author['username'])?></h3></span>
 		</div>
 	<?php
 	}
+	?></div><?php
 }
 
 

@@ -1,3 +1,4 @@
+/** block 1 **/
 .content.block1 .left
 {
 	display: inline-block;
@@ -50,6 +51,65 @@
 	max-width: 240px;
 }
 
+/** block 2 **/
+.content.block2 .left
+{
+	display: inline-block;
+	width: 720px;
+	overflow: hidden;
+	float: left;
+}
+
+.content.block2 .right
+{
+	display: inline-block;
+	width: 480px;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+.content.block2 .right .left
+{
+	display: inline-block;
+	width: 236px;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+.content.block2 .right .right
+{
+	display: inline-block;
+	width: 236px;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+.content.block2 .right .bottom
+{
+	display: inline-block;
+	width: 480px;
+	overflow: hidden;
+	float: left;
+	position: relative;
+}
+
+/** top authors **/
+.top-author div
+{
+	margin: 10px;
+	width: 240px;
+	overflow: hidden;
+}
+
+.top-author div span
+{
+	display: inline-block;
+}
+
+/** misc **/
 .logo
 {
 	display: inline-block;;

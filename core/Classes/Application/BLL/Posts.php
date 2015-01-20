@@ -83,6 +83,7 @@ class Posts extends BLL
 		{
 			$post['author'] = $authors[$post['author_id']];
 			$post['short'] 	= $this->shortText($post['short'], 20);
+			$post['short_5'] 	= $this->shortText($post['short'], 5);
 			$post['text'] 	= $this->prepareText($post['text']);
 			$post['pub_date']	= date('d.m.y H:i', $post['pub_time']);
 			$post['title']	= $this->shortText($post['title'], 70);
