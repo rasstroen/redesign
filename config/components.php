@@ -28,4 +28,7 @@ return array(
 	'httpRequest'       => array(
 		'className' => '\Application\Component\Request\Http',
 	),
+	'youtube'       => array(
+		'className' => '\Application\Component\Youtube',
+	),
 );

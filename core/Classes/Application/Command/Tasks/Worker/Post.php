@@ -2,36 +2,136 @@
 namespace Application\Command\Tasks\Worker;
 
 use Application\BLL\Posts;
+use Application\BLL\Video;
 
 class Post extends Base
 {
-	private $minSizeX	        = 300;
-	private $minSizeY	        = 300;
-	private $minPostsComments   = 30;
-	private $wideSize           = 700;
+	private $minSizeX = 300;
+	private $minSizeY = 300;
+	private $minPostsComments = 30;
+	private $wideSize = 700;
 
 	private $settings = array(
-		'small' => array(
-			'crop_method' 		=> 1,
-			'width_requested' 	=> 90,
-			'height_requested' 	=> 90,
+		'small'  => array(
+			'crop_method'      => 1,
+			'width_requested'  => 90,
+			'height_requested' => 90,
 		),
 		'normal' => array(
-			'crop_method' 		=> 1,
-			'width_requested' 	=> 150,
-			'height_requested' 	=> 150,
+			'crop_method'      => 1,
+			'width_requested'  => 150,
+			'height_requested' => 150,
 		),
-		'big' => array(
-			'crop_method' 		=> 1,
-			'width_requested' 	=> 300,
-			'height_requested' 	=> 300,
+		'big'    => array(
+			'crop_method'      => 1,
+			'width_requested'  => 300,
+			'height_requested' => 300,
 		),
-		'wide' => array(
-			'crop_method' 		=> 0,
-			'width_requested' 	=> 700,
-			'height_requested' 	=> 250,
+		'wide'   => array(
+			'crop_method'      => 0,
+			'width_requested'  => 700,
+			'height_requested' => 250,
 		),
 	);
+
+	public function methodProcessVideosThumbs($data)
+	{
+
+		foreach($data as $video)
+		{
+			try
+			{
+				$videoObject =
+					$this->application->youtube->getByUrl('http://www.youtube.com/watch?v=' . $video['video_id']);
+				$url         = $videoObject->getYoutubeLink();
+				$thumbnails  = $videoObject->getThumbnails();
+			}catch (\Exception $e)
+			{
+				$this->log('error: ' . print_r($e));
+				$thumbnails = false;
+			}
+			if($thumbnails)
+			{
+				$this->saveVideoThumb(
+					$video['post_id'],
+					$video['author_id'],
+					$video['video_id'],
+					$thumbnails['maxres'] ? $thumbnails['maxres'] : $thumbnails['high']
+				);
+				$this->application->bll->video->update(
+					$video['post_id'],
+					$video['author_id'],
+					$video['video_id'],
+					$video['date'],
+					$url,
+					Video::HAS_THUMB_YES
+				);
+			}
+			else
+			{
+				$this->application->bll->video->update(
+					$video['post_id'],
+					$video['author_id'],
+					$video['video_id'],
+					$video['date'],
+					'-',
+					Video::HAS_THUMB_NO
+				);
+			}
+		}
+	}
+
+	public function saveVideoThumb($postId, $authorId, $videoId, $url)
+	{
+		$hasPic = 0;
+		$res    = array();
+		$temp   = '/tmp/images/v-' . md5(rand(12, 101122332)) . time() . microtime(true) . '.jpg';
+		file_put_contents($temp, file_get_contents($url));
+		$size = getimagesize($temp);
+		if($size)
+		{
+			if(($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY))
+			{
+				$hasPic = Posts::PIC_STATUS_HAS_PIC;
+				if($size[0] >= $this->wideSize)
+				{
+					$hasPic = Posts::PIC_STATUS_HAS_WIDE_PIC;
+					$res[]  =
+						$this->application->imageConverter->resize(
+							$temp,
+							$this->settings['wide'],
+							$this->getLocalVideoPathWide($postId, $authorId, $videoId),
+							$size
+						);
+				}
+				$res[] =
+					$this->application->imageConverter->resize(
+						$temp,
+						$this->settings['normal'],
+						$this->getLocalVideoPath($postId, $authorId, $videoId),
+						$size
+					);
+				$res[] =
+					$this->application->imageConverter->resize(
+						$temp,
+						$this->settings['small'],
+						$this->getLocalVideoPathSmall($postId, $authorId, $videoId),
+						$size
+					);
+				$res[] =
+					$this->application->imageConverter->resize(
+						$temp,
+						$this->settings['big'],
+						$this->getLocalVideoPathBig($postId, $authorId, $videoId),
+						$size
+					);
+			}
+		}
+		@unlink($temp);
+		$this->log(print_r($res, 1));
+
+		return $hasPic;
+	}
 
 	public function methodProcessVideos($data)
 	{
@@ -66,15 +166,16 @@ class Post extends Base
 				Posts::VIDEO_STATUS_HASNOT_PIC
 			);
 		}
-
 	}
 
 	public function getRawVideos(array $post, $embedIds)
 	{
 		$videos = array();
-		$author = reset($this->application->bll->author->getByIds(
+		$author = reset(
+			$this->application->bll->author->getByIds(
 				array($post['author_id'])
-			));
+			)
+		);
 
 		$postUrl = 'http://' . $author['username'] . '.livejournal.com/' . $post['post_id'] . '.html';
 		$this->log('getting url: ' . $postUrl);
@@ -89,12 +190,12 @@ class Post extends Base
 		{
 			foreach($iframes[1] as $index => $url)
 			{
-				$params = array();
-				$urlData = parse_url($url);
-				$paramsStrings = explode('&amp;',$urlData['query']);
+				$params        = array();
+				$urlData       = parse_url($url);
+				$paramsStrings = explode('&amp;', $urlData['query']);
 				foreach($paramsStrings as $string)
 				{
-					$value = explode('=', $string);
+					$value             = explode('=', $string);
 					$params[$value[0]] = $value[1];
 				}
 				if(!empty($params['source']) && $params['source'] == 'youtube')
@@ -111,6 +212,7 @@ class Post extends Base
 				}
 			}
 		}
+
 		return $videos;
 	}
 
@@ -118,79 +220,110 @@ class Post extends Base
 	{
 		$this->log('processing images');
 
-		if(isset($data['url'])) {
-			$username = explode('/', $data['url']);
-			$postId   = intval(array_pop($username));
-			$username = str_replace('-', '_', $username[2]);
-			$username = reset(explode('.', $username));
-			$author   = $this->application->bll->author->getByUserName($username);
-			$authorId = $author['author_id'];
+		if(isset($data['url']))
+		{
+			$username    = explode('/', $data['url']);
+			$postId      = intval(array_pop($username));
+			$username    = str_replace('-', '_', $username[2]);
+			$username    = reset(explode('.', $username));
+			$author      = $this->application->bll->author->getByUserName($username);
+			$authorId    = $author['author_id'];
 			$description = $data['description'];
 		}
 		else
 		{
-			$authorId 	= $data['author_id'];
-			$postId		= $data['post_id'];
+			$authorId = $data['author_id'];
+			$postId   = $data['post_id'];
 			try
 			{
-				$post		= $this->application->bll->posts->getPostByAuthorIdPostId($postId, $authorId);
+				$post = $this->application->bll->posts->getPostByAuthorIdPostId($postId, $authorId);
 			}
 			catch(\Exception $e)
 			{
-				$this->log(print_r($e,1). ' '. $authorId.' , '. $postId);
+				$this->log(print_r($e, 1) . ' ' . $authorId . ' , ' . $postId);
 			}
-			$description	= $post['text'];
+			$description = $post['text'];
 		}
 
 		preg_match_all("/(<img )(.+?)( \/)?(>)/", $description, $images);
 		$urls = array();
-		foreach ($images[2] as $val)
+		foreach($images[2] as $val)
 		{
-			if (preg_match("/(src=)('|\")(.+?)('|\")/", $val, $matches) == 1)
+			if(preg_match("/(src=)('|\")(.+?)('|\")/", $val, $matches) == 1)
 			{
 				$urls[$matches[3]] = $matches[3];
 			}
 		}
 
-		if (!count($urls))
+		if(!count($urls))
 		{
 			$this->log('no pictures');
 			$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic = Posts::PIC_STATUS_HASNOT_PIC);
+
 			return;
 		}
 
-		mt_rand(1,21312323);
-		$temp = '/tmp/images/' . md5(rand(12,101122332)).time(). microtime(true) . '.jpg';
-		$this->log('pic saving to temp: ' . $temp .' postId=' . $postId .' authorId='. $authorId);
+		mt_rand(1, 21312323);
+		$temp = '/tmp/images/' . md5(rand(12, 101122332)) . time() . microtime(true) . '.jpg';
+		$this->log('pic saving to temp: ' . $temp . ' postId=' . $postId . ' authorId=' . $authorId);
 		$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
 
 		foreach($urls as $picUrl)
 		{
-			try {
+			try
+			{
 				$res = array();
 				file_put_contents($temp, file_get_contents($picUrl));
 				$size = getimagesize($temp);
-				if ($size) {
-					if (($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY)) {
+				if($size)
+				{
+					if(($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY))
+					{
 						$hasPic = Posts::PIC_STATUS_HAS_PIC;
-						if ($size[0] >= $this->wideSize) {
+						if($size[0] >= $this->wideSize)
+						{
 							$hasPic = Posts::PIC_STATUS_HAS_WIDE_PIC;
-							$res[]  = $this->application->imageConverter->resize($temp, $this->settings['wide'], $this->getLocalImagePathWide($postId, $authorId), $size);
+							$res[]  =
+								$this->application->imageConverter->resize(
+									$temp,
+									$this->settings['wide'],
+									$this->getLocalImagePathWide($postId, $authorId),
+									$size
+								);
 						}
-						$res[] = $this->application->imageConverter->resize($temp, $this->settings['normal'], $this->getLocalImagePath($postId, $authorId), $size);
-						$res[] = $this->application->imageConverter->resize($temp, $this->settings['small'], $this->getLocalImagePathSmall($postId, $authorId), $size);
-						$res[] = $this->application->imageConverter->resize($temp, $this->settings['big'], $this->getLocalImagePathBig($postId, $authorId), $size);
+						$res[] =
+							$this->application->imageConverter->resize(
+								$temp,
+								$this->settings['normal'],
+								$this->getLocalImagePath($postId, $authorId),
+								$size
+							);
+						$res[] =
+							$this->application->imageConverter->resize(
+								$temp,
+								$this->settings['small'],
+								$this->getLocalImagePathSmall($postId, $authorId),
+								$size
+							);
+						$res[] =
+							$this->application->imageConverter->resize(
+								$temp,
+								$this->settings['big'],
+								$this->getLocalImagePathBig($postId, $authorId),
+								$size
+							);
 						break;
 					}
 				}
-			}catch(\Exception $e)
+			}
+			catch(\Exception $e)
 			{
 				$hasPic = Posts::PIC_STATUS_HASNOT_PIC;
-				$this->log('Exc:'. $e->getMessage());
+				$this->log('Exc:' . $e->getMessage());
 			}
 			@unlink($temp);
 		}
-		$this->log(print_r($res,1));
+		$this->log(print_r($res, 1));
 
 		$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic);
 	}
@@ -215,9 +348,42 @@ class Post extends Base
 		return $this->getLocalImageFolder($postId, $authorId) . $postId . '_w.jpg';
 	}
 
+	/**
+	 * @param $postId
+	 * @param $authorId
+	 *
+	 * @return string
+	 */
+	function getLocalVideoPath($postId, $authorId, $videoId)
+	{
+		return $this->getLocalVideoFolder($postId, $authorId, $videoId) . $videoId . '.jpg';
+	}
 
-	function getLocalImageFolder($postId, $authorId) {
+	function getLocalVideoPathSmall($postId, $authorId, $videoId)
+	{
+		return $this->getLocalVideoFolder($postId, $authorId, $videoId) . $videoId . '_s.jpg';
+	}
+
+	function getLocalVideoPathBig($postId, $authorId, $videoId)
+	{
+		return $this->getLocalVideoFolder($postId, $authorId, $videoId) . $videoId . '_b.jpg';
+	}
+
+	function getLocalVideoPathWide($postId, $authorId, $videoId)
+	{
+		return $this->getLocalVideoFolder($postId, $authorId, $videoId) . $videoId . '_w.jpg';
+	}
+
+
+	function getLocalImageFolder($postId, $authorId)
+	{
 		return '/home/sites/lj-top.ru/static/pstmgs/' . ($postId % 20) . '/' . ($authorId % 20) . '/';
+	}
+
+	function getLocalVideoFolder($postId, $authorId, $videoId)
+	{
+		return '/home/sites/lj-top.ru/static/pstmgs/v' . substr(md5($videoId),0,
+		                                                        6) . ($postId % 20) . '/' . ($authorId % 20) . '/';
 	}
 
 
@@ -232,6 +398,7 @@ class Post extends Base
 		if(!$author)
 		{
 			$this->log('no author: ' . $username);
+
 			return;
 		}
 		foreach($data['posts'] as $post)
@@ -245,24 +412,24 @@ class Post extends Base
 			}
 			/**
 			 * [24] => Array
-			(
-			[url] => http://duzer007.livejournal.com/1606741.html
-			[guid] => http://duzer007.livejournal.com/1606741.html
-			[pubdate] => Thu, 13 Nov 2014 14:17:18 GMT
-			[title] => А я с этим живу.
-			[link] => http://duzer007.livejournal.com/1606741.html
-			[description] => Итак, у меня во френдах имеются:тульский ватник, алкоголики из Москвы, имперский выскочка, лиса, одесский укроп, еноты, хуй какой-то и жена евоная, мох, сибаритки и богодулка (в одном лице), теребонька, и это только начало списка...<a name='cutid1-end'></a>
-			[comments] => 96
-			[tags] => Array
-			(
-				[френды] => френды
-				[подумалось] => подумалось
-				[знайнаших] => знайнаших
-				[ЖЖ] => ЖЖ
-				[дети-радиации] => дети-радиации
-			)
-
-			)
+			 * (
+			 * [url] => http://duzer007.livejournal.com/1606741.html
+			 * [guid] => http://duzer007.livejournal.com/1606741.html
+			 * [pubdate] => Thu, 13 Nov 2014 14:17:18 GMT
+			 * [title] => А я с этим живу.
+			 * [link] => http://duzer007.livejournal.com/1606741.html
+			 * [description] => Итак, у меня во френдах имеются:тульский ватник, алкоголики из Москвы, имперский выскочка, лиса, одесский укроп, еноты, хуй какой-то и жена евоная, мох, сибаритки и богодулка (в одном лице), теребонька, и это только начало списка...<a name='cutid1-end'></a>
+			 * [comments] => 96
+			 * [tags] => Array
+			 * (
+			 * [френды] => френды
+			 * [подумалось] => подумалось
+			 * [знайнаших] => знайнаших
+			 * [ЖЖ] => ЖЖ
+			 * [дети-радиации] => дети-радиации
+			 * )
+			 *
+			 * )
 
 			 */
 		}

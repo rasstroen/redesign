@@ -11,6 +11,7 @@ namespace Application;
  * @property \Application\Component\Routing\Web         $routing
  * @property \Application\Component\Controller\Web      $controller
  * @property \Application\Component\View\Web            $view
+ * @property \Application\Component\Youtube             $youtube
  */
 class Web extends Base
 {

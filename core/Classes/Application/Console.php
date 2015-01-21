@@ -9,6 +9,7 @@ namespace Application;
  * @property \Application\Component\Configuration\Base  $configuration
  * @property \Application\Component\Routing\UrlManager  $urlManager
  * @property \Application\Component\Image\Converter     $imageConverter
+ * @property \Application\Component\Youtube             $youtube
  */
 
 class Console extends Base

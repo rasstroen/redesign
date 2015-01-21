@@ -12,6 +12,34 @@ class Video extends BLL
 	const HAS_THUMB_NO = 2;
 	const HAS_THUMB_YES = 1;
 
+	public function update($postId, $authorId, $videoId, $date, $url, $hasThumb)
+	{
+		$this->getDbMaster()->query('UPDATE post_videos_' . $date .'
+		set has_thumbnail=?,
+		video_url=?
+		WHERE
+		post_id=? AND author_id=? AND video_id=?', array(
+				$hasThumb,
+				$url,
+				$postId,
+				$authorId,
+				$videoId
+			));
+	}
+	public function getWithUnknownThumbs($limit = 10)
+	{
+		$date     = date('Y_m');
+
+		return  $this->getDbWeb()->selectAll(
+			'SELECT *, \''.$date.'\' as date FROM `post_videos_' . $date . '`
+			WHERE
+			`has_thumbnail` = ? LIMIT ?',
+			array(
+				static::HAS_THUMB_UNKNOWN,
+				$limit
+			)
+		);
+	}
 	public function getVideoPosts(array $post)
 	{
 		$date     = date('Y_m', $post['pub_time']);
@@ -30,7 +58,7 @@ class Video extends BLL
 		{
 			if($row['type'] == static::VIDEO_TYPE_YOUTUBE)
 			{
-				$videos[$row['video_id']] = array(
+				$videos[$row['video_id']] = $row+array(
 					'url' => '//www.youtube.com/embed/' . $row['video_id'],
 					'html' => '<iframe width="560" height="315" src="//www.youtube.com/embed/'.$row['video_id'].'"
 					frameborder="0" allowfullscreen></iframe>',
