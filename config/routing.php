@@ -152,7 +152,7 @@ $modules = array(
 		'mode'      => 'indexTopRead',
 		'variables' => array(
 			'offset' => 19,
-			'limit'  => 4
+			'limit'  => 2
 		)
 	),
 	'index_top_commented'        => array(

@@ -26,4 +26,19 @@
  * @todo - спрашивать у гугла о видео
  * @todo - парсить картинки из постов
  *
- */ 
+ *
+ *
+ */
+?>
+*/1 * * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php tasks-processor run
+*/1 * * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php tasks-processor run-workers
+1 */1 * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php post fetch-yandex
+20 */1 * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php post rebuild-active-posts
+45 */1 * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php author calculate-rating
+*/15 * * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php author fill-full-update-queue
+*/5 * * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php misc fill-video-update-queue
+25 */1 * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php search generate-xml
+35 */1 * * * /usr/bin/indexer ljtop_active_new_index --rotate
+45 */1 * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php search apply-rubrics
+0 */6 * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php misc daily
+32 */1 * * * cd /home/sites/redesign.lj-top.ru/cron && php run.php search apply-themes

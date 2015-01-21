@@ -40,7 +40,7 @@ class Author extends Base
 				Queue::QUEUE_AUTHOR_FETCH_RSS,
 				$authorInfo['username'],
 				$authorInfo,
-				24*60*60*7
+				2*60*60
 			);
 
 		}

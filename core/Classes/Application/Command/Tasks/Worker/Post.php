@@ -6,8 +6,8 @@ use Application\BLL\Video;
 
 class Post extends Base
 {
-	private $minSizeX = 300;
-	private $minSizeY = 300;
+	private $minSizeX = 298;
+	private $minSizeY = 280;
 	private $minPostsComments = 30;
 	private $wideSize = 700;
 
@@ -257,7 +257,7 @@ class Post extends Base
 
 		if(!count($urls))
 		{
-			$this->log('no pictures');
+			$this->log('no pictures post' . $postId);
 			$this->application->bll->posts->setHasPic($postId, $authorId, $hasPic = Posts::PIC_STATUS_HASNOT_PIC);
 
 			return;
@@ -291,6 +291,7 @@ class Post extends Base
 									$size
 								);
 						}
+						$this->log('resizing images for post' . $postId);
 						$res[] =
 							$this->application->imageConverter->resize(
 								$temp,
@@ -314,6 +315,7 @@ class Post extends Base
 							);
 						break;
 					}
+					else $this->log('too small pic post' . $postId . ' sizes ' . print_r($size, 1));
 				}
 			}
 			catch(\Exception $e)
