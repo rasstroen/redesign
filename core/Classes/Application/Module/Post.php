@@ -13,6 +13,10 @@ class Post extends Base
 		$postId     = $variables['postId'];
 
 		$author     = $this->application->bll->author->getByUserName($username);
+		if(!$author)
+		{
+			$author     = reset($this->application->bll->author->getByIds(array($username)));
+		}
 		$post       = $this->application->bll->posts->getPostByAuthorIdPostId($postId, $author['author_id']);
 		$posts      = array($post);
 		$this->application->bll->posts->preparePosts($posts);

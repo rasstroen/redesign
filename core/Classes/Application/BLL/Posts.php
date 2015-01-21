@@ -30,6 +30,15 @@ class Posts extends BLL
 		));
 	}
 
+	public function setHasVideo($postId, $authorId, $hasVideo)
+	{
+		$yearMonth = $this->getYearMonthByAuthorIdPostId($postId, $authorId);
+
+		$this->updatePostByYearMonth($postId, $authorId, $yearMonth, array(
+				'has_video' => $hasVideo
+			));
+	}
+
 	public function getPostByAuthorIdPostId($postId, $authorId)
 	{
 		$yearMonth = $this->getYearMonthByAuthorIdPostId($postId, $authorId);
@@ -93,6 +102,16 @@ class Posts extends BLL
 				$post['image_src'] = $this->getPostImageUrl($post['post_id'], $post['author_id'], $post['has_pic'] == self::PIC_STATUS_HAS_PIC ? '_b' : '_w');
 				$post['image_src_small'] = $this->getPostImageUrl($post['post_id'], $post['author_id'], '_s');
 				$post['image_src_normal'] = $this->getPostImageUrl($post['post_id'], $post['author_id'], '_b');
+			}
+
+			if($post['has_video'] == static::VIDEO_STATUS_HAS_PIC)
+			{
+				$post['videos'] = $this->application->bll->video->getVideoPosts($post);
+				foreach($post['videos'] as $video)
+				{
+					$post['text'] = str_replace('<lj-embed id="'.$video['embed_id'].'" />', $video['html'],
+					                            $post['text']);
+				}
 			}
 		}
 		unset($post);

@@ -16,4 +16,7 @@ return array(
 	'theme'  => array(
 		'className' => '\Application\BLL\Theme',
 	),
+	'video'  => array(
+		'className' => '\Application\BLL\Video',
+	),
 );

@@ -119,8 +119,8 @@ class Post extends Base
 		$this->log('replacing tables');
 		$this->application->db->master->query('RENAME TABLE `active_posts` to `active_posts_remove`, `active_posts_temp` to `active_posts`');
 		$this->log('deleting tables');
-		$this->application->db->master->query('DROP TABLE `active_posts_remove`');
-		$this->application->db->master->query('DROP TABLE `active_posts_temp`');
+		$this->application->db->master->query('DROP TABLE IF EXISTS `active_posts_remove`');
+		$this->application->db->master->query('DROP TABLE IF EXISTS `active_posts_temp`');
 	}
 	/**
 	 * Парсим выдачу Яндекса - вытаскиваем свежие записи

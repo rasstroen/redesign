@@ -51,6 +51,7 @@ class Rubric extends Base
 		$countsUnlinked = $this->application->bll->rubric->getPostsCountsUnlinked(array_keys($rubrics));
 		$countsActive   = $this->application->bll->rubric->getPostsCountsActive(array_keys($rubrics));
 
+
 		foreach($rubrics as &$rubric)
 		{
 			$rubric['adminUrl']     = $this->application->routing->getUrl('admin/rubric/' . $rubric['rubric_id']);
@@ -62,7 +63,7 @@ class Rubric extends Base
 			$rubric['posts_count_unlinked']  = isset($countsUnlinked[$rubric['rubric_id']]) ? intval
 			($countsUnlinked[$rubric['rubric_id']]['cnt']) : 0;
 			$rubric['posts_count_active']  = isset($countsActive[$rubric['rubric_id']]) ? intval
-			($countsActive[$rubric['rubric_id']]['cnt']) : 0;
+			($countsActive[$rubric['rubric_id']]) : 0;
 		}
 		unset($rubric);
 		$parents    = array();

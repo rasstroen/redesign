@@ -102,7 +102,7 @@ class Queue extends BLL
 		self::QUEUE_POSTS_PROCESS_POSTS_VIDEOS => array(
 			'name'              => 'QUEUE_POSTS_PROCESS_POSTS_VIDEOS',
 			'priority'          => 1,
-			'workers'           => 6,
+			'workers'           => 2,
 			'tasks_per_worker'  => 12,
 			'command'           => 'Post',
 			'method'            => 'processVideos',

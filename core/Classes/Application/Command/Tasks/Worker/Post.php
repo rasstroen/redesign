@@ -36,7 +36,82 @@ class Post extends Base
 	public function methodProcessVideos($data)
 	{
 		$this->log('processing videos');
-		die();
+		$post = reset($this->application->bll->posts->getPostsByIds(array($data)));
+		$text = $post['text'];
+
+		preg_match_all('/embed\s+id=\"(.+)\"/isU', $text, $embeds);
+
+
+		if(isset($embeds[1][0]))
+		{
+			$this->log('found videos: ' . $post['post_id'] . '-' . $post['author_id'] . ' ' . print_r($embeds[1], 1));
+			$videos = $this->getRawVideos($post, $embeds);
+			if(count($videos))
+			{
+				$this->log('saving videos: ' . print_r($videos, 1));
+				$this->application->bll->video->savePostYoutubeVideos($post, $videos);
+				$this->application->bll->posts->setHasVideo(
+					$post['post_id'],
+					$post['author_id'],
+					Posts::VIDEO_STATUS_HAS_PIC
+				);
+			}
+		}
+		else
+		{
+			$this->log('video not found in db text for post ' . $post['post_id'] . '-' . $post['author_id']);
+			$this->application->bll->posts->setHasVideo(
+				$post['post_id'],
+				$post['author_id'],
+				Posts::VIDEO_STATUS_HASNOT_PIC
+			);
+		}
+
+	}
+
+	public function getRawVideos(array $post, $embedIds)
+	{
+		$videos = array();
+		$author = reset($this->application->bll->author->getByIds(
+				array($post['author_id'])
+			));
+
+		$postUrl = 'http://' . $author['username'] . '.livejournal.com/' . $post['post_id'] . '.html';
+		$this->log('getting url: ' . $postUrl);
+		$rawText = $this->application->httpRequest->getWithCache(
+			$postUrl,
+			60 * 60,
+			20
+		);
+
+		preg_match_all('/iframe src=\"(.*)\".*name="embed_(\d+)_(\d+)"/isU', $rawText, $iframes);
+		if(count($iframes))
+		{
+			foreach($iframes[1] as $index => $url)
+			{
+				$params = array();
+				$urlData = parse_url($url);
+				$paramsStrings = explode('&amp;',$urlData['query']);
+				foreach($paramsStrings as $string)
+				{
+					$value = explode('=', $string);
+					$params[$value[0]] = $value[1];
+				}
+				if(!empty($params['source']) && $params['source'] == 'youtube')
+				{
+					if($params['vid'])
+					{
+						$this->log('youtube video vid=' . $params['vid']);
+						$videos[] = array('id' => $params['vid'], 'embed_id' => $iframes[3][$index]);
+					}
+				}
+				else
+				{
+					$this->log('unknown video type:' . print_r($params, 1));
+				}
+			}
+		}
+		return $videos;
 	}
 
 	public function methodProcessImages($data)

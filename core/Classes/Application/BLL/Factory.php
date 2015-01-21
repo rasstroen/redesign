@@ -9,6 +9,7 @@ namespace Application\BLL;
  * @property  \Application\BLL\Author   $author
  * @property  \Application\BLL\Rubric   $rubric
  * @property  \Application\BLL\Theme    $theme
+ * @property  \Application\BLL\Video    $video
  */
 class Factory extends \Application\Component\Base
 {
