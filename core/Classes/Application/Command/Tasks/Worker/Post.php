@@ -6,16 +6,16 @@ use Application\BLL\Video;
 
 class Post extends Base
 {
-	private $minSizeX = 298;
-	private $minSizeY = 280;
+	private $minSizeX = 340;
+	private $minSizeY = 200;
 	private $minPostsComments = 30;
-	private $wideSize = 700;
+	private $wideSize = 699;
 
 	private $settings = array(
 		'small'  => array(
 			'crop_method'      => 1,
-			'width_requested'  => 90,
-			'height_requested' => 90,
+			'width_requested'  => 100,
+			'height_requested' => 100,
 		),
 		'normal' => array(
 			'crop_method'      => 1,
@@ -23,9 +23,9 @@ class Post extends Base
 			'height_requested' => 150,
 		),
 		'big'    => array(
-			'crop_method'      => 1,
-			'width_requested'  => 300,
-			'height_requested' => 300,
+			'crop_method'      => 0,
+			'width_requested'  => 340,
+			'height_requested' => 200,
 		),
 		'wide'   => array(
 			'crop_method'      => 0,

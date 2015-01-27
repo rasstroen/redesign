@@ -34,13 +34,29 @@ class Author extends Base
 				)
 			);
 
-			$this->log('adding task to process ' . $authorInfo['username'] . ' after week');
+			$author = $this->application->bll->author->getByUserName($authorInfo['username']);
+
+			if($author['position'])
+			{
+				$activateTime = max(60*60, 8*60*60 - 60 * (1000-$author['position']));
+			}
+			else
+			{
+				$activateTime = 8*60*60 - rand(60, 5 * 60);
+			}
+
+			$this->log('added task to process rss ' .
+			           str_pad($authorInfo['username'], 15, ' ', STR_PAD_LEFT).
+			           ', activate tm:' .date('Y-m-d H:i:s', $activateTime + time()) .
+			           ', ' . str_pad($author['rating_last_position'], 4, ' ', STR_PAD_LEFT) .
+			           ', position: ' . $author['position']
+			);
 
 			$this->application->bll->queue->addTask(
 				Queue::QUEUE_AUTHOR_FETCH_RSS,
 				$authorInfo['username'],
 				$authorInfo,
-				2*60*60
+				$activateTime
 			);
 
 		}
