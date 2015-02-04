@@ -1,17 +1,39 @@
 <?php
+function templateMenuListFooter()
+{
+
+}
+
+function templateMenuListIndexSearch()
+{
+	?>
+	<div class="search-menu">
+
+		<ul class="search">
+			<li class="form">
+				<form>
+					<input value="Поиск по записям" /> <div class="icon"></div><a>Вход</a>
+				</form>
+			</li>
+		</ul>
+	</div>
+<?php
+}
 
 function templateMenuListIndex($data)
 {
 
 	?>
-	<div class="logo"><a href="/">Lj-top.ru</a></div>
-	<ul class="menu index"><?php
+	<div class="top-menu">
+	<ul class="menu index clearfix">
+		<li class="logo"><a href="/">Lj-top.ru</a></li>
+		<?php
 	$menuItems = $data['items'];
 	foreach($menuItems as $name => $item)
 	{
 		?><li <?php if(isset($item['selected'])) echo 'class="selected"'?>>
 		<?php if(isset($item['items'])){?>
-		<?=htmlspecialchars($item['title'])?>
+		<a><?=htmlspecialchars($item['title'])?></a>
 		<ul class="subitem">
 			<?php foreach($item['items'] as $subItem){?>
 				<li <?php if(isset($subItem['selected'])) echo 'class="selected"'?>>
@@ -26,17 +48,10 @@ function templateMenuListIndex($data)
 			<?=htmlspecialchars($item['title'])?>
 		</a>
 		<?php }?>
-		</li><?php
+		</li>
+	<?php
 	}
-	?></ul>
-	<form class="login" method="get" action="/login/">
-		<input type="submit" name="phrase" value="Войти">
-	</form>
-	<form class="search" method="get" action="/search/">
-		<input type="text" name="phrase" value="Искать по записям">
-	</form>
-
-	<ul class="rubrics">
+	?></ul><ul class="menu rubrics">
 		<?php foreach($data['rubrics'] as $rubric){?>
 			<li>
 				<a href="<?=$rubric['url']?>"><?=htmlspecialchars($rubric['title'])?></a>
@@ -46,6 +61,7 @@ function templateMenuListIndex($data)
 			<a class="more" >ещё</a>
 		</li>
 	</ul>
+	</div>
 <?php
 
 

@@ -10,6 +10,18 @@ $modules = array(
 		'action'    => 'list',
 		'mode'      => 'index'
 	),
+	'search_menu_index'             => array(
+		'className' => '\Application\Module\Menu\Top',
+		'template'  => 'menu',
+		'action'    => 'list',
+		'mode'      => 'indexSearch'
+	),
+	'index-footer'             => array(
+		'className' => '\Application\Module\Menu\Top',
+		'template'  => 'menu',
+		'action'    => 'list',
+		'mode'      => 'footer'
+	),
 	'top_banner'                 => array(
 		'className' => '\Application\Module\Misc',
 		'template'  => 'banner',
@@ -404,54 +416,51 @@ return array(
 		 * Главная страница
 		 */
 		'index'              => array(
-			'layout' => 'index',
+			'layout' => 'bootstrap/index',
 			'title'  => 'Популярные записи. Самый быстрый ЖЖ Топ — Рейтинг записей Живого Журнала',
 			'blocks' => array(
-				'header'                    => array(
+				'top-banner'                    => array(
 					'top_banner' => $modules['top_banner'],
 				),
 				// block 1
-				'block1-left-top'           => array(
+				'index-theme-slider'           => array(
 					'index_top_themes' => $modules['index_top_themes'],
 				),
-				'block1-left-bottom'        => array(
+				'index-popular-columns-bottom'        => array(
 					'index_top_popular_top3' => $modules['index_top_popular_top3'],
 				),
-				'block1-right-top'          => array(
+				'index-popular-columns-top'          => array(
 					'index_top_popular_popular3' => $modules['index_top_popular_popular3'],
 				),
-				'block1-right-bottom-left'  => array(
+				'index-top-authors'  => array(
 					'index_top_authors' => $modules['index_top_authors'],
 				),
-				'block1-right-bottom-right' => array(
+				'index-commented' => array(
 					'index_top_commented' => $modules['index_top_commented'],
 				),
 				// block 2
-				'block2-left'               => array(
+				'index-actual'               => array(
 					'index_top_popular_popular9' => $modules['index_top_popular_popular9'],
 				),
-				'block2-right-left'         => array(
+				'index-top-comminities'         => array(
 					'index_top_communities' => $modules['index_top_communities'],
 				),
-				'block2-right-right'        => array(
-					'right-banner' => $modules['right-banner'],
-				),
-				'block2-right-bottom'       => array(
+				'index-readnow'       => array(
 					'index_top_popular_readnow' => $modules['index_top_popular_readnow'],
 				),
 				// block 3
-				'block3'                    => array(
+				'index-fresh'                    => array(
 					'index_top_new' => $modules['index_top_new'],
 				),
 				// block 4
-				'block4-left'              => array(
+				'index-slider-video'              => array(
 					'index_top_video' => $modules['index_top_video'],
 				),
-				'block4-center'              => array(
+				'index-slider-publics'              => array(
 					'index_top_public' => $modules['index_top_public'],
 				),
-				'block4-right'              => array(
-					'right-bottom-banner' => $modules['right-bottom-banner'],
+				'index-footer'              => array(
+					'index-footer' => $modules['index-footer'],
 				),
 			)
 		),
@@ -520,6 +529,23 @@ return array(
 				),
 			)
 		),
+		'bootstrap/index'=> array(
+			'css'    => array(
+				'bootstrap' => '/static/css/bootstrap/css/bootstrap.min.css',
+				'0' => 'https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js',
+				'1' => 'https://oss.maxcdn.com/respond/1.4.2/respond.min.js',
+				'menu' => '/static/css/layout/menu.css',
+				'posts' => '/static/css/posts.css',
+			),
+			'blocks' => array(
+				'top-menu' => array(
+					'top_menu_index' => $modules['top_menu_index'],
+				),
+				'search-menu' => array(
+					'search_menu_index' => $modules['search_menu_index'],
+				),
+			)
+		),
 		'index' => array(
 			'css'    => array(
 				'reset' => '/static/css/reset.css',
@@ -527,7 +553,7 @@ return array(
 				'posts' => '/static/css/posts.css',
 			),
 			'blocks' => array(
-				'header' => array(
+				'top-menu' => array(
 					'top_menu_index' => $modules['top_menu_index'],
 				),
 			)

@@ -1,0 +1,109 @@
+ul,li{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.min-700
+{
+	min-width: 700px;
+}
+
+.top-menu{
+	width: 700px;
+	position: relative;
+	height: 86px;
+}
+
+.top-menu .menu.index{
+	position: relative;
+	width: 550px;
+	height: 46px;
+	background: #60992d url(/static/css/green-triangle.png) top right no-repeat;
+	z-index: 2;
+	padding-left: 10px;
+}
+
+.top-menu .menu.index li{
+	float: left;
+	margin: 10px 0px;
+	width: 16%;
+}
+
+.top-menu .menu.index li a{
+	color: #fff;
+}
+
+.top-menu .menu.index li a.logo{
+	text-transform: uppercase;
+}
+
+.top-menu .menu.index li .subitem{
+	display: none;
+}
+
+.top-menu .menu.rubrics{
+	clear: both;
+	position: absolute;
+	width: 720px;
+	height: 46px;
+	background: #2b0b33 url(/static/css/violet-triangle.png) top right no-repeat;
+	margin-top: -9px !important;
+	z-index: 0;
+	padding-left: 10px;
+}
+
+.top-menu .menu.rubrics li{
+	display: inline-block;
+	margin: 16px 10px 10px 10px;
+}
+
+.top-menu .menu.rubrics li a {
+	color: #fff;
+}
+
+.col-md-24.search
+{
+	height: 86px;
+}
+
+.search-menu{
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.search-menu .search{
+	position: absolute;
+	bottom: 5px;
+	background: #60992d url(/static/css/green-triangle-right.png) top left no-repeat;
+	height: 46px;
+	width: 460px;
+	left: -10px;
+}
+
+.search-menu .search form{
+	position: absolute;
+	bottom: 6px;
+	right: 0px;
+}
+
+.search-menu .search form input{
+	width: 230px;
+}
+
+.search-menu .search form a{
+	margin: 10px;
+	color: #fff;
+	text-decoration: underline;
+}
+
+.search-menu .search form .icon
+{
+	background: url(/static/css/search.png) top left no-repeat;
+	width: 21px;
+	height: 21px;
+	position: absolute;
+	right: 60px;
+	bottom: 2px;
+}

@@ -65,4 +65,21 @@ class Misc extends Base
 			true
 		);
 	}
+
+	public function actionFillPublicQueue()
+	{
+		$publics = $this->application->bll->public->getAllPublics();
+		foreach($publics as $public)
+		{
+			$this->log('Adding public to fetch:' . $public['id']);
+			$taskId = $public['id'];
+			$this->application->bll->queue->addTask(
+				Queue::QUEUE_PUBLIC_FETCH_PUBLIC,
+				$taskId,
+				array('id' => $public['id']),
+				0,
+				true
+			);
+		}
+	}
 }

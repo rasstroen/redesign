@@ -19,4 +19,7 @@ return array(
 	'video'  => array(
 		'className' => '\Application\BLL\Video',
 	),
+	'public'  => array(
+		'className' => '\Application\BLL\Publics',
+	),
 );

@@ -36,6 +36,8 @@ class Queue extends BLL
 
 	const QUEUE_POSTS_PROCESS_POSTS_VIDEOS_THUMBS = 9;
 
+	const QUEUE_PUBLIC_FETCH_PUBLIC = 10;
+
 
 	private $queues = array(
 		self::QUEUE_AUTHOR_UPDATE_INFO => array(
@@ -117,6 +119,15 @@ class Queue extends BLL
 			'tasks_per_worker'  => 2,
 			'command'           => 'Post',
 			'method'            => 'processVideosThumbs',
+			'enabled'           => 1,
+		),
+		self::QUEUE_PUBLIC_FETCH_PUBLIC => array(
+			'name'              => 'QUEUE_PUBLIC_FETCH_PUBLIC',
+			'priority'          => 1,
+			'workers'           => 1,
+			'tasks_per_worker'  => 1,
+			'command'           => 'Publics',
+			'method'            => 'grab',
 			'enabled'           => 1,
 		),
 );

@@ -1,5 +1,6 @@
 <?php
 namespace Application\BLL;
+
 /**
  * Class Factory
  * @package Application\BLL
@@ -10,6 +11,7 @@ namespace Application\BLL;
  * @property  \Application\BLL\Rubric   $rubric
  * @property  \Application\BLL\Theme    $theme
  * @property  \Application\BLL\Video    $video
+ * @property  \Application\BLL\Publics  $public
  */
 class Factory extends \Application\Component\Base
 {
@@ -30,9 +32,9 @@ class Factory extends \Application\Component\Base
 
 	private function createComponent($componentName)
 	{
-		$componentConfiguration =   $this->application->configuration->getBllComponentConfiguration($componentName);
-		$componentClassName = $componentConfiguration['className'];
-		$component = new $componentClassName($this->application);
+		$componentConfiguration = $this->application->configuration->getBllComponentConfiguration($componentName);
+		$componentClassName     = $componentConfiguration['className'];
+		$component              = new $componentClassName($this->application);
 		foreach($componentConfiguration as $key => $value)
 		{
 			$setter = 'set' . ucfirst($key);

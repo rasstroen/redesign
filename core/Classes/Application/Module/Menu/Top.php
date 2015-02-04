@@ -37,6 +37,11 @@ class Top extends Base
 		return $data;
 	}
 
+	public function actionListIndexSearch()
+	{
+		return array();
+	}
+
 	/**
 	 * Меню сайта в шапке на главной
 	 * @return array
@@ -98,7 +103,7 @@ class Top extends Base
 			}
 		}
 
-		$data['rubrics'] = $this->application->bll->rubric->getTop();
+		$data['rubrics'] = $this->application->bll->rubric->getTop(7);
 		foreach($data['rubrics'] as &$rubric)
 		{
 			$rubric['url'] = '/rubric/' . $rubric['name'];
@@ -106,5 +111,10 @@ class Top extends Base
 		unset($rubric);
 
 		return $data;
+	}
+
+	public function actionListFooter()
+	{
+		return array();
 	}
 }

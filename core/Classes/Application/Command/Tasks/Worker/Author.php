@@ -38,7 +38,7 @@ class Author extends Base
 
 			if($author['position'])
 			{
-				$activateTime = max(60*60, 8*60*60 - 60 * (1000-$author['position']));
+				$activateTime = max(60*60, 8*60*60 - 24 * (1000-$author['position']));
 			}
 			else
 			{

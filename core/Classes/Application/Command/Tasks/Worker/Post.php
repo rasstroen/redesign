@@ -87,7 +87,9 @@ class Post extends Base
 		$res    = array();
 		$temp   = '/tmp/images/v-' . md5(rand(12, 101122332)) . time() . microtime(true) . '.jpg';
 		file_put_contents($temp, file_get_contents($url));
+
 		$size = getimagesize($temp);
+
 		if($size)
 		{
 			if(($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY))
@@ -275,6 +277,11 @@ class Post extends Base
 				$res = array();
 				file_put_contents($temp, file_get_contents($picUrl));
 				$size = getimagesize($temp);
+				$f = fopen('/tmp/sizes', 'a');
+				$s = $size[0]. "\t" . $size[1];
+				$this->log('image sizes: '. $s . ' | url = ' . $picUrl);
+				fwrite($f, $s . "\n");
+				fclose($f);
 				if($size)
 				{
 					if(($size[0] > $this->minSizeX) && ($size[1] > $this->minSizeY))
